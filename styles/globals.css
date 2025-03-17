@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.svc-creator__non-commercial-text {
+  display: none !important;
+}

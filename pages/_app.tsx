@@ -6,6 +6,9 @@ import { useRouter } from "next/router";
 
 import { fontSans, fontMono } from "@/config/fonts";
 import "@/styles/globals.css";
+import "survey-core/survey-core.min.css";
+import "survey-creator-core/survey-creator-core.min.css";
+
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
