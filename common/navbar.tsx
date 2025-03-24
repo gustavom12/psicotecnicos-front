@@ -18,7 +18,7 @@ export const AcmeLogo = () => {
 
 export default function NavbarApp() {
   return (
-    <Navbar className="flex-col w-[1199] top-0 right-0 ">
+    <Navbar className=" flex flex-col w-full px-0 m-0 ">
       <NavbarBrand>
 
         <p className="text-[#A1A1AA] text-[16px] font-light">Text here</p>
@@ -38,7 +38,7 @@ export default function NavbarApp() {
 
         <NavbarItem className="flex items-center justify-around">
 
-          <button className="p-4">
+          <button className="p-2">
             <Bell />
           </button>
           <button>

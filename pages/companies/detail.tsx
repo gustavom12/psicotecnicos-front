@@ -1,5 +1,5 @@
 
-import Detail from "@/views/companies/detail";
+import Detail from "@/views/companies/detail.view";
 import React from "react";
 
 
