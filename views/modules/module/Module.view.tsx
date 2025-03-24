@@ -8,7 +8,7 @@ import "survey-creator-core/i18n/spanish";
 
 registerSurveyTheme(SurveyTheme);
 
-const Module = ({ id }: { id?: string }) => {
+const Module = ({ id }: { id?: string } = {}) => {
   console.log({ id });
 
   const creator = new SurveyCreator({
