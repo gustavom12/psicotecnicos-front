@@ -21,16 +21,16 @@ export default function NavbarApp() {
     <Navbar className="flex-col w-[1199] top-0 right-0 ">
       <NavbarBrand>
 
-        <p className="text-[#A1A1AA] font-light">Text here</p>
+        <p className="text-[#A1A1AA] text-[16px] font-light">Text here</p>
         <svg xmlns="http://www.w3.org/2000/svg" color="#A1A1AA" width="20px" viewBox="0 0 24 24" fill="currentColor" className="size-6">
           <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clipRule="evenodd" />
         </svg>
 
-        <p className="text-[#A1A1AA] font-light">Text here</p>
+        <p className="text-[#A1A1AA] text-[16px] font-light">Text here</p>
         <svg xmlns="http://www.w3.org/2000/svg" color="#A1A1AA" width="20px" viewBox="0 0 24 24" fill="currentColor" className="size-6">
           <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clipRule="evenodd" />
         </svg>
-        <p className="text-[#3F3F46] font-light">Text here</p>
+        <p className="text-[#3F3F46] font-normal text-[16px]">Text here</p>
 
       </NavbarBrand>
 

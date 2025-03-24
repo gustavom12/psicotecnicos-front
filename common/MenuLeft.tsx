@@ -44,7 +44,7 @@ export default function MenuLeft() {
 
             <div className="flex text-center px-2  py-2 w-[200px]">
                 <Man />
-                <p className="mx-4 size-[16px] font-normal text-[#3F3F46] px-2">Entrevistados</p>
+                <p className="mx-4 text-[16px] font-normal text-[#3F3F46] px-2">Entrevistados</p>
             </div>
 
             <div className="flex text-center px-2  py-2 w-[200px]">
