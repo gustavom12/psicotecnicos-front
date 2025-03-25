@@ -23,10 +23,10 @@ const Detail = () => {
             <h1 className="font-bold text-[22px]">Toyota</h1>
           </div>
 
-          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-auto mt-10 mb-6">
-            <Button >Información</Button>
-            <Button>Entrevistados</Button>
-            <Button>Entrevistas</Button>
+          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[340px] mt-8 mb-6 h-[36px] rounded-xl">
+            <Button className="rounded-sm bg-[#F4F4F5] text-[#71717A]  h-[28px]">Información</Button>
+            <Button className="bg-white   h-[28px]">Entrevistados</Button>
+            <Button className="bg-[#F4F4F5] text-[#71717A]  h-[28px]">Entrevistas</Button>
           </ButtonGroup>
 
           <hr />

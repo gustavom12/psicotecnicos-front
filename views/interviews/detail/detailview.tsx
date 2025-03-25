@@ -1,18 +1,17 @@
-import ButtonDelete from "@/common/buttondelete";
-import ButtonSubmitPhoto from "@/common/buttonSubmitPhoto";
-import MenuLeft from "@/common/MenuLeft";
-import NavbarApp from "@/common/navbar";
-import ArrowLeft from "@/public/icons/arrowleft";
-import LogoToyota from "@/public/icons/logoToyota";
-import Photo from "@/public/icons/photo";
-import Trash from "@/public/icons/trashgrey";
-import TrashRed from "@/public/icons/trashred";
-import { Button, ButtonGroup } from "@heroui/button";
-import { Form, Input } from "@heroui/react";
-import React from "react";
+import ButtonDelete from '@/common/buttondelete';
+import ButtonSubmitPhoto from '@/common/buttonSubmitPhoto';
+import MenuLeft from '@/common/MenuLeft';
+import NavbarApp from '@/common/navbar';
+import ArrowLeft from '@/public/icons/arrowleft';
+import LogoToyota from '@/public/icons/logoToyota';
+import Photo from '@/public/icons/photo';
+import PhotoMan from '@/public/icons/photoMan';
+import TrashRed from '@/public/icons/trashred';
+import { Button, ButtonGroup } from '@heroui/button';
+import { Form, Input } from '@heroui/react';
+import React from 'react';
 
-
-const EditCompany = () => {
+const DetailInterviewed = () => {
   return (
     <div className="flex flex-row w-full ">
       <div>
@@ -25,20 +24,19 @@ const EditCompany = () => {
             <button className=" rounded-full w-[30px] h-[30px]  border border-color-[#D4D4D8] flex items-center justify-center cursor-pointer">
               <ArrowLeft />
             </button>
-            <h1 className="font-bold text-[22px]">Toyota</h1>
+            <h1 className="font-bold text-[22px]">Damián Flores</h1>
           </div>
 
-          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[340px] mt-10 mb-6 h-[36px] rounded-xl">
-            <Button className="rounded-sm bg-white h-[28px]">Información</Button>
-            <Button className="bg-[#F4F4F5] text-[#71717A]  h-[28px]">Entrevistados</Button>
-            <Button className="bg-[#F4F4F5] text-[#71717A]  h-[28px]">Entrevistas</Button>
+          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[240px] mt-8 mb-6 h-[36px] rounded-xl">
+            <Button className="rounded-sm bg-white   h-[28px]">Información</Button>
+            <Button className="bg-[#F4F4F5]  text-[#71717A]  h-[28px]">Entrevistas</Button>
           </ButtonGroup>
 
           <hr />
 
           <div className="flex flex-row   mt-8 ">
 
-            <LogoToyota />
+            <PhotoMan/>
             <div>
               <div className="flex flex-row space-x-1 ml-4 mt-7">
                 <ButtonSubmitPhoto />
@@ -71,5 +69,4 @@ const EditCompany = () => {
   )
 }
 
-
-export default EditCompany;
+export default DetailInterviewed;
