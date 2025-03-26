@@ -7,7 +7,7 @@ const ButtonDelete = () => {
   return (
     <Button className="flex flex-row algin-middle cursor-pointer bg-transparent w-auto  ">
       <TrashRed />
-      <p className="w-auto p-0 text-[#F31260] text-[14px]">Eliminar foto</p>
+      <p className="text-[14px] text-[#F31260]" >Eliminar foto</p>
     </Button>
   )
 }

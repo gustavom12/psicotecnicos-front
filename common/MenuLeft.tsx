@@ -5,7 +5,7 @@ import Man from "@/public/icons/ManIcon";
 import Messages from "@/public/icons/messages";
 import Modulo from "@/public/icons/modulo";
 import Note from "@/public/icons/note";
-import Girl from "@/public/icons/photogirl";
+import Girl from "@/public/icons/photoButtongirl";
 import Profesional from "@/public/icons/profesional";
 import Star from "@/public/icons/Star";
 import { Button } from "@heroui/button";

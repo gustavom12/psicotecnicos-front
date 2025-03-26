@@ -23,8 +23,8 @@ const InterviewDetails = () => {
 
           <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[340px] mt-8 mb-6 h-[36px] rounded-xl">
             <Button className="rounded-sm bg-[#F4F4F5]  text-[#71717A]  h-[28px]">Información</Button>
-            <Button className="bg-[#F4F4F5]  text-[#71717A]  h-[28px]">Entrevistados</Button>
-            <Button className="bg-white  h-[28px]">Entrevistas</Button>
+            <Button className="bg-white    h-[28px]">Entrevistados</Button>
+            <Button className="bg-[#F4F4F5] text-[#71717A] h-[28px]">Entrevistas</Button>
           </ButtonGroup>
 
           <hr />

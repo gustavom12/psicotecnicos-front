@@ -3,9 +3,7 @@ import ButtonSubmitPhoto from '@/common/buttonSubmitPhoto';
 import MenuLeft from '@/common/MenuLeft';
 import NavbarApp from '@/common/navbar';
 import ArrowLeft from '@/public/icons/arrowleft';
-import LogoToyota from '@/public/icons/logoToyota';
 import Photo from '@/public/icons/photo';
-import PhotoMan from '@/public/icons/photoMan';
 import TrashRed from '@/public/icons/trashred';
 import { Button, ButtonGroup } from '@heroui/button';
 import { Form, Input } from '@heroui/react';
@@ -36,7 +34,8 @@ const DetailInterviewed = () => {
 
           <div className="flex flex-row   mt-8 ">
 
-            <PhotoMan/>
+          <circle className="w-[100px] h-[100px] border rounded-full" />
+
             <div>
               <div className="flex flex-row space-x-1 ml-4 mt-7">
                 <ButtonSubmitPhoto />
