@@ -1,4 +1,4 @@
-import InterviewTableView from "@/views/interviews/table/interviewTable.view";
+import InterviewTableView from "@/views/interviewed/table/interviewTable.view";
 import React from "react";
 
 

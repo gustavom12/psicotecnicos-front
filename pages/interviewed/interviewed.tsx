@@ -1,4 +1,4 @@
-import Interview from "@/views/interviews/interview/interview.view";
+import Interview from "@/views/interviewed/interview/interview.view";
 import React from "react";
 
 

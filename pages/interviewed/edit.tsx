@@ -1,4 +1,4 @@
-import DetailInterviewed from "@/views/interviews/edit/editview";
+import DetailInterviewed from "@/views/interviewed/edit/editview";
 import React from "react";
 
 
