@@ -20,11 +20,17 @@ const InterviewTableView = () => {
           <div className="flex-col w-[1190px]  ">
             <div className=" flex justify-between ">
               <h1 className="font-inter font-semibold text-[22px]">Entrevistados</h1>
-              {/* <button className="bg-[#635BFF1A] text-[#635BFF] font-light py-2 px-4 rounded cursor-pointer">  New Companie</button> */}
-              <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
-                <Addition />
-                <p className="">Nuevo profesional</p>
-              </Button>
+
+              <div className="flex flex-row space-x-4">
+                <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
+                  <Addition />
+                  <p className="">Enviar invitación</p>
+                </Button>
+                <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
+                  <Addition />
+                  <p className="">Nuevo Entrevistado</p>
+                </Button>
+              </div>
             </div>
 
             <div className="mt-8">
