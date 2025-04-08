@@ -82,18 +82,19 @@ export default function Tables() {
       aria-label="Tabla de entrevistas"
       // selectedKeys={selectedKeys}
       selectionMode="multiple"
-    // onSelectionChange={setSelectedKeys}
-    className="shadow-none border-none"
-    style={{ border: "none", boxShadow: "none", borderBlock: "none" }}
-    classNames={{table: "border-none shadow-none " }}
+      // onSelectionChange={setSelectedKeys}
+      className="shadow-none border-none "
+      style={{ border: "none", boxShadow: "none", borderBlock: "none"}}
+      classNames={{ table: "border-none shadow-none rounded-none " }}
     >
       <TableHeader columns={columns} className="checkbox-hidden">
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={rows}>
         {(item) => (
-          <TableRow key={item.key} className="mt-4">
+          <TableRow key={item.key} className="mt-4 ">
             {(columnKey) => (
+
               <TableCell>
                 {columnKey === "actions" ? (
                   <div className="flex gap-2">
@@ -106,13 +107,16 @@ export default function Tables() {
                     <button className="text-red-500 hover:text-red-700">
                       <Trash />
                     </button>
+
                   </div>
+
                 ) : (
                   getKeyValue(item, columnKey)
                 )}
-              </TableCell>
-            )}
 
+              </TableCell>
+
+            )}
           </TableRow>
         )}
 

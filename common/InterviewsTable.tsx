@@ -96,17 +96,19 @@ const TableInterviews = () => {
     <Table
       aria-label="Tabla de entrevistas"
       // selectedKeys={selectedKeys}
-      selectionMode="multiple"
+      // selectionMode="single"
       // onSelectionChange={setSelectedKeys}
       className="shadow-none border border-none "
+      isStriped={true}
+      isCompact={true}
     >
       <TableHeader columns={columns} >
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={rows}>
+      <TableBody items={rows} >
         {(item) => (
           // <>
-          <TableRow key={item.key} className="mt-4">
+          <TableRow key={item.key} className="mt-4"  >
             {(columnKey) => (
               <TableCell>
                 {columnKey === "actions" ? (
