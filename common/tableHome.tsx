@@ -1,7 +1,16 @@
 import Document from "@/public/icons/document";
 import Pencil2 from "@/public/icons/pencil2";
 import Trash from "@/public/icons/trashgrey";
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  getKeyValue,
+} from "@heroui/react";
+
 import React from "react";
 
 
@@ -68,14 +77,19 @@ const columns = [
 
 
 
-const Table = () => {
+const TableHome = () => {
   return (
     <Table
       aria-label="Tabla de entrevistas"
       // selectedKeys={selectedKeys}
       // selectionMode="single"
       // onSelectionChange={setSelectedKeys}
-      className="shadow-none border border-none "
+      selectionMode="multiple"
+      classNames={{
+        thead: "thead tr th:first-child { display: none; }"
+      }}
+
+      // className="shadow-none border border-none "
       isStriped={true}
       isCompact={true}
     >
@@ -85,7 +99,7 @@ const Table = () => {
       <TableBody items={rows} >
         {(item) => (
           // <>
-          <TableRow key={item.key} className="mt-4"  >
+          <TableRow key={item.key} className="mt-4" >
             {(columnKey) => (
               <TableCell>
                 {columnKey === "actions" ? (
@@ -117,4 +131,4 @@ const Table = () => {
   );
 };
 
-export default Table;
+export default TableHome;
