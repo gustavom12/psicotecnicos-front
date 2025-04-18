@@ -12,7 +12,6 @@ import Trash from "@/public/icons/trashgrey";
 import Document from "@/public/icons/document";
 import Pencil2 from "@/public/icons/pencil2";
 
-
 const rows = [
   {
     key: "1",
@@ -70,7 +69,7 @@ const columns = [
   },
   {
     key: "actions",
-    label: "",
+    label: "Acciones",
   },
 ];
 
@@ -82,10 +81,13 @@ export default function Tables() {
       aria-label="Tabla de entrevistas"
       // selectedKeys={selectedKeys}
       selectionMode="multiple"
+      className="shadow-none border border-none "
+      isStriped={true}
+      isCompact={true}
       // onSelectionChange={setSelectedKeys}
-      className="shadow-none border-none "
-      style={{ border: "none", boxShadow: "none", borderBlock: "none"}}
-      classNames={{ table: "border-none shadow-none rounded-none " }}
+      // className="shadow-none border-none "
+      // style={{ border: "none", boxShadow: "none", borderBlock: "none"}}
+      // classNames={{ table: "border-none shadow-none rounded-none " }}
     >
       <TableHeader columns={columns} className="checkbox-hidden">
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
@@ -94,7 +96,6 @@ export default function Tables() {
         {(item) => (
           <TableRow key={item.key} className="mt-4 ">
             {(columnKey) => (
-
               <TableCell>
                 {columnKey === "actions" ? (
                   <div className="flex gap-2">
@@ -107,21 +108,15 @@ export default function Tables() {
                     <button className="text-red-500 hover:text-red-700">
                       <Trash />
                     </button>
-
                   </div>
-
                 ) : (
                   getKeyValue(item, columnKey)
                 )}
-
               </TableCell>
-
             )}
           </TableRow>
         )}
-
       </TableBody>
-
     </Table>
   );
 }

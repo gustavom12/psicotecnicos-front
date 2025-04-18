@@ -1,3 +1,4 @@
+import { useAuthContext } from "@/contexts/auth.context";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import React from "react";
@@ -5,9 +6,10 @@ import { useForm } from "react-hook-form";
 
 const LoginView = () => {
   const { register, handleSubmit } = useForm();
+  const { login } = useAuthContext();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    await login(data.email, data.password);
   };
 
   return (

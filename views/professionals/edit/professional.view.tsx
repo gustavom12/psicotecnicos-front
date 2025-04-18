@@ -3,7 +3,7 @@ import { Form } from "@heroui/react";
 import React from "react";
 import ButtonDelete from '@/common/buttondelete';
 import ButtonSubmitPhoto from '@/common/buttonSubmitPhoto';
-import MenuLeft from '@/common/MenuLeft';
+import MenuLeft from '@/layouts/menu/MenuLeft';
 import NavbarApp from '@/common/navbar';
 import ArrowLeft from '@/public/icons/arrowleft';
 import Photo from '@/public/icons/photo';

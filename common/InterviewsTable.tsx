@@ -92,23 +92,24 @@ const columns = [
 ];
 
 const TableInterviews = () => {
+  const [selectedKeys, setSelectedKeys] = React.useState([]);
   return (
     <Table
       aria-label="Tabla de entrevistas"
-      // selectedKeys={selectedKeys}
-      // selectionMode="single"
-      // onSelectionChange={setSelectedKeys}
+      selectedKeys={selectedKeys}
+      selectionMode="multiple"
+      onSelectionChange={setSelectedKeys}
       className="shadow-none border border-none "
       isStriped={true}
       isCompact={true}
     >
-      <TableHeader columns={columns} >
+      <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={rows} >
+      <TableBody items={rows}>
         {(item) => (
           // <>
-          <TableRow key={item.key} className="mt-4"  >
+          <TableRow key={item.key} className="mt-4">
             {(columnKey) => (
               <TableCell>
                 {columnKey === "actions" ? (
@@ -128,14 +129,9 @@ const TableInterviews = () => {
                 )}
               </TableCell>
             )}
-
-
           </TableRow>
-
         )}
-
       </TableBody>
-
     </Table>
   );
 };

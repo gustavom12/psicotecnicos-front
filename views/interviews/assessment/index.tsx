@@ -1,5 +1,5 @@
 import ButtonAssessment from "@/common/buttonInterviesAssessment";
-import MenuLeft from "@/common/MenuLeft";
+import MenuLeft from "@/layouts/menu/MenuLeft";
 import NavbarApp from "@/common/navbar";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button } from "@heroui/button";

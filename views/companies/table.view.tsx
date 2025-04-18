@@ -4,7 +4,7 @@ import { Navbar } from "@heroui/navbar";
 import { Button } from "@heroui/button";
 import App from "@/common/navbar";
 import NavbarApp from "@/common/navbar";
-import MenuLeft from "@/common/MenuLeft";
+import MenuLeft from "@/layouts/menu/MenuLeft";
 import Addition from "@/public/icons/addition";
 
 

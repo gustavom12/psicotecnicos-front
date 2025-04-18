@@ -76,16 +76,24 @@ const TableHome = () => {
           thead: "bg-[#F4F4F5]",
           tr: "border-b border-gray-200 hover:bg-gray-50",
           th: "bg-gray-100 text-gray-600 font-medium py-3 px-4 h-[50px] text-left",
-          td: "py-3 px-4 h-[50px]"
+          td: "py-3 px-4 h-[50px]",
         }}
         radius="none"
         shadow={false}
       >
         <TableHeader className="bg-gray-400 border border-none">
-          <TableColumn key="nombre" className="text-[16px] font-medium">Nombre</TableColumn>
-          <TableColumn key="empresa" className="text-[16px] font-medium">Empresa</TableColumn>
-          <TableColumn key="creador" className="text-[16px] font-medium">Creador</TableColumn>
-          <TableColumn key="modulos" className="text-[16px] font-medium">Módulos</TableColumn>
+          <TableColumn key="nombre" className="text-[16px] font-medium">
+            Nombre
+          </TableColumn>
+          <TableColumn key="empresa" className="text-[16px] font-medium">
+            Empresa
+          </TableColumn>
+          <TableColumn key="creador" className="text-[16px] font-medium">
+            Creador
+          </TableColumn>
+          <TableColumn key="modulos" className="text-[16px] font-medium">
+            Módulos
+          </TableColumn>
           <TableColumn key="actions" className="text-right"></TableColumn>
         </TableHeader>
         <TableBody>

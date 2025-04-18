@@ -17,6 +17,7 @@ module.exports = {
       },
     },
   },
-  darkMode: "class",
+  // darkMode: "class",
+  darkMode: false,
   plugins: [heroui()],
 }
