@@ -1,6 +1,6 @@
 import MenuLeft from "@/layouts/menu/MenuLeft";
 import NavbarApp from "@/common/navbar";
-import ProfessionalTableCommon from "@/common/profesionaltable";
+import ProfessionalTableCommon from "@/views/professionals/profesionaltable";
 import Tables from "@/common/table";
 import Addition from "@/public/icons/addition";
 import { Button } from "@heroui/button";

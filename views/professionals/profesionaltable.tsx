@@ -92,17 +92,20 @@ const ProfessionalTableCommon = () => {
       aria-label="Tabla de entrevistas"
       // selectedKeys={selectedKeys}
       selectionMode="multiple"
-      // onSelectionChange={setSelectedKeys}
-      className="shadow-none border-none"
-      style={{ border: "none", boxShadow: "none", borderBlock: "none" }}
-      classNames={{ table: "border-none shadow-none " }}
+      className="shadow-none border border-none "
+      isStriped={true}
+      isCompact={true}
+    // onSelectionChange={setSelectedKeys}
+    // className="shadow-none border-none "
+    // style={{ border: "none", boxShadow: "none", borderBlock: "none"}}
+    // classNames={{ table: "border-none shadow-none rounded-none " }}
     >
-      <TableHeader columns={columns} className="checkbox-hidden">
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+      <TableHeader columns={columns} className="checkbox-hidden ">
+        {(column) => <TableColumn className="text-[14px] " key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={rows}>
         {(item) => (
-          <TableRow key={item.key} className="mt-4">
+          <TableRow key={item.key} className="mt-4 ">
             {(columnKey) => (
               <TableCell>
                 {columnKey === "actions" ? (
@@ -122,12 +125,9 @@ const ProfessionalTableCommon = () => {
                 )}
               </TableCell>
             )}
-
           </TableRow>
         )}
-
       </TableBody>
-
     </Table>
 
   )

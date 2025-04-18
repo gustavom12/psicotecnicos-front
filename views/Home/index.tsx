@@ -3,7 +3,7 @@ import NavbarApp from "@/common/navbar";
 import Tables from "@/common/table";
 import React from "react";
 import HomeCard from "./homeCard";
-import TableHome from "@/common/tableHome";
+import TableHome from "@/views/Home/tableHome";
 
 const HomeView = () => {
   return (
