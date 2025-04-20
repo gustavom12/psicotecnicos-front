@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableHeader,
@@ -8,74 +8,83 @@ import {
   TableCell,
   getKeyValue,
 } from "@heroui/react";
-import Trash from "@/public/icons/trashgrey";
-import Document from "@/public/icons/document";
+
 import Pencil2 from "@/public/icons/pencil2";
+import Document from "@/public/icons/document";
+import Trash from "@/public/icons/trashgrey";
 
 const rows = [
   {
     key: "1",
-    name: "Damián Flores",
-    company: "Arcor",
-    interviews: "5",
-    email: "damian.flores@gmail.com",
+    nombre: "Arcor 2024 - Postulantes Junior Operario",
+    empresa: "Arcor",
+    creador: "Natalia Rodríguez",
+    modulos: "5",
   },
   {
     key: "2",
-    name: "Damián Flores",
-    company: "Arcor",
-    interviews: "5",
-    email: "damian.flores@gmail.com",
+    nombre: "Arcor 2024 - Postulantes Junior Operario",
+    empresa: "Arcor",
+    creador: "Natalia Rodríguez",
+    modulos: "5",
   },
   {
     key: "3",
-    name: "Damián Flores",
-    company: "Arcor",
-    interviews: "5",
-    email: "damian.flores@gmail.com",
+    nombre: "Arcor 2024 - Postulantes Junior Operario",
+    empresa: "Arcor",
+    creador: "Natalia Rodríguez",
+    modulos: "5",
   },
   {
     key: "4",
-    name: "Damián Flores",
-    company: "Arcor",
-    interviews: "5",
-    email: "damian.flores@gmail.com",
+    nombre: "Arcor 2024 - Postulantes Junior Operario",
+    empresa: "Arcor",
+    creador: "Natalia Rodríguez",
+    modulos: "5",
   },
   {
     key: "5",
-    name: "Damián Flores",
-    company: "Arcor",
-    interviews: "5",
-    email: "damian.flores@gmail.com",
+    nombre: "Arcor 2024 - Postulantes Junior Operario",
+    empresa: "Arcor",
+    creador: "Natalia Rodríguez",
+    modulos: "5",
+  },
+  {
+    key: "6",
+    nombre: "Arcor 2024 - Postulantes Junior Operario",
+    empresa: "Arcor",
+    creador: "Natalia Rodríguez",
+    modulos: "5",
   },
 ];
+
 
 const columns = [
   {
-    key: "name",
+    key: "nombre",
     label: "Nombre",
   },
   {
-    key: "company",
+    key: "empresa",
     label: "Empresa",
   },
   {
-    key: "interviews",
-    label: "Entrevistas",
+    key: "creador",
+    label: "Creador",
   },
   {
-    key: "email",
-    label: "E-mail",
+    key: "modulos",
+    label: "Modulos",
   },
   {
     key: "actions",
-    label: "Acciones",
+    label: "",
   },
 ];
 
-export default function Tables() {
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set());
 
+const TableHome = () => {
+  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   return (
     <Table
       aria-label="Tabla de entrevistas"
@@ -120,3 +129,6 @@ export default function Tables() {
     </Table>
   );
 }
+
+
+export default TableHome;

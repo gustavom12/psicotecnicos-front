@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { useAuthContext } from "@/contexts/auth.context";
 import apiConnection from "@/pages/api/api";
-import { Notification } from "./notification";
+import { Notification } from "@/common/notification";
 
 const columns = [
   {
@@ -60,13 +60,20 @@ const ProfessionalTableCommon = ({
       aria-label="Tabla de entrevistas"
       // selectedKeys={selectedKeys}
       selectionMode="multiple"
+      className="shadow-none border border-none "
+      isStriped={true}
+      isCompact={true}
       // onSelectionChange={setSelectedKeys}
-      className="shadow-none border-none"
-      style={{ border: "none", boxShadow: "none", borderBlock: "none" }}
-      classNames={{ table: "border-none shadow-none " }}
+      // className="shadow-none border-none "
+      // style={{ border: "none", boxShadow: "none", borderBlock: "none"}}
+      // classNames={{ table: "border-none shadow-none rounded-none " }}
     >
-      <TableHeader columns={columns} className="checkbox-hidden">
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+      <TableHeader columns={columns} className="checkbox-hidden ">
+        {(column) => (
+          <TableColumn className="text-[14px] " key={column.key}>
+            {column.label}
+          </TableColumn>
+        )}
       </TableHeader>
       <TableBody items={data.map((e) => ({ ...e, key: e._id }))}>
         {(item) => (
