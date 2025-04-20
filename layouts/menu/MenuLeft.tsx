@@ -17,8 +17,6 @@ import { useAuthContext } from "@/contexts/auth.context";
 
 export default function MenuLeft() {
   const { user } = useAuthContext();
-  console.log("user: ", user);
-
 
   return (
     <div

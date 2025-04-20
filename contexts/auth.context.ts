@@ -22,7 +22,6 @@ export const useAuthContext = create<AuthState>((set) => {
         roles: data.roles,
         user: data,
       });
-      console.log("data: ", data);
     })
     .catch((error) => {
       // TODO: REACTIVAR
@@ -39,7 +38,6 @@ export const useAuthContext = create<AuthState>((set) => {
           email: usernameOrEmail,
           password,
         });
-        console.log("data: ", data);
         const accessToken = data.token;
         localStorage.setItem("accessToken", accessToken);
 

@@ -4,10 +4,27 @@ import ProfessionalTableCommon from "@/common/profesionaltable";
 import Tables from "@/common/table";
 import Addition from "@/public/icons/addition";
 import { Button } from "@heroui/button";
-import React from "react";
+import React, { use, useEffect } from "react";
 import Link from "next/link";
+import apiConnection from "@/pages/api/api";
 
 const ProfessionalTableView = () => {
+  const [data, setData] = React.useState([]);
+  const fetchData = async () => {
+    try {
+      const { data } = await apiConnection.get("/users/table");
+      setData(data);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log("data: ", data);
+
   return (
     <div className="flex flex-row w-full">
       <div>
@@ -35,7 +52,7 @@ const ProfessionalTableView = () => {
             </div>
 
             <div className="mt-8">
-              <ProfessionalTableCommon />
+              <ProfessionalTableCommon fetchData={fetchData} data={data} />
             </div>
           </div>
         </div>

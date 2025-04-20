@@ -5,7 +5,7 @@ import LogoToyota from '@/public/icons/logoToyota';
 import { Button, ButtonGroup } from '@heroui/button';
 import { Input } from '@heroui/react';
 import React from 'react';
-import { PopupContainer } from 'survey-react-ui/typings/src/components/popup/popup';
+// import { PopupContainer } from 'survey-react-ui/typings/src/components/popup/popup';
 
 const Detail = () => {
   return (

@@ -5,9 +5,11 @@ let baseURL = "http://localhost:3213";
 const apiConnection = axios.create({ baseURL });
 
 apiConnection.interceptors.request.use((req) => {
-  const accessToken = localStorage.getItem("accessToken");
-  if (accessToken) {
-    req.headers.Authorization = `Bearer ${accessToken}`;
+  if (window.localStorage) {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      req.headers.Authorization = `Bearer ${accessToken}`;
+    }
   }
   return req;
 });
