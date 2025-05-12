@@ -44,7 +44,7 @@ export const useAuthContext = create<AuthState>((set) => {
         set({ authorized: true, roles: data.user.roles, user: data.user });
         Notification("Haz iniciado sesión éxitosamente", "success");
         // Pushea al inicio
-        Router.push("/");
+        Router.push("/home");
       } catch (error: any) {
         console.log({ error: error?.response?.data?.errorMessage });
         Notification(error?.response?.data?.errorMessage, "error");

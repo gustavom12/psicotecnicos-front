@@ -36,7 +36,13 @@ export default function MenuLeft() {
       <div className="flex flex-col p-4">
         <MenuItem title="Inicio" icon={<Home />} href={"/home"} />
 
-        <MenuItem title="Módulos" icon={<Modulo />} href={"/modulo"} />
+        <MenuItem title="Módulos" icon={<Modulo />} href={"/modules"} />
+
+        <MenuItem
+          title="Evaluaciones"
+          icon={<Messages />}
+          href={"/suveys/table"}
+        />
 
         <MenuItem
           title="Entrevistas"

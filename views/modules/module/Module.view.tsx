@@ -1,31 +1,69 @@
-// 'use client'
+"use client";
 
-// import { SurveyCreatorComponent, SurveyCreator } from "survey-creator-react";
-// import { registerSurveyTheme } from "survey-creator-core";
-// import SurveyTheme from "survey-core/themes";
-// import SurveyCreatorTheme from "survey-creator-core/themes";
-// import "survey-creator-core/i18n/spanish";
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import AuthLayout from "@/layouts/auth.layout";
+import { Button } from "@heroui/react";
+import EditorWrapper, {
+  defaultSlide,
+} from "./components/htmlEditor/editorWrapper";
 
-// registerSurveyTheme(SurveyTheme);
+const FormEditor = dynamic(() => import("./components/FormEditor/formEditor"), {
+  ssr: false,
+});
 
-const Module = ({ id }: { id?: string } = {}) => {
-  // console.log({ id });
+interface ModuleProps {
+  id?: string;
+}
 
-  // const creator = new SurveyCreator({
-  //   autoSaveEnabled: true,
-  //   collapseOnDrag: true,
-  //   showThemeTab: true,
-  //   showTranslationTab: false,
-  // });
+export default function Module({ id }: ModuleProps = {}) {
+  const [state, setState] = useState({
+    slides: [defaultSlide],
+    title: "Módulo",
+  });
 
-  // creator.locale = "es";
-  // creator.applyCreatorTheme(SurveyCreatorTheme.DefaultContrast);
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  // Mantén el título sincronizado cuando cambie desde el formulario
+  useEffect(() => {
+    if (titleRef.current && titleRef.current.innerText !== state.title) {
+      titleRef.current.innerText = state.title;
+    }
+  }, [state.title]);
+
+  const onSubmit = async () => {
+
+  };
 
   return (
-    <div className="h-screen">
-      {/* <SurveyCreatorComponent creator={creator} /> */}
-    </div>
+    <AuthLayout>
+      <div className="flex h-full w-full flex-col">
+        <div className="mx-auto w-full max-w-7xl">
+          <div
+            ref={titleRef}
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={() =>
+              setState({ ...state, title: titleRef.current?.innerText || "" })
+            }
+            className="text-2xl w-fit font-semibold text-gray-800 outline-none border-b border-transparent hover:border-gray-300 focus:border-indigo-400 transition-colors pb-1"
+          >
+            {state.title}
+          </div>
+          <h2 className="text-lg font-medium text-gray-700">Contenido</h2>
+          <div className="grid grid-cols-12 gap-6">
+            <EditorWrapper state={state} setState={setState} />
+            {/* Separator for small screens */}
+            <div className="col-span-12 lg:col-span-5 space-y-4">
+              {/* <MenuSeparator className="block lg:hidden" /> */}
+              <h2 className="text-lg font-medium text-gray-700">
+                Configuración de slide
+              </h2>
+              <FormEditor />
+            </div>
+          </div>
+        </div>
+      </div>
+    </AuthLayout>
   );
-};
-
-export default Module;
+}
