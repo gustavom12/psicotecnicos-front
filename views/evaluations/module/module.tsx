@@ -26,7 +26,7 @@ const ModuleEvaluationsView = () => {
               <ArrowLeft />
             </button>
             <h1 className="font-bold text-[22px]">
-              Mariano Alvarado - 20/5/2024
+              Arcor2024-Postulantes Junior Operario
             </h1>
           </div>
 
