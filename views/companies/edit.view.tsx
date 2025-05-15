@@ -9,6 +9,7 @@ import TrashRed from "@/public/icons/trashred";
 import { Button, ButtonGroup } from "@heroui/button";
 import { Form, Input } from "@heroui/react";
 import React from "react";
+import InputForms from "@/common/inputForms";
 
 
 const EditCompany = () => {
@@ -51,17 +52,15 @@ const EditCompany = () => {
 
           </div>
           <Form className="flex flex-col mt-8 justify-around h-auto">
-            <Input isRequired label="Nombre" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="Toyota " />
-            <Input isRequired label="Estado" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="Activo " />
-            <Input isRequired label="Sector" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="Automovilístico " />
-            <Input isRequired label="Ubicación" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="Córdoba, Argentina " />
-            <Input isRequired label="Fecha de registro" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="23/7/2023 " />
-            <Input isRequired label="Responsable" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="José González " />
-            <Input isRequired label="E-mail" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="jose.gonzalez@gmail.com " />
-            <Input isRequired label="Teléfono" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="+54 11 8888 5555 " />
-            <Input isRequired label="Observaciones" labelPlacement="outside" className="color-[#F4F4F5] w-[340px] my-6 " placeholder="Observaciones de la empresa" />
-
-
+            <InputForms label={"Nombre"} placeholder={"Toyota"} required={true} />
+            <InputForms label={"Estado"} placeholder={"Activo"} required={true} />
+            <InputForms label={"Sector"} placeholder={"Automovilístico"} required={true} />
+            <InputForms label={"Ubicación"} placeholder={"Córdoba, Argentina"} required={true} />
+            <InputForms label={"Fecha de registro"} placeholder={"23/7/2023 "} required={true} />
+            <InputForms label={"Responsable"} placeholder={"José González "} required={true} />
+            <InputForms label={"E-mail"} placeholder={"jose.gonzalez@gmail.com "} required={true} />
+            <InputForms label={"Teléfono"} placeholder={"+54 11 8888 5555"} required={true} />
+            <InputForms label={"Observaciones"} placeholder={"Observaciones de la empresa"} required={true} />
 
           </Form>
         </div>

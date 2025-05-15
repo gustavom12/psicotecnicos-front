@@ -1,13 +1,13 @@
-import MenuLeft from "@/layouts/menu/MenuLeft";
-import NavbarApp from "@/common/navbar";
-import ArrowLeft from "@/public/icons/arrowleft";
-import { Button, ButtonGroup } from "@heroui/button";
-import { Input } from "@heroui/input";
-import { Form } from "@heroui/react";
-import React from "react";
 import InputForms from "@/common/inputForms";
+import NavbarApp from "@/common/navbar";
+import MenuLeft from "@/layouts/menu/MenuLeft";
+import ArrowLeft from "@/public/icons/arrowleft";
+import { Button, ButtonGroup, Input } from "@heroui/react";
+import React from "react"
+import { Form } from "@heroui/react";
+import TextAreaForm from "@/common/textAreaForm";
 
-const InformationView = () => {
+const InformationEvaluationsView = () => {
   return (
     <div className="flex flex-row w-full ">
       <div>
@@ -32,48 +32,43 @@ const InformationView = () => {
             </h1>
           </div>
 
-          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[400px] mt-8 mb-6 h-[36px] rounded-xl">
+          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[17%] mt-8 mb-6 h-[36px] rounded-xl">
             <Button className="rounded-sm bg-white   h-[28px]">
               Información
             </Button>
             <Button className="bg-[#F4F4F5]  text-[#71717A]  h-[28px]">
-              Evaluacion
+              Modulos
             </Button>
-            <Button className="bg-[#F4F4F5]  text-[#71717A]  h-[28px]">
-              Ev. previa
-            </Button>
-            <Button className="bg-[#F4F4F5]  text-[#71717A]  h-[28px]">
-              Informe
-            </Button>
+
           </ButtonGroup>
 
           <hr />
 
           <Form className="flex flex-col mt-8 justify-around h-auto">
-
             <InputForms
-              label={"Profesional asignado"}
+              label={"Titulo"}
               placeholder={"Arcor 2024 - Postulantes Junior"}
               required={true} />
+
             <InputForms
-              label={"Fecha"}
-              placeholder={"Operario"}
-              required={true} />
-            <InputForms
-              label={"Hora"}
-              placeholder={"Descripción de la evaluación"}
+              label={"Empresa"}
+              placeholder={"Arcor "}
               required={true} />
 
             <InputForms
-              label={"Tipo de entrevista"}
-              placeholder={"Individual"}
+              label={"Puesto"}
+              placeholder={"Opreario "}
               required={true} />
 
+            <TextAreaForm
+              label={"Descripcion"}
+              placeholder={"Descripcion de la evaluacion "}
+            />
           </Form>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default InformationView;
+export default InformationEvaluationsView

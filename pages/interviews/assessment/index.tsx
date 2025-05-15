@@ -1,5 +1,5 @@
 
-import AssessmentView from "@/views/interviews/assessment";
+import AssessmentView from "@/views/interviews/module";
 import React from "react";
 
 const Assessment = () => {
