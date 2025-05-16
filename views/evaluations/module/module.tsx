@@ -1,5 +1,6 @@
 import ButtonAssessment from "@/common/buttonInterviesAssessment";
 import NavbarApp from "@/common/navbar";
+import PrimaryButton from "@/common/PrimaryButton";
 import MenuLeft from "@/layouts/menu/MenuLeft";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button, ButtonGroup } from "@heroui/react";
@@ -56,6 +57,7 @@ const ModuleEvaluationsView = () => {
 
             <ButtonAssessment title="Cierre" text="Personalizado" />
             <Button className="bg-[#635BFF] rounded-md mb-6 w-[40%] text-white">Agregar Modulo</Button>
+            <PrimaryButton text={"Agregar Modulo"} />
           </div>
         </div>
       </div>
