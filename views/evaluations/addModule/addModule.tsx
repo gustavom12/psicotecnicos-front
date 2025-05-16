@@ -2,6 +2,7 @@ import NavbarApp from "@/common/navbar";
 import MenuLeft from "@/layouts/menu/MenuLeft";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button, ButtonGroup, Input } from "@heroui/react";
+import BoxEvaluations from './boxEvaluations'
 
 const AddModuleView = () => {
   return (
@@ -35,8 +36,21 @@ const AddModuleView = () => {
             radius="none"
             className="flex flex-row bg-[#635BFF] text-white rounded-md " >Agregar modulo personalizado</Button>
           <h2 className="font-medium text-[20px] mt-4 mb-2">Categoria</h2>
-          <hr/>
-          <p className="mt-4">Modulos a hacer </p>
+          <hr />
+
+          <div className="grid grid-cols-4 gap-[20px] w-full mt-6 mb-8">
+            <BoxEvaluations text={"Series de figuras"}/>
+            <BoxEvaluations text={"Aptitud espacial"}/>
+            <BoxEvaluations text={"Test de Rorschach"}/>
+            <BoxEvaluations text={"Pantallas universales"}/>
+            <BoxEvaluations text={"Otra prueba"}/>
+            <BoxEvaluations text={"Otra prueba"}/>
+            <BoxEvaluations text={"Otra prueba"}/>
+            <BoxEvaluations text={"Otra prueba"}/>
+            <BoxEvaluations text={"Otra prueba"}/>
+            <BoxEvaluations text={"Otra prueba"}/>
+
+          </div>
         </div>
       </div>
     </div>

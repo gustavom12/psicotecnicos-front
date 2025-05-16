@@ -26,7 +26,7 @@ const CompaniesTable = () => {
             <h1 className="font-inter font-semibold text-[22px]">Empresas</h1>
             {/* <button className="bg-[#635BFF1A] text-[#635BFF] font-light py-2 px-4 rounded cursor-pointer">  New Companie</button> */}
             <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
-              <Addition />
+              <Addition fill={'#635BFF'} />
               <p className="">Nuevo empresas</p>
             </Button>
           </div>

@@ -25,7 +25,7 @@ const TableEvaluationView = () => {
 
               <div className="flex flex-row space-x-4">
                 <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
-                  <Addition />
+                  <Addition fill={'#635BFF'} />
                   <p className="">Nueva evaluación</p>
                 </Button>
               </div>

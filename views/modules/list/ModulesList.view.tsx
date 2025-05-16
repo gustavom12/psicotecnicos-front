@@ -15,7 +15,7 @@ const ModulesList = () => {
               radius="none"
               className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md "
             >
-              <Addition />
+              <Addition fill={'#635BFF'} />
               <p className="">Nuevo módulo</p>
             </Button>
           </Link>
@@ -24,7 +24,7 @@ const ModulesList = () => {
               radius="none"
               className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md "
             >
-              <Addition />
+              <Addition fill={'#635BFF'}/>
               <p className="">Nuevo formulario</p>
             </Button>
           </Link>
