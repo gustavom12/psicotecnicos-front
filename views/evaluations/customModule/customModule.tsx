@@ -1,13 +1,12 @@
-import ButtonAssessment from '@/common/buttonInterviesAssessment';
 import NavbarApp from '@/common/navbar';
 import MenuLeft from '@/layouts/menu/MenuLeft';
 import ArrowLeft from '@/public/icons/arrowleft';
 import { Button, ButtonGroup } from '@heroui/react';
 import React from 'react'
-import BoxProcess from './boxProcess';
+import BoxCustomModule from './boxCustomModule';
 import PrimaryButton from '@/common/PrimaryButton';
 
-const ProcessDetailModuleView = () => {
+const CustomModuleView = () => {
   return (
     <div className="flex flex-row w-full ">
       <div>
@@ -32,20 +31,8 @@ const ProcessDetailModuleView = () => {
             </h1>
           </div>
 
-          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[17%] mt-8 mb-3 h-[36px] rounded-xl">
-            <Button className="rounded-sm bg-[#F4F4F5] text-[#71717A]  h-[28px]">
-              Información
-            </Button>
-            <Button className="bg-white  h-[28px]">
-              Modulos
-            </Button>
-          </ButtonGroup>
-
-          <hr />
-          <div className='flex flex-col w-[30%]'>
-            <BoxProcess text="Evaluación previa" />
-            <hr className='bg-[#D4D4D8] border-[1px]'/>
-            <BoxProcess text="Evaluación previa" />
+            <BoxCustomModule />
+          <div className='flex justify-end items-end mb-10' >
             <PrimaryButton text="Agregar módulo"/>
           </div>
 
@@ -56,4 +43,4 @@ const ProcessDetailModuleView = () => {
   )
 }
 
-export default ProcessDetailModuleView
+export default CustomModuleView
