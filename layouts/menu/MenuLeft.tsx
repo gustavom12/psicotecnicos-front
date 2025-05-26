@@ -41,7 +41,7 @@ export default function MenuLeft() {
         <MenuItem
           title="Evaluaciones"
           icon={<Messages />}
-          href={"/suveys/table"}
+          href={"/surveys/table"}
         />
 
         <MenuItem

@@ -1,59 +1,21 @@
 "use client";
 
-import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { Listbox, Menu, MenuButton, Transition } from "@headlessui/react";
-import {
-  PlusIcon,
-  ChevronUpDownIcon,
-  TrashIcon,
-  CheckIcon,
-} from "@heroicons/react/24/outline";
-import { Fragment, useState } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import { v4 as uuid } from "uuid";
-import { Button, Input, Textarea } from "@heroui/react";
-import DynamicInput from "./DynamicField";
-import { cx } from "@/common/utils";
+import { Button, Divider, Input, Textarea } from "@heroui/react";
+import DynamicInput, { DynamicField } from "./DynamicField";
+import { FormValues } from "../../types/form.types";
+import { useEffect, useState } from "react";
 
-// -------------------- constantes -------------------- //
-const fieldTypes = [
-  { value: "shortText", label: "Texto corto" },
-  { value: "paragraph", label: "Párrafo" },
-  { value: "number", label: "Respuesta numérica" },
-  { value: "options", label: "Opciones múltiples" },
-  { value: "file", label: "Carga de archivos" },
-  { value: "scale", label: "Escala lineal" },
-] as const;
-
-type FieldType = (typeof fieldTypes)[number]["value"];
-
-interface DynamicField {
-  id: string;
-  type: FieldType;
-  label: string;
-  options?: string[]; // solo para options | scale
-}
-
-interface FormValues {
-  title: string;
-  comments: string;
-  timeSpent: string;
-  screens: number | "";
-  professional: DynamicField[];
-  interviewee: DynamicField[];
-}
-
-// -------------------- util -------------------- //
-
-// -------------------- FormPanel -------------------- //
-export default function FormPanel() {
-  const { register, control, handleSubmit } = useForm<FormValues>({
+export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
+  const [i, setI] = useState(activeIndex);
+  const { register, control, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       title: "",
       comments: "",
-      timeSpent: "10 minutos",
-      screens: "",
       professional: [],
-      interviewee: [],
+      interviewer: [],
     },
   });
 
@@ -61,28 +23,78 @@ export default function FormPanel() {
     fields: proFields,
     append: appendPro,
     remove: removePro,
+    replace: replacePro,
   } = useFieldArray({ control, name: "professional" });
   const {
     fields: intFields,
     append: appendInt,
     remove: removeInt,
-  } = useFieldArray({ control, name: "interviewee" });
+    replace: replaceInt,
+  } = useFieldArray({ control, name: "interviewer" });
 
-  const addField = (target: "professional" | "interviewee") => {
+  const addField = (target: "professional" | "interviewer") => {
     const base: DynamicField = { id: uuid(), label: "", type: "shortText" };
-    target === "professional" ? appendPro(base) : appendInt(base);
+
+    if (target === "professional") {
+      appendPro(base);
+      setState((v) => {
+        const newSlides = [...v.slides];
+        newSlides[i].professional.push(base);
+        return { ...v, slides: newSlides };
+      });
+    } else {
+      appendInt(base);
+      setState((v) => {
+        const newSlides = [...v.slides];
+        newSlides[i].interviewer.push(base);
+        return { ...v, slides: newSlides };
+      });
+    }
   };
 
-  const times = ["5 minutos", "10 minutos", "15 minutos", "30 minutos"];
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    const [list, idx, field] = name.split(".");
 
-  const onSubmit = (data: FormValues) => {
-    console.log("payload", data);
+    setState((v) => {
+      const activeSlide = v.slides.find((e) => e.index === activeIndex);
+
+      if (!idx) activeSlide[list] = value;
+      if (list && idx) {
+        activeSlide[list] = activeSlide[list].map((e, i) => {
+          return i === parseInt(idx)
+            ? {
+                ...(e || {}),
+                [field]: value,
+              }
+            : e;
+        });
+      }
+
+      return {
+        ...v,
+        slides: v.slides.map((e, index) =>
+          index === activeIndex ? activeSlide : e,
+        ),
+      };
+    });
   };
-  const handleAction = (action: "finish" | "next") =>
-    handleSubmit((d) => onSubmit(d))();
+
+  useEffect(() => {
+    const activeSlide = state.slides[activeIndex];
+
+    reset(activeSlide); // repuebla el form
+
+    replacePro(activeSlide.professional); // actualiza arrays
+    replaceInt(activeSlide.interviewer);
+    setI(activeIndex);
+  }, [activeIndex, reset]);
 
   return (
     <form
+      key={i}
       onSubmit={handleSubmit(onSubmit)}
       className="w-full max-w-md space-y-6 rounded-2xl border bg-white p-8 shadow-xl text-sm"
     >
@@ -92,15 +104,17 @@ export default function FormPanel() {
 
       <Input
         placeholder="Título slide"
-        {...register("title", { required: true })}
+        {...register("title", { required: true, onChange: handleChange })}
       />
 
       <Textarea
         placeholder="Comentarios (sobre este slide)"
-        {...register("comments")}
+        {...register("comments", { onChange: handleChange })}
         className="h-28"
       />
+      <Divider className="!mt-0" />
       {/* Campos dinámicos */}
+      <h6>Campos del profesional:</h6>
       {proFields.map((f, idx) => (
         <DynamicInput
           key={f.id}
@@ -110,9 +124,12 @@ export default function FormPanel() {
           control={control}
           remove={removePro}
           namePrefix="professional"
+          onFieldChange={handleChange}
         />
       ))}
 
+      <Divider className="!mt-7" />
+      <h6>Campos del entrevistado:</h6>
       {intFields.map((f, idx) => (
         <DynamicInput
           key={f.id}
@@ -121,7 +138,8 @@ export default function FormPanel() {
           register={register}
           control={control}
           remove={removeInt}
-          namePrefix="interviewee"
+          namePrefix="interviewer"
+          onFieldChange={handleChange}
         />
       ))}
 
@@ -141,13 +159,16 @@ export default function FormPanel() {
           size="sm"
           className="inline-flex items-center gap-1"
           type="button"
-          onClick={() => addField("interviewee")}
+          onClick={() => addField("interviewer")}
         >
           <PlusIcon className="h-4 w-4" /> Campo entrevistado
         </Button>
       </div>
 
-      <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-1">
+      <Button
+        onClick={onSubmit}
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-1"
+      >
         Guardar
       </Button>
     </form>

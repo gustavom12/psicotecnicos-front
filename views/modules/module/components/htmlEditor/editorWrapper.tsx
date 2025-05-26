@@ -1,5 +1,4 @@
-// components/client-side-custom-editor.js
-"use client"; // Required only in App Router.
+"use client";
 
 import { Button } from "@heroui/react";
 import dynamic from "next/dynamic";
@@ -12,7 +11,11 @@ const ClientSideCustomEditor = dynamic(() => import("./htmlEditor"), {
 export const defaultSlide = {
   selected: true,
   html: "",
-  config: {},
+  professional: [],
+  interviewer: [],
+  index: 0,
+  title: "",
+  comments: "",
 };
 
 const EditorWrapper = ({ state, setState }) => {
@@ -27,6 +30,16 @@ const EditorWrapper = ({ state, setState }) => {
           ? "ring-1 ring-indigo-300 bg-indigo-50/40"
           : "ring-0 bg-white hover:ring-1 hover:ring-gray-200"
       }`}
+          onClick={() => {
+            setState({
+              ...state,
+              slides: state.slides.map((e, i) =>
+                i === idx
+                  ? { ...e, selected: true }
+                  : { ...e, selected: false },
+              ),
+            });
+          }}
         >
           <ClientSideCustomEditor
             value={slide.html}
@@ -45,12 +58,20 @@ const EditorWrapper = ({ state, setState }) => {
         size="sm"
         className="w-full inline-flex items-center gap-1 col-span-12 lg:col-span-5"
         type="button"
-        onClick={() =>
+        onClick={() => {
           setState({
             ...state,
-            slides: [...state.slides, defaultSlide],
-          })
-        }
+            slides: [
+              ...state.slides.map((e) => ({ ...e, selected: false })),
+              {
+                ...defaultSlide,
+                index: state.slides.length,
+                professional: [],
+                interviewer: [],
+              },
+            ],
+          });
+        }}
       >
         Agregar slide
       </Button>

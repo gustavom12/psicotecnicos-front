@@ -42,7 +42,8 @@ interface DynamicInputProps {
   control: any;
   index: number;
   remove: (i: number) => void;
-  namePrefix: "professional" | "interviewee";
+  namePrefix: "professional" | "interviewer";
+  onFieldChange;
 }
 
 export default function DynamicInput({
@@ -52,6 +53,7 @@ export default function DynamicInput({
   index,
   remove,
   namePrefix,
+  onFieldChange,
 }: DynamicInputProps) {
   const [currentType, setCurrentType] = useState<FieldType>(field.type);
 
@@ -59,14 +61,6 @@ export default function DynamicInput({
     <div className="space-y-3 rounded-xl border bg-white p-4 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Input
-          placeholder="Etiqueta"
-          className="flex-1 text-sm"
-          {...register(`${namePrefix}.${index}.label` as const, {
-            required: true,
-          })}
-        />
-
         {/* Selector tipo */}
         <Controller
           control={control}
@@ -76,10 +70,13 @@ export default function DynamicInput({
               value={value}
               onChange={(val: FieldType) => {
                 onChange(val);
+                onFieldChange({
+                  target: { name: `${namePrefix}.${index}.type`, value: val },
+                });
                 setCurrentType(val);
               }}
             >
-              <div className="relative ml-2 w-44">
+              <div className="relative ml-2 w-60 ">
                 <Listbox.Button className="relative w-full cursor-pointer rounded-lg border bg-gray-50 py-2 pl-3 pr-10 text-left text-sm shadow-sm hover:bg-gray-100 focus:outline-none">
                   <span className="block truncate">
                     {fieldTypes.find((t) => t.value === value)?.label ?? "Tipo"}
@@ -151,6 +148,7 @@ export default function DynamicInput({
           type="button"
           variant="ghost"
           size="sm"
+          className="ml-auto"
           onClick={() => remove(index)}
         >
           <TrashIcon className="h-4 w-4 text-gray-500" />
@@ -160,21 +158,26 @@ export default function DynamicInput({
       {/* Valor según tipo */}
       {currentType === "paragraph" && (
         <Textarea
-          placeholder="Respuesta"
-          {...register(`${namePrefix}.${index}.answer` as const)}
+          placeholder="Pregunta"
+          {...register(`${namePrefix}.${index}.question`, {
+            onChange: onFieldChange,
+          })}
         />
       )}
       {currentType === "shortText" && (
         <Input
-          placeholder="Respuesta"
-          {...register(`${namePrefix}.${index}.answer` as const)}
+          placeholder="Pregunta"
+          {...register(`${namePrefix}.${index}.question` as const, {
+            onChange: onFieldChange,
+          })}
         />
       )}
       {currentType === "number" && (
         <Input
-          type="number"
-          placeholder="0"
-          {...register(`${namePrefix}.${index}.answer` as const)}
+          placeholder="Pregunta"
+          {...register(`${namePrefix}.${index}.question` as const, {
+            onChange: onFieldChange,
+          })}
         />
       )}
       {currentType === "options" && (
@@ -194,13 +197,15 @@ export default function DynamicInput({
       {currentType === "file" && (
         <Input
           type="file"
-          {...register(`${namePrefix}.${index}.answer` as const)}
+          {...register(`${namePrefix}.${index}.question` as const, {
+            onChange: onFieldChange,
+          })}
         />
       )}
       {currentType === "scale" && (
         <Controller
           control={control}
-          name={`${namePrefix}.${index}.answer` as const}
+          name={`${namePrefix}.${index}.question` as const}
           defaultValue={5}
           render={({ field: fld }) => (
             <Input
@@ -209,7 +214,15 @@ export default function DynamicInput({
               max={10}
               className="w-full"
               value={fld.value}
-              onChange={(e) => fld.onChange(Number(e.target.value))}
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                // tu tracker global
+                onFieldChange({
+                  target: { name: fld.name, value: val },
+                } as any);
+
+                fld.onChange(Number(e.target.value));
+              }}
             />
           )}
         />

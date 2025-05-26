@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import AuthLayout from "@/layouts/auth.layout";
-import { Button } from "@heroui/react";
 import EditorWrapper, {
   defaultSlide,
 } from "./components/htmlEditor/editorWrapper";
+import { createForm, getForm, updateForm } from "@/pages/api/forms";
+import { Notification } from "@/common/notification";
+import { useRouter } from "next/navigation";
 
 const FormEditor = dynamic(() => import("./components/FormEditor/formEditor"), {
   ssr: false,
@@ -18,10 +20,11 @@ interface ModuleProps {
 
 export default function Module({ id }: ModuleProps = {}) {
   const [state, setState] = useState({
-    slides: [defaultSlide],
+    slides: [{ ...defaultSlide }],
     title: "Módulo",
   });
-
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const titleRef = useRef<HTMLDivElement>(null);
 
   // Mantén el título sincronizado cuando cambie desde el formulario
@@ -31,9 +34,35 @@ export default function Module({ id }: ModuleProps = {}) {
     }
   }, [state.title]);
 
-  const onSubmit = async () => {
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await getForm(id);
+        setState({ title: data.title, slides: data.slides });
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [id]);
 
+  const onSubmit = async () => {
+    try {
+      console.log("stateL ", state);
+
+      id ? await updateForm(id, state) : await createForm(state);
+      Notification("Entrevista guardada con éxito", "success");
+      router.back();
+    } catch (error) {
+      console.error({ error });
+      Notification(`Error al guardar entrevista`, "error");
+    }
   };
+
+  console.log("state: ", state);
 
   return (
     <AuthLayout>
@@ -59,7 +88,12 @@ export default function Module({ id }: ModuleProps = {}) {
               <h2 className="text-lg font-medium text-gray-700">
                 Configuración de slide
               </h2>
-              <FormEditor />
+              <FormEditor
+                state={state}
+                activeIndex={state.slides.find((e) => e.selected).index}
+                setState={setState}
+                onSubmit={onSubmit}
+              />
             </div>
           </div>
         </div>
