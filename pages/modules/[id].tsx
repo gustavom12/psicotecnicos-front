@@ -4,7 +4,8 @@ import { useParams } from "next/navigation";
 import Module from "@/views/modules/module/Module.view";
 
 const ModulePage = () => {
-  const { id } = useParams();
+  const params = useParams();
+const id = params?.id;
 
   return <Module id={id as string} />;
 };

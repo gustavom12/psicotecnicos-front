@@ -1,4 +1,4 @@
-import ModuleEvaluationsView from "../../views/evaluations/module/module"
+import ModuleEvaluationsView from "../../views/surveys/module/module"
 
 const ModuleEvaluations = () =>{
 return <ModuleEvaluationsView/>

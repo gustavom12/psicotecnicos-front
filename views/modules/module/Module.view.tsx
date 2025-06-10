@@ -22,10 +22,12 @@ export default function Module({ id }: ModuleProps = {}) {
   const [state, setState] = useState({
     slides: [{ ...defaultSlide }],
     title: "Módulo",
+    category: "Categoría",
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const titleRef = useRef<HTMLDivElement>(null);
+  const categoryRef = useRef<HTMLDivElement>(null);
 
   // Mantén el título sincronizado cuando cambie desde el formulario
   useEffect(() => {
@@ -40,7 +42,13 @@ export default function Module({ id }: ModuleProps = {}) {
       setLoading(true);
       try {
         const data = await getForm(id);
-        setState({ title: data.title, slides: data.slides });
+        console.log("data id: ", data);
+
+        setState({
+          title: data.title,
+          slides: data.slides,
+          category: data.category,
+        });
       } catch (e) {
         console.error(e);
       } finally {
@@ -55,7 +63,7 @@ export default function Module({ id }: ModuleProps = {}) {
 
       id ? await updateForm(id, state) : await createForm(state);
       Notification("Entrevista guardada con éxito", "success");
-      router.back();
+      router.push("/modules");
     } catch (error) {
       console.error({ error });
       Notification(`Error al guardar entrevista`, "error");
@@ -65,7 +73,12 @@ export default function Module({ id }: ModuleProps = {}) {
   console.log("state: ", state);
 
   return (
-    <AuthLayout>
+    <AuthLayout
+      links={[
+        { label: "Módulos", href: "/modules" },
+        { label: id ? `Editar módulo` : "Nuevo módulo", href: "/modules/new" },
+      ]}
+    >
       <div className="flex h-full w-full flex-col">
         <div className="mx-auto w-full max-w-7xl">
           <div
@@ -79,7 +92,20 @@ export default function Module({ id }: ModuleProps = {}) {
           >
             {state.title}
           </div>
-          <h2 className="text-lg font-medium text-gray-700">Contenido</h2>
+          <div
+            ref={categoryRef}
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={() =>
+              setState({
+                ...state,
+                category: categoryRef.current?.innerText || "",
+              })
+            }
+            className="text-lg w-fit font-medium text-gray-700 outline-none border-b border-transparent hover:border-gray-300 focus:border-indigo-400 transition-colors pb-1"
+          >
+            {state.category}
+          </div>
           <div className="grid grid-cols-12 gap-6">
             <EditorWrapper state={state} setState={setState} />
             {/* Separator for small screens */}
@@ -88,12 +114,14 @@ export default function Module({ id }: ModuleProps = {}) {
               <h2 className="text-lg font-medium text-gray-700">
                 Configuración de slide
               </h2>
-              <FormEditor
-                state={state}
-                activeIndex={state.slides.find((e) => e.selected).index}
-                setState={setState}
-                onSubmit={onSubmit}
-              />
+              {!loading && (
+                <FormEditor
+                  state={state}
+                  activeIndex={state.slides.find((e) => e.selected).index}
+                  setState={setState}
+                  onSubmit={onSubmit}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -9,9 +9,10 @@ import { FormValues } from "../../types/form.types";
 import { useEffect, useState } from "react";
 
 export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
+  const activeSlide = state.slides[activeIndex];
   const [i, setI] = useState(activeIndex);
   const { register, control, handleSubmit, reset } = useForm<FormValues>({
-    defaultValues: {
+    defaultValues: activeSlide || {
       title: "",
       comments: "",
       professional: [],
@@ -84,6 +85,7 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
 
   useEffect(() => {
     const activeSlide = state.slides[activeIndex];
+    console.log("activeSlide: ", activeSlide);
 
     reset(activeSlide); // repuebla el form
 

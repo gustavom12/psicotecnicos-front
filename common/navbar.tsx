@@ -1,8 +1,14 @@
-
 import ArrowRight from "@/public/icons/arrowright";
 import Bell from "@/public/icons/Bell";
 import Person from "@/public/icons/Person";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@heroui/react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Button,
+} from "@heroui/react";
 
 export const AcmeLogo = () => {
   return (
@@ -17,59 +23,59 @@ export const AcmeLogo = () => {
   );
 };
 
-export default function NavbarApp() {
+export default function NavbarApp({
+  links,
+}: {
+  links?: { label: string; href: string }[];
+}) {
+  if (!links || links.length === 0) {
+    links = [{ label: "Inicio", href: "/" }];
+  }
   return (
-
-    // <navbar className="flex flex-row justify-between items-center w-full  py-4 static">
-    //   <div className="flex flex-row align-middle justify-center text-center ">
-
-    //     <p className="text-[#A1A1AA] text-[16px] font-light mr-2">Text here</p>
-    //     <ArrowRight />
-    //     <p className="text-[#A1A1AA] text-[16px] font-light mr-2">Text here</p>
-    //     <ArrowRight />
-    //     <p className="text-[#3F3F46] font-normal text-[16px]">Text here</p>
-
-    //   </div>
-
-    //   <div>
-    //     <button className="p-2">
-    //       <Bell />
-    //     </button>
-    //     <button>
-    //       <Person />
-    //     </button>
-    //   </div>
-    // </navbar>
-
-    <Navbar classNames={{ wrapper: "px-0 max-w-[2000px]" }} className=" flex flex-col w-full px-0 m-0 ">
-      <NavbarBrand className="m-0 px-0" >
-
-        <p className="text-[#A1A1AA] text-[16px] font-light">Text here</p>
-        <svg xmlns="http://www.w3.org/2000/svg" color="#A1A1AA" width="20px" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-          <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clipRule="evenodd" />
-        </svg>
-
-        <p className="text-[#A1A1AA] text-[16px] font-light">Text here</p>
-        <svg xmlns="http://www.w3.org/2000/svg" color="#A1A1AA" width="20px" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-          <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clipRule="evenodd" />
-        </svg>
-        <p className="text-[#3F3F46] font-normal text-[16px]">Text here</p>
-
+    <Navbar
+      classNames={{ wrapper: "px-0 max-w-[2000px]" }}
+      className=" flex flex-col w-full px-0 m-0 "
+    >
+      <NavbarBrand className="m-0 px-0">
+        {links?.map((link, index) => (
+          <Link
+            key={index}
+            href={link.href}
+            className="flex items-center gap-2 text-[#A1A1AA] text-[16px] font-light"
+          >
+            <p className="text-[#A1A1AA] text-[16px] font-light">
+              {link.label}
+            </p>
+            {index < links.length - 1 && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                color="#A1A1AA"
+                width="20px"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </Link>
+        ))}
       </NavbarBrand>
 
       <NavbarContent justify="end" className="m-0 p-0">
-
         <NavbarItem className="flex items-center justify-around m-0 p-0">
-
-          <button className="p-2">
+          {/* <button className="p-2">
             <Bell />
-          </button>
+          </button> */}
           <button>
             <Person />
           </button>
         </NavbarItem>
       </NavbarContent>
     </Navbar>
-
   );
 }

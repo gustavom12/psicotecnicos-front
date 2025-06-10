@@ -1,8 +1,6 @@
-import { Input } from "@heroui/react"
+import { Input } from "@heroui/react";
 
-
-const InputForms = ({ label, placeholder, required }) => {
-
+const InputForms = ({ label, placeholder, required, ...props }) => {
   return (
     <Input
       required={required}
@@ -10,8 +8,9 @@ const InputForms = ({ label, placeholder, required }) => {
       labelPlacement="outside"
       className="color-[#F4F4F5] w-[340px] my-6 "
       placeholder={placeholder}
+      {...props}
     />
-  )
-}
+  );
+};
 
-export default InputForms
+export default InputForms;

@@ -1,4 +1,4 @@
-import AddModuleView from "../../views/evaluations/addModule/addModule"
+import AddModuleView from "../../views/surveys/addModule/addModule"
 
 
 const AddModule = () => {

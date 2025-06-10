@@ -1,4 +1,4 @@
-import InformationEvaluationsView from "../../views/evaluations/information/information"
+import InformationEvaluationsView from "../../views/surveys/information/information"
 
 
 const InformationEvaluations =()=> {
