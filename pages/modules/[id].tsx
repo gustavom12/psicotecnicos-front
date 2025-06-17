@@ -5,7 +5,7 @@ import Module from "@/views/modules/module/Module.view";
 
 const ModulePage = () => {
   const params = useParams();
-const id = params?.id;
+  const id = params?.id;
 
   return <Module id={id as string} />;
 };

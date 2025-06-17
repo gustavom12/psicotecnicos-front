@@ -19,10 +19,7 @@ export default function MenuLeft() {
   const { user } = useAuthContext();
 
   return (
-    <div
-      className="flex flex-col  rounded-lg  h-screen "
-      style={{ width: "240px", backgroundColor: "#F4F4F5" }}
-    >
+    <div className="sticky top-0 flex h-screen w-[240px] flex-col rounded-lg bg-[#F4F4F5]">
       <div className="flex flex-row justify-center items-center mt-4 h-16 ">
         <Star />
         <p

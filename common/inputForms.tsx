@@ -1,6 +1,6 @@
 import { Input } from "@heroui/react";
 
-const InputForms = ({ label, placeholder, required, ...props }) => {
+const InputForms = ({ label, placeholder, required, ...props }: any) => {
   return (
     <Input
       required={required}

@@ -1,13 +1,59 @@
 import SurveysTable from "@/common/InterviewsTable";
-import MenuLeft from "@/layouts/menu/MenuLeft";
-import NavbarApp from "@/common/navbar";
 import Addition from "@/public/icons/addition";
 import { Button } from "@heroui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import AuthLayout from "@/layouts/auth.layout";
+import apiConnection from "@/pages/api/api";
+import Pencil2 from "@/public/icons/pencil2";
+import Trash from "@/public/icons/trashgrey";
 
 const SurveysTableView = () => {
+  const [data, setData] = useState<any>([]);
+
+  useEffect(() => {
+    apiConnection
+      .get(`/surveys`)
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  console.log("data: ", data);
+
+  const columns = [
+    {
+      key: "name",
+      label: "Nombre",
+    },
+    {
+      key: "position",
+      label: "Puesto",
+    },
+    {
+      key: "description",
+      label: "Descripción",
+    },
+    {
+      key: "actions",
+      label: "Acciones",
+      render: (key, record) => (
+        <div className="flex gap-2">
+          <Link href={`/surveys/${record._id}`}>
+            <button className="text-blue-500 hover:text-blue-700">
+              <Pencil2 />
+            </button>
+          </Link>
+          {/*<button className="text-red-500 hover:text-red-700">
+            <Trash />
+          </button>*/}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <AuthLayout links={[{ label: "Evaluaciones", href: "/surveys/table" }]}>
       <div className=" flex justify-around">
@@ -29,7 +75,10 @@ const SurveysTableView = () => {
           </div>
 
           <div className="mt-8">
-            <SurveysTable />
+            <SurveysTable
+              columns={columns}
+              data={data.map((e, i) => ({ ...e, key: i }))}
+            />
           </div>
         </div>
       </div>

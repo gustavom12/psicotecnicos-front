@@ -28,7 +28,7 @@ const TableInterviewsView = () => {
                   radius="none"
                   className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md "
                 >
-                  <Addition fill={'#635BFF'} />
+                  <Addition fill={"#635BFF"} />
                   <p className="">Nueva entrevista</p>
                 </Button>
               </Link>

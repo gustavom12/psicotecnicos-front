@@ -6,13 +6,15 @@ import { Form } from "@heroui/react";
 import InputForms from "@/common/inputForms";
 import AuthLayout from "@/layouts/auth.layout";
 import apiConnection from "@/pages/api/api";
-import SlidesSelector from "./slides";
+import ModulesSelector from "./modules";
+import { Notification } from "@/common/notification";
+import { useRouter } from "next/router";
 
 interface SurveyDTO {
   title: string;
   position: string;
   description: string;
-  slides?: Array<any>;
+  modules?: Array<{ order: number; id: string }>;
 }
 
 const EMPTY: SurveyDTO = { title: "", position: "", description: "" };
@@ -20,6 +22,7 @@ const EMPTY: SurveyDTO = { title: "", position: "", description: "" };
 const InformationView = ({ id }: { id?: string }) => {
   const [data, setData] = useState<SurveyDTO>(EMPTY);
   const [saving, setSaving] = useState(false);
+  const router = useRouter();
 
   /* --- traer datos cuando hay id --- */
   useEffect(() => {
@@ -28,6 +31,7 @@ const InformationView = ({ id }: { id?: string }) => {
         if (!id) return;
         const { data } = await apiConnection.get(`/surveys/${id}`);
         setData({
+          ...data,
           title: data.name,
           position: data.position ?? "",
           description: data.description ?? "",
@@ -45,6 +49,10 @@ const InformationView = ({ id }: { id?: string }) => {
       setData({ ...data, [field]: e.target.value });
 
   const save = async () => {
+    if (!data.title || !data.position || !data.description) {
+      Notification("Debe completar todos los campos requeridos", "error");
+      return;
+    }
     try {
       setSaving(true);
       if (id) {
@@ -52,15 +60,17 @@ const InformationView = ({ id }: { id?: string }) => {
           name: data.title,
           position: data.position,
           description: data.description,
+          modules: data.modules,
         });
       } else {
         await apiConnection.post("/surveys", {
           name: data.title,
           position: data.position,
           description: data.description,
+          modules: data.modules,
         });
       }
-      window.history.back();
+      router.push("/surveys/table");
     } catch (err) {
       console.error("Error saving survey", err);
     } finally {
@@ -70,7 +80,7 @@ const InformationView = ({ id }: { id?: string }) => {
 
   return (
     <AuthLayout links={[{ label: "Evaluaciones", href: "/surveys/table" }]}>
-      <div className="flex-col">
+      <div className="flex-col pb-10">
         <div className="mt-4 flex items-center gap-4">
           <button
             onClick={() => window.history.back()}
@@ -79,17 +89,11 @@ const InformationView = ({ id }: { id?: string }) => {
             <ArrowLeft />
           </button>
           <h1 className="text-[22px] font-bold">
-            {id ? `Evaluación ${id}` : "Nueva evaluación"}
+            {id ? `Evaluación ${data.title}` : "Nueva evaluación"}
           </h1>
         </div>
 
         {/* steps */}
-        <ButtonGroup className="my-6 h-[36px] w-[200px] rounded-xl bg-[#F4F4F5] text-[14px] text-[#71717A]">
-          <Button className="h-[28px] rounded-sm bg-white">Información</Button>
-          <Button className="h-[28px] bg-[#F4F4F5]">Módulos</Button>
-        </ButtonGroup>
-
-        <hr />
 
         {/* form */}
         <Form
@@ -120,9 +124,9 @@ const InformationView = ({ id }: { id?: string }) => {
             value={data.description}
             onChange={handleChange("description")}
           />
-          <SlidesSelector
-            value={data.slides}
-            onChange={(slides) => setData({ ...data, slides })}
+          <ModulesSelector
+            value={data.modules}
+            onChange={(modules) => setData({ ...data, modules })}
           />
           <div className="mt-6 flex gap-3">
             <Button

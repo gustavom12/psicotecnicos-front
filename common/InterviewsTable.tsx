@@ -12,7 +12,7 @@ import {
   getKeyValue,
 } from "@heroui/react";
 
-const rows = [
+const _rows = [
   {
     key: "1",
     fecha: "24/6/2024-2025",
@@ -60,7 +60,7 @@ const rows = [
   },
 ];
 
-const columns = [
+const _columns = [
   {
     key: "fecha",
     label: "Fecha",
@@ -88,45 +88,37 @@ const columns = [
   {
     key: "actions",
     label: "Acciones",
+    render: () => <></>,
   },
 ];
 
-const TableInterviews = () => {
-  const [selectedKeys, setSelectedKeys] = React.useState([]);
+const TableInterviews = ({ data, columns }: any) => {
   return (
     <Table
       aria-label="Tabla de entrevistas"
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
-      onSelectionChange={setSelectedKeys}
+      //selectedKeys={selectedKeys}
+      //selectionMode="multiple"
+      // onSelectionChange={setSelectedKeys}
       className="shadow-none border border-none "
       isStriped={true}
       isCompact={true}
     >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+      <TableHeader columns={columns || _columns}>
+        {(column: any) => (
+          <TableColumn key={column.key}>{column.label}</TableColumn>
+        )}
       </TableHeader>
-      <TableBody items={rows}>
-        {(item) => (
+      <TableBody items={data || _rows}>
+        {(item: any) => (
           // <>
           <TableRow key={item.key} className="mt-4">
             {(columnKey) => (
               <TableCell>
-                {columnKey === "actions" ? (
-                  <div className="flex gap-2">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <Pencil2 />
-                    </button>
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <Document />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <Trash />
-                    </button>
-                  </div>
-                ) : (
-                  getKeyValue(item, columnKey)
-                )}
+                {columnKey === "actions"
+                  ? columns
+                      ?.find((e) => e.key === columnKey)
+                      .render(getKeyValue(item, columnKey), item)
+                  : getKeyValue(item, columnKey)}
               </TableCell>
             )}
           </TableRow>
