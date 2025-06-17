@@ -4,10 +4,19 @@ import NavbarApp from "@/common/navbar";
 import Tables from "@/common/table";
 import Addition from "@/public/icons/addition";
 import { Button } from "@heroui/button";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import apiConnection from "@/pages/api/api";
 
 const TableInterviewsView = () => {
+  const [data, setData] = React.useState([]);
+  useEffect(() => {
+    apiConnection.get('/interviews/filtered').then((response) => {
+      console.log(data)
+      setData(response.data)
+    })
+  }, [])
+
   return (
     <div className="flex flex-row w-full">
       <div>
@@ -35,7 +44,38 @@ const TableInterviewsView = () => {
             </div>
 
             <div className="mt-8">
-              <TableInterviews />
+              <TableInterviews data={data}
+                columns={[
+                  {
+                    key: "fecha",
+                    label: "Fecha",
+                  },
+                  {
+                    key: "horario",
+                    label: "Horario",
+                  },
+                  {
+                    key: "duracion",
+                    label: "Duración",
+                  },
+                  {
+                    key: "estado",
+                    label: "Estado",
+                  },
+                  {
+                    key: "entrevistado",
+                    label: "Entrevistado",
+                  },
+                  {
+                    key: "profesional",
+                    label: "Profesional",
+                  },
+                  {
+                    key: "actions",
+                    label: "Acciones",
+                    render: () => <></>,
+                  },
+                ]} />
             </div>
           </div>
         </div>

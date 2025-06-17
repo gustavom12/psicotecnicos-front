@@ -1,7 +1,7 @@
 import Document from "@/public/icons/document";
 import Pencil2 from "@/public/icons/pencil2";
 import Trash from "@/public/icons/trashgrey";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -93,6 +93,8 @@ const _columns = [
 ];
 
 const TableInterviews = ({ data, columns }: any) => {
+
+
   return (
     <Table
       aria-label="Tabla de entrevistas"
@@ -116,8 +118,8 @@ const TableInterviews = ({ data, columns }: any) => {
               <TableCell>
                 {columnKey === "actions"
                   ? columns
-                      ?.find((e) => e.key === columnKey)
-                      .render(getKeyValue(item, columnKey), item)
+                    ?.find((e) => e.key === columnKey)
+                    .render(getKeyValue(item, columnKey), item)
                   : getKeyValue(item, columnKey)}
               </TableCell>
             )}

@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Tables from "../../common/table";
 import { Button } from "@heroui/button";
 import NavbarApp from "@/common/navbar";
 import MenuLeft from "@/layouts/menu/MenuLeft";
 import Addition from "@/public/icons/addition";
 import Link from "next/link";
+import apiConnection from "@/pages/api/api";
 
 const CompaniesTable = () => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    apiConnection.get('/companies/filtered').then((response) => {
+      console.log(data)
+      setData(response.data)
+    })
+  }, [])
   return (
     <div className="flex flex-row w-full">
       <div>
@@ -32,7 +40,31 @@ const CompaniesTable = () => {
             </div>
 
             <div className="mt-8">
-              <Tables />
+              <Tables
+                data={data}
+                columns={[
+                  {
+                    key: "name",
+                    label: "Nombre",
+                  },
+                  {
+                    key: "company",
+                    label: "Empresa",
+                  },
+                  {
+                    key: "interviews",
+                    label: "Entrevistas",
+                  },
+                  {
+                    key: "email",
+                    label: "E-mail",
+                  },
+                  {
+                    key: "actions",
+                    label: "Acciones",
+                  },
+                ]}
+              />
             </div>
           </div>
         </div>

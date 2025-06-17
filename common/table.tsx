@@ -12,7 +12,7 @@ import Trash from "@/public/icons/trashgrey";
 import Document from "@/public/icons/document";
 import Pencil2 from "@/public/icons/pencil2";
 
-const rows = [
+const _rows = [
   {
     key: "1",
     name: "Damián Flores",
@@ -50,7 +50,7 @@ const rows = [
   },
 ];
 
-const columns = [
+const _columns = [
   {
     key: "name",
     label: "Nombre",
@@ -73,45 +73,35 @@ const columns = [
   },
 ];
 
-export default function Tables() {
+export default function Tables({ data, columns }: any) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set());
 
   return (
     <Table
       aria-label="Tabla de entrevistas"
-      // selectedKeys={selectedKeys}
-      selectionMode="multiple"
+      //selectedKeys={selectedKeys}
+      //selectionMode="multiple"
+      // onSelectionChange={setSelectedKeys}
       className="shadow-none border border-none "
       isStriped={true}
       isCompact={true}
-      // onSelectionChange={setSelectedKeys}
-      // className="shadow-none border-none "
-      // style={{ border: "none", boxShadow: "none", borderBlock: "none"}}
-      // classNames={{ table: "border-none shadow-none rounded-none " }}
     >
-      <TableHeader columns={columns} className="checkbox-hidden ">
-        {(column) => <TableColumn className="text-[14px] " key={column.key}>{column.label}</TableColumn>}
+      <TableHeader columns={columns || _columns}>
+        {(column: any) => (
+          <TableColumn key={column.key}>{column.label}</TableColumn>
+        )}
       </TableHeader>
-      <TableBody items={rows}>
-        {(item) => (
-          <TableRow key={item.key} className="mt-4 ">
+      <TableBody items={data || _rows}>
+        {(item: any) => (
+          // <>
+          <TableRow key={item.key} className="mt-4">
             {(columnKey) => (
               <TableCell>
-                {columnKey === "actions" ? (
-                  <div className="flex gap-2">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <Pencil2 />
-                    </button>
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <Document />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <Trash />
-                    </button>
-                  </div>
-                ) : (
-                  getKeyValue(item, columnKey)
-                )}
+                {columnKey === "actions"
+                  ? columns
+                    ?.find((e) => e.key === columnKey)
+                    .render(getKeyValue(item, columnKey), item)
+                  : getKeyValue(item, columnKey)}
               </TableCell>
             )}
           </TableRow>
