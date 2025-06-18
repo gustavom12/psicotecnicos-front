@@ -3,9 +3,22 @@ import NavbarApp from "@/common/navbar";
 import Tables from "@/common/table";
 import Addition from "@/public/icons/addition";
 import { Button } from "@heroui/button";
-import React from "react";
+import React, { use, useEffect } from "react";
+import { set } from "react-hook-form";
+import apiConnection from "@/pages/api/api";
 
 const InterviewTableView = () => {
+
+  const [data, setData] = React.useState([]);
+
+  useEffect(() => {
+    apiConnection.get('/interviewees/filtered').then((response) => {
+      console.log(data)
+      setData(response.data)
+    })
+  }, []);
+
+
   return (
     <div className="flex flex-row w-full">
       <div>
@@ -23,7 +36,7 @@ const InterviewTableView = () => {
 
               <div className="flex flex-row space-x-4">
                 <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
-                  <Addition fill={'#635BFF'}/>
+                  <Addition fill={'#635BFF'} />
                   <p className="">Enviar invitación</p>
                 </Button>
                 <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
@@ -34,7 +47,29 @@ const InterviewTableView = () => {
             </div>
 
             <div className="mt-8">
-              <Tables />
+              <Tables
+                data={data}
+                columns={[
+                  {
+                    key: "name",
+                    label: "Nombre",
+                  },
+                  {
+                    key: "company",
+                    label: "Empresa",
+                  },
+                  {
+                    key: "interviews",
+                    label: "Entrevistas",
+                  },
+                  {
+                    key: "email",
+                    label: "E-mail",
+                  },
+                  {
+                    key: "actions",
+                    label: "Acciones",
+                  },]} />
             </div>
           </div>
         </div>
