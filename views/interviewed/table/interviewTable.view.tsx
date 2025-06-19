@@ -6,7 +6,7 @@ import { Button } from "@heroui/button";
 import React, { use, useEffect } from "react";
 import { set } from "react-hook-form";
 import apiConnection from "@/pages/api/api";
-
+import Link from "next/link";
 const InterviewTableView = () => {
 
   const [data, setData] = React.useState([]);
@@ -35,14 +35,18 @@ const InterviewTableView = () => {
               <h1 className="font-inter font-semibold text-[22px]">Entrevistados</h1>
 
               <div className="flex flex-row space-x-4">
-                <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
-                  <Addition fill={'#635BFF'} />
-                  <p className="">Enviar invitación</p>
-                </Button>
-                <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
-                  <Addition fill={'#635BFF'} />
-                  <p className="">Nuevo Entrevistado</p>
-                </Button>
+                <Link href="/interviewed/edit">
+                  <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
+                    <Addition fill={'#635BFF'} />
+                    <p className="">Enviar invitación</p>
+                  </Button>
+                </Link>
+                <Link href="/interviewed/edit">
+                  <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md ">
+                    <Addition fill={'#635BFF'} />
+                    <p className="">Nuevo Entrevistado</p>
+                  </Button>
+                </Link>
               </div>
             </div>
 

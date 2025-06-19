@@ -89,7 +89,7 @@ const InformationView = ({ id }: { id?: string }) => {
             <ArrowLeft />
           </button>
           <h1 className="text-[22px] font-bold">
-            {id ? `Evaluación ${data.title}` : "Nueva evaluación"}
+            {id ? `Entrevista ${data.title}` : "Nueva evaluación"}
           </h1>
         </div>
 
