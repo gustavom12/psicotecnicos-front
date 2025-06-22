@@ -5,13 +5,15 @@ let baseURL = "http://localhost:3213";
 const apiConnection = axios.create({ baseURL });
 
 apiConnection.interceptors.request.use((req) => {
-  if (window.localStorage) {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      req.headers.Authorization = `Bearer ${accessToken}`;
+  if (typeof window !== "undefined") {
+    if (window.localStorage) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken) {
+        req.headers.Authorization = `Bearer ${accessToken}`;
+      }
     }
+    return req;
   }
-  return req;
 });
 
 apiConnection.interceptors.response.use(undefined, (error) => {
@@ -22,5 +24,13 @@ apiConnection.interceptors.response.use(undefined, (error) => {
   }
   return Promise.reject(error);
 });
+
+const originalRequest = axios.request;
+axios.request = function (config) {
+  if (typeof config !== 'object') {
+    console.error('Axios config inválido:', config);
+  }
+  return originalRequest.call(this, config);
+};
 
 export default apiConnection;
