@@ -75,6 +75,7 @@ const _columns = [
 
 export default function Tables({ data, columns }: any) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set());
+  console.log({ data, columns });
 
   return (
     <Table
@@ -99,8 +100,8 @@ export default function Tables({ data, columns }: any) {
               <TableCell>
                 {columnKey === "actions"
                   ? columns
-                    ?.find((e) => e.key === columnKey)
-                    .render(getKeyValue(item, columnKey), item)
+                      ?.find((e) => e.key === columnKey)
+                      .render(getKeyValue(item, columnKey), item)
                   : getKeyValue(item, columnKey)}
               </TableCell>
             )}

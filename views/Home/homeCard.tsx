@@ -1,20 +1,26 @@
-import Man from "@/public/icons/ManIcon";
 import React from "react";
+import { LucideIcon } from "lucide-react";
 
-
-
-const HomeCard = ({text , number}:{text:string , number:number}) => {
+const HomeCard = ({
+  text,
+  number,
+  icon: Icon,
+}: {
+  text: string;
+  number: number;
+  icon: LucideIcon;
+}) => {
   return (
-    <div className="flex  flex-row border border-2 border-[#E4E4E7] w-full h-[130px] rounded-lg items-center justify-start pl-4">
-      <div className="flex  items-center justify-center bg-[#d9d9fc] rounded-full w-[50px] h-[50px]">
-      {/* <Man /> */}
+    <div className="flex w-full max-w-sm min-h-[120px] items-center gap-5 p-5 bg-white rounded-2xl shadow border border-gray-100 hover:shadow-lg transition duration-200">
+      <div className="flex items-center justify-center bg-[#efefff] rounded-full w-14 h-14">
+        <Icon className="w-6 h-6 text-[#635bff]" />
       </div>
-      <div className="flex flex-col ml-4 mt-2">
-        <p className="text-[30px] font-medium">{number}</p>
-        <p className="text-[14px] font-light text-[#9E9E9E]">{text}</p>
+      <div className="flex flex-col">
+        <p className="text-3xl font-bold text-gray-800 leading-7">{number}</p>
+        <p className="text-sm text-gray-500 mt-1">{text}</p>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default HomeCard;

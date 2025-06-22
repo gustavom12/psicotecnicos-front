@@ -13,29 +13,34 @@ const LoginView = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="w-full mt-10 max-w-md mx-auto">
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white rounded-xl shadow-md p-8 w-full max-w-sm border border-gray-200">
+        <h2 className="text-2xl font-semibold text-center text-[#635bff] mb-1">Iniciar sesión</h2>
+        <p className="text-sm text-center text-gray-500 mb-6">Accedé a tu cuenta</p>
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <h4>Bienvenido de nuevo!</h4>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email" className="text-sm text-gray-700">Email</label>
             <Input
               id="email"
               type="email"
-              {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
+              {...register("email", { required: true })}
+              className="mt-1"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="password">Contraseña</label>
+          <div>
+            <label htmlFor="password" className="text-sm text-gray-700">Contraseña</label>
             <Input
               id="password"
+              type="password"
               {...register("password", { required: true })}
+              className="mt-1"
             />
           </div>
-          <Button className="w-full mt-10" type="submit">
-            Login
+          <Button
+            type="submit"
+            className="w-full mt-4 bg-[#635bff] hover:bg-[#534bf0] text-white font-medium"
+          >
+            Entrar
           </Button>
         </form>
       </div>

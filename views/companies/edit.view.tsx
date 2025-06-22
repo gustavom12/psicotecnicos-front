@@ -12,6 +12,7 @@ import ButtonSubmitPhoto from "@/common/buttonSubmitPhoto";
 import ButtonDelete from "@/common/buttondelete";
 import apiConnection from "@/pages/api/api";
 import { Notification } from "@/common/notification";
+import AuthLayout from "@/layouts/auth.layout";
 
 /* ---- tipos ---- */
 interface CompanyDTO {
@@ -94,134 +95,132 @@ const EditCompany = ({ id }: { id?: string }) => {
 
   /* -------- UI -------- */
   return (
-    <div className="flex w-full pb-10">
-      <MenuLeft />
-      <div className="ml-10 mr-10 w-full">
-        <NavbarApp />
-
-        {/* header */}
-        <div className="mt-4 flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="flex h-[30px] w-[30px] items-center justify-center rounded-full border border-[#D4D4D8]"
-          >
-            <ArrowLeft />
-          </button>
-          <h1 className="text-[22px] font-bold">
-            {id ? data.name || "Empresa" : "Nueva empresa"}
-          </h1>
-        </div>
-
-        {/* pasos */}
-        <ButtonGroup className="mt-10 mb-6 h-[36px] w-[340px] rounded-xl bg-[#F4F4F5] text-[14px] text-[#71717A]">
-          <Button className="h-[28px] rounded-sm bg-white">Información</Button>
-          <Button className="h-[28px] bg-[#F4F4F5] text-[#71717A]">
-            Entrevistados
-          </Button>
-          <Button className="h-[28px] bg-[#F4F4F5] text-[#71717A]">
-            Entrevistas
-          </Button>
-        </ButtonGroup>
-
-        <hr />
-
-        {/* logo */}
-        <div className="mt-8 flex items-start gap-4">
-          <div className="h-[100px] w-[100px] overflow-hidden rounded-full border" />
-          <div>
-            <div className="mt-7 flex gap-2">
-              <ButtonSubmitPhoto />
-              <ButtonDelete />
-            </div>
-            <p className="ml-1 mt-1 w-[220px] text-[12px] font-light text-[#A1A1AA]">
-              La imagen será visible dentro de la plataforma.
-            </p>
-          </div>
-        </div>
-
-        {/* formulario */}
-        <Form
-          className="mt-8 flex flex-col gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            save();
-          }}
+    // layout contenedor
+    <AuthLayout
+      links={[
+        { label: "Empresas", href: "/companies" },
+        {
+          label: id ? data.name : "Nueva empresa",
+          href: id ? `/companies/${id}` : "/companies/create",
+        },
+      ]}
+    >
+      {/* header */}
+      <div className="mt-6 mb-4 flex items-center gap-3">
+        <button
+          onClick={() => router.back()}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100 transition"
         >
-          <InputForms
-            label="Nombre"
-            placeholder="Toyota"
-            required
-            value={data.name}
-            onChange={handle("name")}
-          />
-          <InputForms
-            label="Estado"
-            placeholder="Activo"
-            required
-            value={data.status}
-            onChange={handle("status")}
-          />
-          <InputForms
-            label="Sector"
-            placeholder="Automovilístico"
-            required
-            value={data.industry}
-            onChange={handle("industry")}
-          />
-          <InputForms
-            label="Ubicación"
-            placeholder="Córdoba, Argentina"
-            required
-            value={data.location}
-            onChange={handle("location")}
-          />
-          <InputForms
-            label="Fecha de registro"
-            placeholder="23/07/2023"
-            value={data.registeredAt}
-            onChange={handle("registeredAt")}
-          />
-          {/*<InputForms
-            label="Responsable"
-            placeholder="José González"
-            value={data.manager}
-            onChange={handle("manager")}
-          />*/}
-          <InputForms
-            label="E-mail"
-            placeholder="empresa@mail.com"
-            value={data.email}
-            onChange={handle("email")}
-          />
-          <InputForms
-            label="Teléfono"
-            placeholder="+54 11 8888-5555"
-            value={data.phone}
-            onChange={handle("phone")}
-          />
-          <InputForms
-            label="Observaciones"
-            placeholder="Notas internas"
-            value={data.notes}
-            onChange={handle("notes")}
-          />
-
-          {/* acciones */}
-          <div className="mt-6 flex gap-3">
-            <Button
-              type="submit"
-              disabled={saving}
-              className="bg-[#635BFF] text-white"
-            >
-              {saving ? "Guardando…" : "Guardar"}
-            </Button>
-            <Link href="/companies/table">
-              <Button>Cancelar</Button>
-            </Link>
-          </div>
-        </Form>
+          <ArrowLeft />
+        </button>
+        <h1 className="text-2xl font-semibold">
+          {id ? data.name || "Empresa" : "Nueva empresa"}
+        </h1>
       </div>
-    </div>
+
+      {/* tabs */}
+      <ButtonGroup className="mb-6 mt-4 w-fit rounded-lg bg-gray-100 p-1 text-sm font-medium text-gray-600">
+        <Button className="bg-white text-[#635BFF] shadow-sm">
+          Información
+        </Button>
+        <Button className="bg-gray-100">Entrevistados</Button>
+        <Button className="bg-gray-100">Entrevistas</Button>
+      </ButtonGroup>
+
+      <hr className="mb-8" />
+
+      {/* logo */}
+      <div className="flex items-start gap-5 mb-10">
+        <div className="h-[100px] w-[100px] rounded-full border bg-white shadow-sm" />
+        <div>
+          <div className="flex gap-2 mb-2">
+            <ButtonSubmitPhoto />
+            <ButtonDelete />
+          </div>
+          <p className="text-xs text-gray-400 w-56">
+            La imagen será visible dentro de la plataforma.
+          </p>
+        </div>
+      </div>
+
+      {/* formulario */}
+      <Form
+        className="flex flex-col gap-5"
+        onSubmit={(e) => {
+          e.preventDefault();
+          save();
+        }}
+      >
+        <InputForms
+          label="Nombre"
+          required
+          placeholder="Toyota"
+          value={data.name}
+          onChange={handle("name")}
+        />
+        <InputForms
+          label="Estado"
+          required
+          placeholder="Activo"
+          value={data.status}
+          onChange={handle("status")}
+        />
+        <InputForms
+          label="Sector"
+          required
+          placeholder="Automovilístico"
+          value={data.industry}
+          onChange={handle("industry")}
+        />
+        <InputForms
+          label="Ubicación"
+          required
+          placeholder="Córdoba, Argentina"
+          value={data.location}
+          onChange={handle("location")}
+        />
+        <InputForms
+          label="Fecha de registro"
+          placeholder="23/07/2023"
+          value={data.registeredAt}
+          onChange={handle("registeredAt")}
+        />
+        <InputForms
+          label="E-mail"
+          placeholder="empresa@mail.com"
+          value={data.email}
+          onChange={handle("email")}
+        />
+        <InputForms
+          label="Teléfono"
+          placeholder="+54 11 8888-5555"
+          value={data.phone}
+          onChange={handle("phone")}
+        />
+        <InputForms
+          label="Observaciones"
+          placeholder="Notas internas"
+          value={data.notes}
+          onChange={handle("notes")}
+        />
+
+        {/* acciones */}
+        <div className="mt-6 flex gap-4">
+          <Button
+            type="submit"
+            disabled={saving}
+            className="bg-[#635BFF] text-white px-6 py-2 rounded-md font-medium hover:bg-[#574ae2] transition"
+          >
+            {saving ? "Guardando…" : "Guardar"}
+          </Button>
+          <Link href="/companies/table">
+            <Button variant="ghost" className="text-gray-600 hover:text-black">
+              Cancelar
+            </Button>
+          </Link>
+        </div>
+      </Form>
+    </AuthLayout>
   );
 };
 

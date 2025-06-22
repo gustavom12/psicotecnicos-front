@@ -6,6 +6,7 @@ import HomeCard from "./homeCard";
 // import TableHome from "@/views/Home/tableHome";
 import TableInterviews from "@/common/InterviewsTable";
 import apiConnection from "@/pages/api/api";
+import { Briefcase, Building2, User, Users } from "lucide-react";
 // import { set } from "react-hook-form";
 
 const HomeView = () => {
@@ -16,36 +17,39 @@ const HomeView = () => {
   const [countEvaluaciones, setCountEvaluaciones] = React.useState(0);
 
   React.useEffect(() => {
-    apiConnection.get('/interviews/filtered').then((response) => {
-      console.log(data)
-      setData(response.data)
-    })
-  }, [])
+    apiConnection.get("/interviews/filtered").then((response) => {
+      console.log(data);
+      setData(response.data);
+    });
+  }, []);
 
   React.useEffect(() => {
     apiConnection
-      .get('users/owners/count')
+      .get("users/owners/count")
       .then((response) => {
-        console.log('Full response:', response); // Debug log completo
-        console.log('Response data:', response.data); // Debug log
-        console.log('Type of response.data:', typeof response.data); // Verificar tipo
+        console.log("Full response:", response); // Debug log completo
+        console.log("Response data:", response.data); // Debug log
+        console.log("Type of response.data:", typeof response.data); // Verificar tipo
 
         // Extraer el número correctamente
         let count = 0;
 
-        if (typeof response.data === 'number') {
+        if (typeof response.data === "number") {
           // Si la respuesta es directamente un número
           count = response.data;
-        } else if (typeof response.data === 'object' && response.data.countProfesional) {
+        } else if (
+          typeof response.data === "object" &&
+          response.data.countProfesional
+        ) {
           // Si la respuesta es un objeto con la propiedad countProfesional
           count = response.data.countProfesional;
         }
 
-        console.log('Final count value:', count, 'Type:', typeof count); // Debug log
+        console.log("Final count value:", count, "Type:", typeof count); // Debug log
         setCountProfesional(count);
       })
       .catch((error) => {
-        console.error('Error fetching owner countProfesional:', error);
+        console.log("Error fetching owner countProfesional:", error);
         setCountProfesional(0); // Set default value on error
       });
   }, []);
@@ -60,15 +64,20 @@ const HomeView = () => {
         <div className=" ">
           <h2 className="font-semibold text-[22px] mt-4 mb-2">Inicio</h2>
           <div className="flex flex-row gap-4">
-            <HomeCard text={"evaluaciones pendientes"} number={80} />
-            <HomeCard number={countProfesional} text={"profesionales"} />
-            <HomeCard number={140} text={"entrevistados"} />
-            <HomeCard number={15} text={"empresas activas"} />
+            <HomeCard
+              text="Evaluaciones pendientes"
+              number={0}
+              icon={Briefcase}
+            />
+            <HomeCard text="Profesionales" number={0} icon={User} />
+            <HomeCard text="Entrevistados" number={0} icon={Users} />
+            <HomeCard text="Empresas activas" number={0} icon={Building2} />
           </div>
-          <p className="font-semibold text-[18px] my-3">
+          <p className="font-semibold text-[18px] mt-10 my-3">
             Próximas entrevistas
           </p>
-          <TableInterviews data={data}
+          <TableInterviews
+            data={data}
             columns={[
               {
                 key: "fecha",
@@ -88,7 +97,7 @@ const HomeView = () => {
               },
               {
                 key: "entrevistado",
-                label: "Entrevistado",
+                label: "Entrevistados",
               },
               {
                 key: "profesional",
@@ -99,7 +108,8 @@ const HomeView = () => {
                 label: "Acciones",
                 render: () => <></>,
               },
-            ]} />
+            ]}
+          />
         </div>
       </div>
     </div>

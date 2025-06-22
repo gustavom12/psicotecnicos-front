@@ -6,15 +6,16 @@ import MenuLeft from "@/layouts/menu/MenuLeft";
 import Addition from "@/public/icons/addition";
 import Link from "next/link";
 import apiConnection from "@/pages/api/api";
+import Pencil2 from "@/public/icons/pencil2";
 
 const CompaniesTable = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
-    apiConnection.get('/companies/filtered').then((response) => {
-      console.log(data)
-      setData(response.data)
-    })
-  }, [])
+    apiConnection.get("/companies/filtered").then((response) => {
+      console.log(data);
+      setData([...response.data.map((e, i) => ({ ...e, key: i }))]);
+    });
+  }, []);
   return (
     <div className="flex flex-row w-full">
       <div>
@@ -62,6 +63,18 @@ const CompaniesTable = () => {
                   {
                     key: "actions",
                     label: "Acciones",
+                    render: (key, item) => (
+                      <div className="flex gap-2">
+                        <Link href={`/companies/${item._id}`}>
+                          <button className="text-blue-500 hover:text-blue-700">
+                            <Pencil2 />
+                          </button>
+                        </Link>
+                        {/*<button className="text-red-500 hover:text-red-700">
+                      <Trash />
+                    </button>*/}
+                      </div>
+                    ),
                   },
                 ]}
               />
