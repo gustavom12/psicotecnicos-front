@@ -28,14 +28,14 @@ const SurveysTableView = () => {
       key: "name",
       label: "Nombre",
     },
-    // {
-    //   key: "position",
-    //   label: "Puesto",
-    // },
-    // {
-    //   key: "description",
-    //   label: "Descripción",
-    // },
+    {
+      key: "modules",
+      label: "Módulos",
+    },
+    {
+      key: "description",
+      label: "Descripción",
+    },
     {
       key: "actions",
       label: "Acciones",
