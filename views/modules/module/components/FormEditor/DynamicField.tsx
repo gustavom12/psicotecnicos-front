@@ -28,6 +28,7 @@ export interface DynamicField {
   id: string;
   type: FieldType;
   label: string;
+  question?: string;
   options?: string[];
 }
 

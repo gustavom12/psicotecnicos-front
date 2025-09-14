@@ -77,7 +77,16 @@ const HomeView = () => {
             Próximas entrevistas
           </p>
           <TableInterviews
-            data={data}
+            data={data.map((item: any) => ({
+              ...item,
+              key: item._id,
+              fecha: item.startedAt,
+              horario: item.startTime,
+              duracion: item.totalInterviewTimeSeconds,
+              estado: item.status,
+              entrevistado: item.intervieweeId,
+              profesional: item.professionalId,
+            }))}
             columns={[
               {
                 key: "fecha",

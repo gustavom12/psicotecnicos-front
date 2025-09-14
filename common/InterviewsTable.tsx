@@ -21,43 +21,7 @@ const _rows = [
     estado: "en curso",
     entrevistado: "Laura González",
     profesional: "Mariano Pérez",
-  },
-  {
-    key: "2",
-    fecha: "24/6/2024",
-    horario: "11:00",
-    duracion: "1 hora",
-    estado: "en curso",
-    entrevistado: "Laura González",
-    profesional: "Mariano Pérez",
-  },
-  {
-    key: "3",
-    fecha: "24/6/2024",
-    horario: "11:00",
-    duracion: "1 hora",
-    estado: "en curso",
-    entrevistado: "Laura González",
-    profesional: "Mariano Pérez",
-  },
-  {
-    key: "4",
-    fecha: "24/6/2024",
-    horario: "11:00",
-    duracion: "1 hora",
-    estado: "en curso",
-    entrevistado: "Laura González",
-    profesional: "Mariano Pérez",
-  },
-  {
-    key: "5",
-    fecha: "24/6/2024",
-    horario: "11:00",
-    duracion: "1 hora",
-    estado: "en curso",
-    entrevistado: "Laura González",
-    profesional: "Mariano Pérez",
-  },
+  }
 ];
 
 const _columns = [
@@ -110,7 +74,7 @@ const TableInterviews = ({ data, columns }: any) => {
           <TableColumn key={column.key}>{column.label}</TableColumn>
         )}
       </TableHeader>
-      <TableBody items={data || _rows}>
+      <TableBody items={data.map((e) => ({ ...e, key: e._id })) || _rows}>
         {(item: any) => (
           // <>
           <TableRow key={item.key} className="mt-4">

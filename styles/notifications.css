@@ -1,0 +1,79 @@
+/* Notification animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.notification-enter {
+  animation: slideInRight 0.3s ease-out forwards, fadeIn 0.3s ease-out forwards;
+}
+
+.notification-exit {
+  animation: slideOutRight 0.3s ease-in forwards, fadeOut 0.3s ease-in forwards;
+}
+
+/* Notification container */
+#notification-container {
+  pointer-events: none;
+}
+
+#notification-container > div {
+  pointer-events: auto;
+}
+
+/* Custom scrollbar for long messages */
+.notification-message::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notification-message::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-message::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.notification-message::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}

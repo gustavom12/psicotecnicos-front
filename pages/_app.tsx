@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 
 import { fontSans, fontMono } from "@/config/fonts";
 import "@/styles/globals.css";
+import "@/styles/notifications.css";
 // import "react-quill/dist/quill.snow.css";   // o "quill.bubble.css"
 // import 'highlight.js/styles/github.css'             // CSS
 import 'ckeditor5/ckeditor5.css';

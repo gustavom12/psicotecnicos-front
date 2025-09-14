@@ -34,7 +34,7 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
   } = useFieldArray({ control, name: "interviewer" });
 
   const addField = (target: "professional" | "interviewer") => {
-    const base: DynamicField = { id: uuid(), label: "", type: "shortText" };
+    const base: DynamicField = { id: uuid(), label: "", type: "shortText", question: "" };
 
     if (target === "professional") {
       appendPro(base);
@@ -48,6 +48,24 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
       setState((v) => {
         const newSlides = [...v.slides];
         newSlides[i].interviewer.push(base);
+        return { ...v, slides: newSlides };
+      });
+    }
+  };
+
+  const removeField = (target: "professional" | "interviewer", index: number) => {
+    if (target === "professional") {
+      removePro(index);
+      setState((v) => {
+        const newSlides = [...v.slides];
+        newSlides[i].professional.splice(index, 1);
+        return { ...v, slides: newSlides };
+      });
+    } else {
+      removeInt(index);
+      setState((v) => {
+        const newSlides = [...v.slides];
+        newSlides[i].interviewer.splice(index, 1);
         return { ...v, slides: newSlides };
       });
     }
@@ -112,9 +130,9 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
       <Textarea
         placeholder="Comentarios (sobre este slide)"
         {...register("comments", { onChange: handleChange })}
-        className="h-28"
+        className="h-28 overflow-hidden"
       />
-      <Divider className="!mt-0" />
+      <Divider className="!mt-5" />
       {/* Campos dinámicos */}
       <h6>Campos del profesional:</h6>
       {proFields.map((f, idx) => (
@@ -124,7 +142,7 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
           index={idx}
           register={register}
           control={control}
-          remove={removePro}
+          remove={(index) => removeField("professional", index)}
           namePrefix="professional"
           onFieldChange={handleChange}
         />
@@ -139,7 +157,7 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
           index={idx}
           register={register}
           control={control}
-          remove={removeInt}
+          remove={(index) => removeField("interviewer", index)}
           namePrefix="interviewer"
           onFieldChange={handleChange}
         />

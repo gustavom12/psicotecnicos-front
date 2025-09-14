@@ -8,7 +8,12 @@ import {
   NavbarItem,
   Link,
   Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
+import { useAuthContext } from "@/contexts/auth.context";
 
 export const AcmeLogo = () => {
   return (
@@ -28,9 +33,15 @@ export default function NavbarApp({
 }: {
   links?: { label: string; href: string }[];
 }) {
+  const { logout, user } = useAuthContext();
+
   if (!links || links.length === 0) {
     links = [{ label: "Inicio", href: "/" }];
   }
+
+  const handleLogout = () => {
+    logout();
+  };
   return (
     <Navbar
       classNames={{ wrapper: "px-0 max-w-[2000px]" }}
@@ -71,9 +82,22 @@ export default function NavbarApp({
           {/* <button className="p-2">
             <Bell />
           </button> */}
-          <button>
-            <Person />
-          </button>
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <Person />
+              </button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-semibold">Sesión iniciada como</p>
+                <p className="font-semibold">{user?.email || "Usuario"}</p>
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger" onClick={handleLogout}>
+                Cerrar Sesión
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </NavbarItem>
       </NavbarContent>
     </Navbar>

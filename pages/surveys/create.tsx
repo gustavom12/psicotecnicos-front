@@ -1,4 +1,4 @@
-import InformationView from "@/views/interviews/information";
+import InformationView from "@/views/surveys/information/information";
 import React from "react";
 
 const createSurveyPage = () => {

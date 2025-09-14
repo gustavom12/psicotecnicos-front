@@ -6,6 +6,7 @@ import Router from "next/router";
 interface AuthState {
   authorized: boolean;
   login: (usernameOrEmail: string, password: string) => Promise<void>;
+  logout: () => void;
   roles: string[];
   resetPassword: (email: string) => Promise<boolean>;
   changePassword: (password: string, token: string) => Promise<boolean>;
@@ -46,8 +47,9 @@ export const useAuthContext = create<AuthState>((set) => {
         // Pushea al inicio
         Router.push("/home");
       } catch (error: any) {
-        console.log({ error: error?.response?.data?.errorMessage });
-        Notification(error?.response?.data?.errorMessage, "error");
+        console.log({ error: error?.response?.data });
+        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al iniciar sesión";
+        Notification(errorMessage, "error");
       }
     },
     resetPassword: async (email: string) => {
@@ -55,9 +57,13 @@ export const useAuthContext = create<AuthState>((set) => {
         const { data } = await apiConnection.post("/auth/reset-password", {
           email,
         });
-        return !!data;
+        if (data?.message) {
+          Notification(data.message, "success");
+        }
+        return true;
       } catch (error: any) {
-        Notification(error?.response?.data?.errorMessage, "error");
+        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al restablecer contraseña";
+        Notification(errorMessage, "error");
         return false;
       }
     },
@@ -79,7 +85,8 @@ export const useAuthContext = create<AuthState>((set) => {
         return false;
       } catch (error: any) {
         console.log({ error });
-        Notification(error?.response?.data?.errorMessage, "error");
+        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al cambiar contraseña";
+        Notification(errorMessage, "error");
         return false;
       }
     },
@@ -91,9 +98,16 @@ export const useAuthContext = create<AuthState>((set) => {
         return true;
       } catch (error: any) {
         console.log({ error });
-        Notification(error?.response?.data?.errorMessage, "error");
+        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al cambiar nombre de usuario";
+        Notification(errorMessage, "error");
         return false;
       }
+    },
+    logout: () => {
+      localStorage.removeItem("accessToken");
+      set({ authorized: false, roles: [], user: {} });
+      Notification("Sesión cerrada exitosamente", "success");
+      Router.push("/auth/login");
     },
   };
 });

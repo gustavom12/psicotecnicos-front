@@ -1,4 +1,4 @@
-import InformationView from "@/views/interviews/information";
+import InformationView from "@/views/surveys/information/information";
 import { useParams } from "next/navigation";
 import React from "react";
 

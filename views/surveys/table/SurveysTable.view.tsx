@@ -28,14 +28,14 @@ const SurveysTableView = () => {
       key: "name",
       label: "Nombre",
     },
-    {
-      key: "position",
-      label: "Puesto",
-    },
-    {
-      key: "description",
-      label: "Descripción",
-    },
+    // {
+    //   key: "position",
+    //   label: "Puesto",
+    // },
+    // {
+    //   key: "description",
+    //   label: "Descripción",
+    // },
     {
       key: "actions",
       label: "Acciones",
@@ -63,7 +63,7 @@ const SurveysTableView = () => {
               Evaluaciones
             </h1>
             {/* <button className="bg-[#635BFF1A] text-[#635BFF] font-light py-2 px-4 rounded cursor-pointer">  New Companie</button> */}
-            <Link href="/interviews/information">
+            <Link href="/surveys/create">
               <Button
                 radius="none"
                 className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md "
