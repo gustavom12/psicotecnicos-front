@@ -45,6 +45,7 @@ export interface Survey {
   position: string;
   description: string;
   modules: Module[];
+  previousEvaluations?: boolean;
   forms?: string[] | Form[]; // Mantener por compatibilidad
   duration?: number;
   status?: 'DRAFT' | 'NOT_STARTED' | 'FINISHED';

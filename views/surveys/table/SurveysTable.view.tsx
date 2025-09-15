@@ -31,10 +31,16 @@ const SurveysTableView = () => {
     {
       key: "modules",
       label: "Módulos",
+      render: (key, record) => record.modules.map((e) => e.name).join(", "),
     },
     {
       key: "description",
       label: "Descripción",
+    },
+    {
+      key: "previousEvaluations",
+      label: "Es una evaluación previa",
+      render: (key, record) => record.previousEvaluations ? "Sí" : "No",
     },
     {
       key: "actions",

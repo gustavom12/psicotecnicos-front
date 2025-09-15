@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button, ButtonGroup } from "@heroui/button";
-import { Form } from "@heroui/react";
+import { Form, DateInput } from "@heroui/react";
+import { parseDateTime, now, getLocalTimeZone, DateValue } from "@internationalized/date";
 import InputForms from "@/common/inputForms";
 import AuthLayout from "@/layouts/auth.layout";
 import apiConnection from "@/pages/api/api";
@@ -17,7 +18,7 @@ interface InterviewDTO {
   description: string;
   surveyId?: string;
   position: string;
-  scheduledAt: string;
+  scheduledAt: DateValue | null;
   professionals?: string[];
   interviewees?: string[];
   status?: string;
@@ -27,7 +28,7 @@ const EMPTY: InterviewDTO = {
   title: "",
   description: "",
   position: "",
-  scheduledAt: "",
+  scheduledAt: null,
   professionals: [],
   interviewees: [],
   status: "NOT_STARTED"
@@ -51,7 +52,7 @@ const InformationView = ({ id }: { id?: string }) => {
           description: data.description ?? "",
           position: data.position ?? "",
           surveyId: data.surveyId ?? "",
-          scheduledAt: data.scheduledAt ? new Date(data.scheduledAt).toISOString().slice(0, 16) : "",
+          scheduledAt: data.scheduledAt ? parseDateTime(new Date(data.scheduledAt).toISOString().slice(0, 19)) : null,
           professionals: data.professionals ?? [],
           interviewees: data.interviewees ?? [],
           status: data.status ?? "NOT_STARTED",
@@ -76,13 +77,15 @@ const InformationView = ({ id }: { id?: string }) => {
     }
     try {
       setSaving(true);
+      const scheduledAtISO = data.scheduledAt ? data.scheduledAt.toDate(getLocalTimeZone()).toISOString() : null;
+
       if (id) {
         await apiConnection.patch(`/interviews/${id}`, {
           title: data.title,
           description: data.description,
           surveyId: data.surveyId,
           position: data.position,
-          scheduledAt: data.scheduledAt,
+          scheduledAt: scheduledAtISO,
           professionals: data.professionals || [],
           interviewees: data.interviewees || [],
           status: data.status || "NOT_STARTED",
@@ -93,7 +96,7 @@ const InformationView = ({ id }: { id?: string }) => {
           description: data.description,
           surveyId: data.surveyId,
           position: data.position,
-          scheduledAt: data.scheduledAt,
+          scheduledAt: scheduledAtISO,
           professionals: data.professionals || [],
           interviewees: data.interviewees || [],
           status: data.status || "NOT_STARTED",
@@ -162,18 +165,16 @@ const InformationView = ({ id }: { id?: string }) => {
             onChange={handleChange("position")}
           />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Fecha y hora programada *
-            </label>
-            <input
-              type="datetime-local"
-              required
-              value={data.scheduledAt}
-              onChange={(e) => setData({ ...data, scheduledAt: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          <DateInput
+            label="Fecha y hora programada"
+            labelPlacement="outside"
+            value={data.scheduledAt}
+            onChange={(value) => setData({ ...data, scheduledAt: value })}
+            granularity="minute"
+            hourCycle={24}
+            isRequired
+            className="color-[#F4F4F5] w-[340px] my-6"
+          />
 
           <div>
             <SurveySelector
@@ -221,7 +222,7 @@ const InformationView = ({ id }: { id?: string }) => {
                   <p><span className="font-medium">Entrevistados:</span> {data.interviewees.length} seleccionado(s)</p>
                 )}
                 {data.scheduledAt && (
-                  <p><span className="font-medium">Fecha programada:</span> {new Date(data.scheduledAt).toLocaleString()}</p>
+                  <p><span className="font-medium">Fecha programada:</span> {data.scheduledAt.toDate(getLocalTimeZone()).toLocaleString()}</p>
                 )}
               </div>
             </div>

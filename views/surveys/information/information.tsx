@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button, ButtonGroup } from "@heroui/button";
-import { Form } from "@heroui/react";
+import { Form, Checkbox } from "@heroui/react";
 import InputForms from "@/common/inputForms";
 import AuthLayout from "@/layouts/auth.layout";
 import apiConnection from "@/pages/api/api";
@@ -14,6 +14,7 @@ interface SurveyDTO {
   title: string;
   description: string;
   modules?: Array<{ order: number; id: string }>;
+  previousEvaluations?: boolean;
 }
 
 const EMPTY: SurveyDTO = { title: "", description: "" };
@@ -33,6 +34,7 @@ const InformationView = ({ id }: { id?: string }) => {
           ...data,
           title: data.name,
           description: data.description ?? "",
+          previousEvaluations: data.previousEvaluations ?? false,
         });
       } catch (err) {
         console.error("Error loading survey", err);
@@ -58,12 +60,14 @@ const InformationView = ({ id }: { id?: string }) => {
           name: data.title,
           description: data.description,
           modules: data.modules,
+          previousEvaluations: data.previousEvaluations,
         });
       } else {
         await apiConnection.post("/surveys", {
           name: data.title,
           description: data.description,
           modules: data.modules,
+          previousEvaluations: data.previousEvaluations,
         });
       }
       router.push("/surveys/table");
@@ -113,6 +117,12 @@ const InformationView = ({ id }: { id?: string }) => {
             value={data.description}
             onChange={handleChange("description")}
           />
+          <Checkbox
+            isSelected={data.previousEvaluations}
+            onValueChange={(value) => setData({ ...data, previousEvaluations: value })}
+          >
+            ¿Es una evaluación previa?
+          </Checkbox>
           <ModulesSelector
             value={data.modules}
             onChange={(modules) => setData({ ...data, modules })}

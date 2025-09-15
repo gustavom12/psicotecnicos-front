@@ -78,15 +78,16 @@ const TableInterviews = ({ data, columns }: any) => {
         {(item: any) => (
           // <>
           <TableRow key={item.key} className="mt-4">
-            {(columnKey) => (
-              <TableCell>
-                {columnKey === "actions"
-                  ? columns
-                    ?.find((e) => e.key === columnKey)
-                    .render(getKeyValue(item, columnKey), item)
-                  : getKeyValue(item, columnKey)}
-              </TableCell>
-            )}
+            {(columnKey) => {
+              const column = columns?.find((e) => e.key === columnKey);
+              return (
+                <TableCell>
+                  {column?.render
+                    ? column.render(getKeyValue(item, columnKey), item)
+                    : getKeyValue(item, columnKey)}
+                </TableCell>
+              );
+            }}
           </TableRow>
         )}
       </TableBody>
