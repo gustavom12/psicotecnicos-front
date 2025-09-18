@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiConnection from "@/pages/api/api";
 import { Select, SelectItem } from "@heroui/react";
+import { PlayCircle } from "lucide-react";
 
 interface Survey {
   _id: string;
@@ -42,7 +43,7 @@ const SurveySelector: React.FC<Props> = ({ value, onChange }) => {
         <h3 className="mb-2 font-semibold">Encuesta</h3>
         <Select
           radius="sm"
-          placeholder={loading ? "Cargando encuestas..." : "Selecciona una encuesta…"}
+          placeholder={loading ? "Cargando encuestas..." : "Selecciona una encuesta…" }
           className="w-full"
           selectedKeys={value ? [value] : []}
           onSelectionChange={(keys) => {
