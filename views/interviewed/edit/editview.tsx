@@ -288,8 +288,7 @@ const DetailInterviewed = () => {
                   ) : (
                     <span className="text-gray-400 text-2xl">
                       {formData.personalInfo.firstName?.[0] || ''}
-                      {formData.personalInfo.lastName?.[0] || ''}
-                      {!formData.personalInfo.firstName && !formData.personalInfo.lastName && '👤'}
+                      {!formData.profileImage && formData.personalInfo.firstName?.[0] || 'E'}
                     </span>
                   )}
                 </div>
