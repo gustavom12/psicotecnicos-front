@@ -58,6 +58,7 @@ const HomeView = () => {
         setCountProfesional(0);
       });
 
+
     // Cargar contadores de entrevistados
     apiConnection
       .get("/interviewees/filtered")
@@ -108,6 +109,29 @@ const HomeView = () => {
       </div>
     );
   };
+  
+  const formatDate = (dateString: string) => {
+    console.log("dateString: ", dateString);
+    if (!dateString)
+      return (
+        <span className="text-gray-400 italic text-sm">No programada</span>
+      );
+      const date = new Date(dateString);
+      return (
+        <div className="text-sm">
+          <div className="font-medium text-gray-900">
+            {date.toLocaleDateString("es-ES", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+          <div className="text-xs text-gray-500 capitalize">
+            {date.toLocaleDateString("es-ES", { weekday: "long" })}
+          </div>
+        </div>
+      );
+    };
 
   const loadInterviews = async () => {
     try {
@@ -341,27 +365,7 @@ const HomeView = () => {
               {
                 key: "scheduledAt",
                 label: "Fecha",
-                render: (value: string) => {
-                  if (!value) return <span className="text-gray-400 italic">No programada</span>;
-                  const date = new Date(value);
-                  return (
-                    <div className="text-sm">
-                      <div className="font-medium">
-                        {date.toLocaleDateString("es-ES", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {date.toLocaleTimeString("es-ES", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </div>
-                    </div>
-                  );
-                },
+                render: (value: string) => formatDate(value),
               },
               {
                 key: "scheduledAtHour",
