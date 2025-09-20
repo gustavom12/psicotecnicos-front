@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button, ButtonGroup } from "@heroui/button";
-import { Form, Checkbox } from "@heroui/react";
+import { Form, Checkbox, Tooltip } from "@heroui/react";
 import InputForms from "@/common/inputForms";
 import AuthLayout from "@/layouts/auth.layout";
 import apiConnection from "@/pages/api/api";
 import ModulesSelector from "./modules";
 import { Notification } from "@/common/notification";
 import { useRouter } from "next/router";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 interface SurveyDTO {
   title: string;
@@ -117,12 +118,20 @@ const InformationView = ({ id }: { id?: string }) => {
             value={data.description}
             onChange={handleChange("description")}
           />
-          <Checkbox
-            isSelected={data.previousEvaluations}
-            onValueChange={(value) => setData({ ...data, previousEvaluations: value })}
-          >
-            ¿Es una evaluación previa?
-          </Checkbox>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              isSelected={data.previousEvaluations}
+              onValueChange={(value) => setData({ ...data, previousEvaluations: value })}
+            >
+              ¿Es una evaluación previa?
+            </Checkbox>
+            <Tooltip
+              content="Formulario que se envía al candidato antes de la entrevista para que pueda completarlo previamente y agilizar el proceso."
+              placement="right"
+            >
+              <InformationCircleIcon className="w-5 h-5 text-gray-400 cursor-help" />
+            </Tooltip>
+          </div>
           <ModulesSelector
             value={data.modules}
             onChange={(modules) => setData({ ...data, modules })}

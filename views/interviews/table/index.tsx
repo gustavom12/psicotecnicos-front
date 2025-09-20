@@ -20,6 +20,7 @@ const TableInterviewsView = () => {
   const [professionalsMap, setProfessionalsMap] = useState(new Map());
 
   const loadInterviews = async () => {
+    console.log("loadInterviews");
     try {
       setLoading(true);
 
@@ -81,6 +82,7 @@ const TableInterviewsView = () => {
       setData(interviewsRes.data);
       setFilteredData(interviewsRes.data);
     } catch (error) {
+      console.log("error: ", error);
       console.error("Error loading data:", error);
       Notification("Error al cargar datos", "error");
     } finally {

@@ -2,6 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import SurveyView from '../../views/interviewers-view/survey-view/SurveyView';
+import IntervieweeAuthGuard from '@/components/IntervieweeAuthGuard';
 
 interface SurveyPageProps {
   surveyId: string;
@@ -10,10 +11,12 @@ interface SurveyPageProps {
 
 export default function SurveyPage({ surveyId, intervieweeId }: SurveyPageProps) {
   return (
-    <SurveyView
-      surveyId={surveyId}
-      intervieweeId={intervieweeId}
-    />
+    <IntervieweeAuthGuard>
+      <SurveyView
+        surveyId={surveyId}
+        intervieweeId={intervieweeId}
+      />
+    </IntervieweeAuthGuard>
   );
 }
 
