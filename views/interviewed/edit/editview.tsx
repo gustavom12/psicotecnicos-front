@@ -174,6 +174,8 @@ const DetailInterviewed = () => {
     try {
       setLoading(true);
 
+      console.log('Submitting interviewee data:', formData);
+
       if (isEditing) {
         await apiConnection.patch(`/interviewees/${id}`, formData);
         Notification('Entrevistado actualizado exitosamente', 'success');
@@ -285,14 +287,26 @@ const DetailInterviewed = () => {
                     />
                   ) : (
                     <span className="text-gray-400 text-2xl">
-                      {formData.personalInfo.firstName?.[0]}{formData.personalInfo.lastName?.[0]}
+                      {formData.personalInfo.firstName?.[0] || ''}
+                      {!formData.profileImage && formData.personalInfo.firstName?.[0] || 'E'}
                     </span>
                   )}
                 </div>
                 <div>
                   <div className="flex flex-row space-x-1 ml-4 mt-7">
-                    <ButtonSubmitPhoto />
-                    <ButtonDelete />
+                    <ButtonSubmitPhoto 
+                      onImageUploaded={(imageUrl) => {
+                        console.log('Image uploaded for interviewee:', imageUrl);
+                        setFormData(prev => ({ ...prev, profileImage: imageUrl }));
+                      }}
+                      currentImage={formData.profileImage}
+                    />
+                    <ButtonDelete 
+                      onDelete={() => {
+                        setFormData(prev => ({ ...prev, profileImage: '' }));
+                      }}
+                      hasImage={!!formData.profileImage}
+                    />
                   </div>
                   <div className="ml-8 mt-1">
                     <p className="text-[#A1A1AA] font-light text-[12px] w-auto">

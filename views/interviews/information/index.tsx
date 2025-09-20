@@ -176,7 +176,7 @@ const InformationView = ({ id }: { id?: string }) => {
             className="color-[#F4F4F5] w-[340px] my-6"
           />
 
-          <div>
+          <div className="w-[340px]">
             <SurveySelector
               value={data.surveyId}
               onChange={(surveyId) => setData({ ...data, surveyId })}
@@ -186,7 +186,7 @@ const InformationView = ({ id }: { id?: string }) => {
             )}
           </div>
 
-          <div>
+          <div className="w-[340px]">
             <ProfessionalsSelector
               value={data.professionals}
               onChange={(professionals) => setData({ ...data, professionals })}
@@ -196,7 +196,7 @@ const InformationView = ({ id }: { id?: string }) => {
             )}
           </div>
 
-          <div>
+          <div className="w-[340px]">
             <IntervieweesSelector
               value={data.interviewees}
               onChange={(interviewees) => setData({ ...data, interviewees })}

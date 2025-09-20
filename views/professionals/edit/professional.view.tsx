@@ -14,9 +14,10 @@ import { Notification } from "@/common/notification";
 import moment from "moment";
 
 const ProfessionalView = ({ id }: { id?: string }) => {
-  const { user } = useAuthContext();
+  const { user, updateUserProfile } = useAuthContext();
   const [editingData, setEditingData] = useState(null);
   const [image, setImage] = useState(null);
+  const [profileImageUrl, setProfileImageUrl] = useState("");
   const { register, handleSubmit, control, reset } = useForm({
     defaultValues: {
       roles: "professional",
@@ -27,6 +28,7 @@ const ProfessionalView = ({ id }: { id?: string }) => {
   useEffect(() => {
     if (editingData) {
       const values = editingData;
+      setProfileImageUrl(values.imageURL || "");
       reset({
         ...values,
         birthDate: moment(values.birthDate).format("YYYY-MM-DD"),
@@ -57,12 +59,22 @@ const ProfessionalView = ({ id }: { id?: string }) => {
   }, [id]);
 
   const onSubmit = async (param) => {
+    // Incluir la imagen de perfil en los datos
+    const dataToSubmit = {
+      ...param,
+      imageURL: profileImageUrl,
+    };
     try {
       // Call API to save data
       if (editingData) {
-        await apiConnection.patch(`/users/${editingData._id}`, param);
+        await apiConnection.patch(`/users/${editingData._id}`, dataToSubmit);
+        
+        // Si estamos editando el perfil del usuario logueado, actualizar el contexto
+        if (editingData._id === user._id) {
+          await updateUserProfile(dataToSubmit);
+        }
       } else {
-        await apiConnection.post(`/auth/register`, param);
+        await apiConnection.post(`/auth/register`, dataToSubmit);
       }
       Notification("Los datos se guardaron correctamente", "success");
     } catch (error) {
@@ -104,15 +116,38 @@ const ProfessionalView = ({ id }: { id?: string }) => {
 
           <hr />
 
-          <div className="flex flex-row   mt-8 ">
-            <circle className="w-[100px] h-[100px] border rounded-full" />
+          <div className="flex flex-row mt-8">
+            <div className="w-[100px] h-[100px] border rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-gray-400 text-2xl">
+                  {editingData?.fullname?.[0] || user?.fullname?.[0] || "P"}
+                </span>
+              )}
+            </div>
 
             <div>
               <div className="flex flex-row space-x-1 ml-4 mt-7">
-                <ButtonSubmitPhoto />
-                <ButtonDelete />
+                <ButtonSubmitPhoto 
+                  onImageUploaded={(imageUrl) => {
+                    setProfileImageUrl(imageUrl);
+                  }}
+                  currentImage={profileImageUrl}
+                />
+                <ButtonDelete 
+                  onDelete={() => {
+                    setProfileImageUrl('');
+                  }}
+                  hasImage={!!profileImageUrl}
+                />
               </div>
-              <div className=" ml-8 mt-1">
+              
+              <div className="ml-8 mt-1">
                 <p className="text-[#A1A1AA] font-light text-[12px] w-auto">
                   La imagen será visible dentro de la plataforma.
                 </p>

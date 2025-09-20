@@ -91,7 +91,7 @@ const IntervieweesSelector: React.FC<Props> = ({ value = [], onChange }) => {
           isDisabled={loading}
         >
           {interviewees.map((interviewee) => (
-            <SelectItem key={interviewee._id}>
+            <SelectItem key={interviewee._id} value={interviewee._id} textValue={interviewee.personalInfo.firstName && interviewee.personalInfo.lastName ? `${interviewee.personalInfo.firstName} ${interviewee.personalInfo.lastName}` : interviewee.email} >
               <div className="flex flex-col">
                 <span className="font-medium">
                   {interviewee.personalInfo.firstName} {interviewee.personalInfo.lastName}

@@ -11,6 +11,7 @@ interface AuthState {
   resetPassword: (email: string) => Promise<boolean>;
   changePassword: (password: string, token: string) => Promise<boolean>;
   changeUsername: (password: string) => Promise<boolean>;
+  updateUserProfile: (userData: any) => Promise<boolean>;
   user;
 }
 
@@ -99,6 +100,27 @@ export const useAuthContext = create<AuthState>((set) => {
       } catch (error: any) {
         console.log({ error });
         const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al cambiar nombre de usuario";
+        Notification(errorMessage, "error");
+        return false;
+      }
+    },
+    updateUserProfile: async (userData: any) => {
+      try {
+        const { data } = await apiConnection.patch("/users/profile", userData);
+        
+        // Actualizar el usuario en el estado
+        set((state) => ({
+          ...state,
+          user: { ...state.user, ...data },
+        }));
+        
+        Notification("Perfil actualizado exitosamente", "success");
+        return true;
+      } catch (error: any) {
+        console.log({ error });
+        const errorMessage = error?.response?.data?.message || 
+                            error?.response?.data?.errorMessage || 
+                            "Error al actualizar perfil";
         Notification(errorMessage, "error");
         return false;
       }

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import apiConnection from "@/pages/api/api";
 import { Select, SelectItem } from "@heroui/react";
+import { PlayCircle } from "lucide-react";
+import { log } from "console";
 
 interface Survey {
   _id: string;
@@ -35,6 +37,7 @@ const SurveySelector: React.FC<Props> = ({ value, onChange }) => {
 
     fetchSurveys();
   }, []);
+console.log("Surveys state:", surveys.map(s => s._id));
 
   return (
     <div className="w-full">
@@ -42,7 +45,7 @@ const SurveySelector: React.FC<Props> = ({ value, onChange }) => {
         <h3 className="mb-2 font-semibold">Encuesta</h3>
         <Select
           radius="sm"
-          placeholder={loading ? "Cargando encuestas..." : "Selecciona una encuesta…"}
+          placeholder={loading ? "Cargando encuestas..." : "Selecciona una encuesta…" }
           className="w-full"
           selectedKeys={value ? [value] : []}
           onSelectionChange={(keys) => {
@@ -52,9 +55,14 @@ const SurveySelector: React.FC<Props> = ({ value, onChange }) => {
             }
           }}
           isDisabled={loading}
+          renderValue={(items) => {
+            if (items.length === 0) return null;
+            const selectedSurvey = surveys.find(s => s._id === items[0].key);
+            return selectedSurvey ? selectedSurvey.name : null;
+          }}
         >
           {surveys.map((survey) => (
-            <SelectItem key={survey._id} value={survey._id}>
+            <SelectItem key={survey._id} value={survey._id} textValue={survey.name}>
               <div className="flex flex-col">
                 <span className="font-medium">{survey.name}</span>
                 <span className="text-sm text-gray-500">

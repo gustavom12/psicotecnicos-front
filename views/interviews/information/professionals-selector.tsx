@@ -92,7 +92,7 @@ const ProfessionalsSelector: React.FC<Props> = ({ value = [], onChange }) => {
           isDisabled={loading || professionals.length === 0}
         >
           {professionals.map((professional) => (
-            <SelectItem key={professional._id}>
+            <SelectItem key={professional._id} value={professional._id} textValue={getDisplayName(professional)}>
               <div className="flex flex-col">
                 <span className="font-medium">
                   {getDisplayName(professional)}
