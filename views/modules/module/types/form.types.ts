@@ -13,7 +13,17 @@ export interface DynamicField {
   id: string;
   type: FieldType;
   label: string;
-  options?: string[]; // solo para options | scale
+  question?: string;
+  options?: string[];
+  scaleMin?: number;
+  scaleMax?: number;
+  scaleLabel?: string;
+  numberValue?: string;
+  fileTypes?: string;
+  maxFileSize?: number;
+  multipleFiles?: boolean;
+  selectedFiles?: File[];
+  required?: boolean;
 }
 
 export interface FormValues {
