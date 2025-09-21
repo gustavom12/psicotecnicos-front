@@ -51,10 +51,14 @@ const DetailInterviewed = () => {
   const { id } = router.query;
   const isEditing = !!id;
 
-  const [activeTab, setActiveTab] = useState<'info' | 'interviews'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'interviews' | 'ev' | 'informes'>('info');
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [interviews, setInterviews] = useState([]);
+  const [evaluations, setEvaluations] = useState([]);
+  const [loadingInterviews, setLoadingInterviews] = useState(false);
+  const [loadingEvaluations, setLoadingEvaluations] = useState(false);
   const [formData, setFormData] = useState<IntervieweeData>({
     personalInfo: {
       firstName: '',
@@ -205,6 +209,54 @@ const DetailInterviewed = () => {
     router.back();
   };
 
+  const loadInterviews = async () => {
+    if (!id) return;
+    
+    try {
+      setLoadingInterviews(true);
+      const response = await apiConnection.get(`/interviews/filtered?intervieweeId=${id}`);
+      console.log("Interviews for interviewee:", response.data);
+      
+      const interviewsData = Array.isArray(response.data) ? response.data : [];
+      setInterviews(interviewsData);
+    } catch (error) {
+      console.error("Error loading interviews:", error);
+      Notification("Error al cargar entrevistas", "error");
+    } finally {
+      setLoadingInterviews(false);
+    }
+  };
+
+  const loadEvaluations = async () => {
+    if (!id) return;
+    
+    try {
+      setLoadingEvaluations(true);
+      // Buscar evaluaciones/surveys relacionadas con el entrevistado
+      const response = await apiConnection.get(`/surveys?intervieweeId=${id}`);
+      console.log("Evaluations for interviewee:", response.data);
+      
+      const evaluationsData = Array.isArray(response.data?.data) ? 
+        response.data.data : 
+        Array.isArray(response.data) ? response.data : [];
+      setEvaluations(evaluationsData);
+    } catch (error) {
+      console.error("Error loading evaluations:", error);
+      Notification("Error al cargar evaluaciones", "error");
+    } finally {
+      setLoadingEvaluations(false);
+    }
+  };
+
+  // Cargar datos cuando se cambia de pestaña
+  useEffect(() => {
+    if (activeTab === 'interviews' && isEditing) {
+      loadInterviews();
+    } else if (activeTab === 'ev' && isEditing) {
+      loadEvaluations();
+    }
+  }, [activeTab, id]);
+
   const statusOptions = [
     { key: 'PENDING', label: 'Pendiente' },
     { key: 'INVITED', label: 'Invitado' },
@@ -255,11 +307,13 @@ const DetailInterviewed = () => {
               }
             </h1>
           </div>
-{/*
-          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[240px] mt-8 mb-6 h-[36px] rounded-xl">
+
+          {/*  seccion de botones de informacion y entrevistas*/}
+          <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[390px] mt-8 mb-6 h-[36px] rounded-xl">
             <Button
               className={`rounded-sm h-[28px] ${activeTab === 'info' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
               onClick={() => setActiveTab('info')}
+              
             >
               Información
             </Button>
@@ -270,13 +324,27 @@ const DetailInterviewed = () => {
             >
               Entrevistas
             </Button>
-          </ButtonGroup> */}
+            <Button
+              className={`rounded-sm h-[28px] ${activeTab === 'ev' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
+              onClick={() => setActiveTab('ev')}
+              disabled={!isEditing}
+            >
+              Ev. Previa
+            </Button>
+            <Button
+              className={`rounded-sm h-[28px] ${activeTab === 'informes' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
+              onClick={() => setActiveTab('informes')}
+              disabled={!isEditing}
+            >
+              Informes
+            </Button>
+          </ButtonGroup>
 
           <hr />
 
           {activeTab === 'info' && (
             <div className="mt-8">
-              {/* Profile Image Section */}
+              {/* seccion de imagen de perfil */}
               <div className="flex flex-row mt-8">
                 <div className="w-[100px] h-[100px] border rounded-full bg-gray-100 flex items-center justify-center">
                   {formData.profileImage ? (
@@ -294,14 +362,14 @@ const DetailInterviewed = () => {
                 </div>
                 <div>
                   <div className="flex flex-row space-x-1 ml-4 mt-7">
-                    <ButtonSubmitPhoto 
+                    <ButtonSubmitPhoto
                       onImageUploaded={(imageUrl) => {
                         console.log('Image uploaded for interviewee:', imageUrl);
                         setFormData(prev => ({ ...prev, profileImage: imageUrl }));
                       }}
                       currentImage={formData.profileImage}
                     />
-                    <ButtonDelete 
+                    <ButtonDelete
                       onDelete={() => {
                         setFormData(prev => ({ ...prev, profileImage: '' }));
                       }}
@@ -533,15 +601,180 @@ const DetailInterviewed = () => {
 
           {activeTab === 'interviews' && isEditing && (
             <div className="mt-8">
-              <div className="text-center py-12">
+              <div className="mb-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Entrevistas</h3>
                 <p className="text-gray-500">
-                  Aquí se mostrarán las entrevistas asociadas a este entrevistado.
-                </p>
-                <p className="text-sm text-gray-400 mt-2">
-                  Funcionalidad en desarrollo...
+                  Entrevistas asociadas a este entrevistado
                 </p>
               </div>
+              
+              {loadingInterviews ? (
+                <div className="flex justify-center items-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  <span className="ml-2 text-gray-600">Cargando entrevistas...</span>
+                </div>
+              ) : interviews.length === 0 ? (
+                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <div className="text-4xl mb-4">📅</div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">No hay entrevistas</h4>
+                  <p className="text-gray-500">
+                    Este entrevistado aún no tiene entrevistas programadas.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {interviews.map((interview: any) => (
+                    <div key={interview._id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900 mb-2">
+                            {interview.title || 'Entrevista sin título'}
+                          </h4>
+                          <p className="text-gray-600 text-sm mb-3">
+                            {interview.description || 'Sin descripción'}
+                          </p>
+                          
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                            {interview.scheduledAt && (
+                              <div className="flex items-center gap-1">
+                                <span>📅</span>
+                                <span>
+                                  {new Date(interview.scheduledAt).toLocaleDateString('es-ES', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </span>
+                              </div>
+                            )}
+                            
+                            {interview.position && (
+                              <div className="flex items-center gap-1">
+                                <span>💼</span>
+                                <span>{interview.position}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="ml-4 flex flex-col items-end gap-2">
+                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            interview.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
+                            interview.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
+                            interview.status === 'NOT_STARTED' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {interview.status === 'COMPLETED' ? '✅ Completada' :
+                             interview.status === 'IN_PROGRESS' ? '🔄 En progreso' :
+                             interview.status === 'NOT_STARTED' ? '⏳ No iniciada' :
+                             interview.status || 'Sin estado'}
+                          </div>
+                          
+                          <button 
+                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                            onClick={() => router.push(`/interviews/information/${interview._id}`)}
+                          >
+                            Ver detalles →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'ev' && isEditing && (
+            <div className="mt-8">
+              <div className="mb-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Evaluación Previa</h3>
+                <p className="text-gray-500">
+                  Evaluaciones y surveys completadas por este entrevistado
+                </p>
+              </div>
+              
+              {loadingEvaluations ? (
+                <div className="flex justify-center items-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  <span className="ml-2 text-gray-600">Cargando evaluaciones...</span>
+                </div>
+              ) : evaluations.length === 0 ? (
+                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <div className="text-4xl mb-4">📋</div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">No hay evaluaciones</h4>
+                  <p className="text-gray-500">
+                    Este entrevistado aún no ha completado evaluaciones previas.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {evaluations.map((evaluation: any) => (
+                    <div key={evaluation._id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">
+                              {evaluation.previousEvaluations ? '📋' : '📊'}
+                            </span>
+                            <h4 className="font-semibold text-gray-900">
+                              {evaluation.name || evaluation.title || 'Evaluación sin título'}
+                            </h4>
+                          </div>
+                          
+                          <p className="text-gray-600 text-sm mb-3">
+                            {evaluation.description || 'Sin descripción'}
+                          </p>
+                          
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                            {evaluation.position && (
+                              <div className="flex items-center gap-1">
+                                <span>💼</span>
+                                <span>{evaluation.position}</span>
+                              </div>
+                            )}
+                            
+                            {evaluation.modules && (
+                              <div className="flex items-center gap-1">
+                                <span>📚</span>
+                                <span>{evaluation.modules.length} módulo(s)</span>
+                              </div>
+                            )}
+                            
+                            {evaluation.createdAt && (
+                              <div className="flex items-center gap-1">
+                                <span>📅</span>
+                                <span>
+                                  Creada: {new Date(evaluation.createdAt).toLocaleDateString('es-ES')}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="ml-4 flex flex-col items-end gap-2">
+                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            evaluation.previousEvaluations 
+                              ? 'bg-blue-100 text-blue-800' 
+                              : 'bg-purple-100 text-purple-800'
+                          }`}>
+                            {evaluation.previousEvaluations ? '📋 Ev. Previa' : '📊 Evaluación'}
+                          </div>
+                          
+                          <button 
+                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                            onClick={() => router.push(`/surveys/${evaluation._id}`)}
+                          >
+                            Ver evaluación →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

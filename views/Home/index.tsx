@@ -73,10 +73,21 @@ const HomeView = () => {
 
     // Cargar contadores de empresas
     apiConnection
-      .get("/companies")
+      .get("/companies/filtered")
       .then((response) => {
-        const data = response.data?.data || response.data || [];
-        setCountEmpresas(Array.isArray(data) ? data.length : 0);
+        console.log("Companies response for count:", response.data);
+        
+        // Manejar diferentes formatos de respuesta
+        let data = [];
+        if (Array.isArray(response.data?.data)) {
+          data = response.data.data;
+        } else if (Array.isArray(response.data)) {
+          data = response.data;
+        }
+        
+        const count = data.length;
+        console.log("Companies count:", count);
+        setCountEmpresas(count);
       })
       .catch((error) => {
         console.log("Error fetching companies count:", error);
