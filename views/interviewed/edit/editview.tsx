@@ -51,7 +51,7 @@ const DetailInterviewed = () => {
   const { id } = router.query;
   const isEditing = !!id;
 
-  const [activeTab, setActiveTab] = useState<'info' | 'interviews' | 'ev' | 'informes'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'interviews' | 'ev' | 'reports'>('info');
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
@@ -332,8 +332,8 @@ const DetailInterviewed = () => {
               Ev. Previa
             </Button>
             <Button
-              className={`rounded-sm h-[28px] ${activeTab === 'informes' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
-              onClick={() => setActiveTab('informes')}
+              className={`rounded-sm h-[28px] ${activeTab === 'reports' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
+              onClick={() => setActiveTab('reports')}
               disabled={!isEditing}
             >
               Informes
