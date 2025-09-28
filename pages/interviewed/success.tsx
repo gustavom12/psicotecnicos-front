@@ -24,7 +24,7 @@ export default function InterviewSuccess() {
             <Button
               color="primary"
               className="w-full"
-              onPress={() => router.push('/')}
+              onPress={() => router.push('/interviewee')}
             >
               Volver al Inicio
             </Button>

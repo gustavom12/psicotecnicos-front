@@ -35,6 +35,9 @@ export interface Form {
 export interface Module {
   order: number;
   id: string;
+  name?: string;
+  category?: string;
+  description?: string;
 }
 
 export interface Survey {
@@ -71,8 +74,10 @@ export interface InterviewResponse {
 }
 
 export interface InterviewSubmission {
+  interviewId?: string;
   surveyId: string;
   intervieweeId: string;
+  moduleId?: string;
   responses: InterviewResponse[];
   slideTimeData: SlideTimeData[];
   totalInterviewTimeSeconds: number;

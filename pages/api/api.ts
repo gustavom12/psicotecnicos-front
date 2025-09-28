@@ -7,7 +7,10 @@ const apiConnection = axios.create({ baseURL });
 apiConnection.interceptors.request.use((req) => {
   if (typeof window !== "undefined") {
     if (window.localStorage) {
-      const accessToken = localStorage.getItem("accessToken");
+      let accessToken = localStorage.getItem("accessToken");
+      if(localStorage.getItem("intervieweeAccessToken")) {
+        accessToken = localStorage.getItem("intervieweeAccessToken");
+      }
       if (accessToken) {
         req.headers.Authorization = `Bearer ${accessToken}`;
       }

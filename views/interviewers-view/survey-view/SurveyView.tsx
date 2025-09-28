@@ -5,14 +5,17 @@ import { Survey, Form, Slide, InterviewResponse, InterviewSubmission, FieldType,
 import SlideView from './components/SlideView';
 import apiConnection from '../../../pages/api/api';
 import { useTimeTracker } from './hooks/useTimeTracker';
+import { useIntervieweeAuthContext } from '../../../contexts/interviewee-auth.context';
 
 interface SurveyViewProps {
   surveyId: string;
   intervieweeId?: string;
+  interviewId?: string;
 }
 
-export default function SurveyView({ surveyId, intervieweeId }: SurveyViewProps) {
+export default function SurveyView({ surveyId, intervieweeId, interviewId }: SurveyViewProps) {
   const router = useRouter();
+  const { interviewee } = useIntervieweeAuthContext();
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [forms, setForms] = useState<Form[]>([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -20,6 +23,7 @@ export default function SurveyView({ surveyId, intervieweeId }: SurveyViewProps)
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [currentInterviewId, setCurrentInterviewId] = useState<string | null>(interviewId || null);
 
   // Obtener todos los slides ordenados por módulo y luego por slide index
   const allSlides: (Slide & { formId: string; moduleOrder: number })[] = (() => {
@@ -35,7 +39,7 @@ export default function SurveyView({ surveyId, intervieweeId }: SurveyViewProps)
     return forms
       .map(form => ({
         form,
-        moduleOrder: moduleOrderMap.get(form._id) || 0
+        moduleOrder: moduleOrderMap.get(form?._id) || 0
       }))
       .sort((a, b) => a.moduleOrder - b.moduleOrder) // Primero ordenar por módulo
       .flatMap(({ form, moduleOrder }) =>
@@ -118,11 +122,48 @@ export default function SurveyView({ surveyId, intervieweeId }: SurveyViewProps)
       } else {
         console.log('No form IDs found in survey data');
       }
+
+      // Obtener interviewId si no se proporciona
+      if (!currentInterviewId && (interviewee?._id || intervieweeId)) {
+        await fetchInterviewId();
+      }
     } catch (error) {
       console.error('Error fetching survey data:', error);
       // TODO: Show error notification
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Función para obtener el interviewId si no se proporciona
+  const fetchInterviewId = async () => {
+    const actualIntervieweeId = interviewee?._id || intervieweeId;
+
+    if (!actualIntervieweeId || actualIntervieweeId === 'anonymous') {
+      console.log('No intervieweeId provided or anonymous user, skipping interview lookup');
+      return;
+    }
+
+    try {
+      // Buscar entrevistas del interviewee que usen este survey
+      const response = await apiConnection.get('/interviews/interviewee/filtered');
+      const interviews = response.data;
+
+      // Encontrar la entrevista que corresponde a este survey
+      const matchingInterview = interviews.find((interview: any) =>
+        interview.surveyId?._id === surveyId &&
+        interview.interviewees.includes(actualIntervieweeId)
+      );
+
+      if (matchingInterview) {
+        setCurrentInterviewId(matchingInterview._id);
+        console.log('Interview ID found:', matchingInterview._id);
+      } else {
+        console.log('No matching interview found, proceeding without interviewId');
+      }
+    } catch (error) {
+      console.error('Error fetching interview ID:', error);
+      console.log('Proceeding without interviewId');
     }
   };
 
@@ -207,8 +248,10 @@ export default function SurveyView({ surveyId, intervieweeId }: SurveyViewProps)
       finishInterview();
 
       const submission: InterviewSubmission = {
+        interviewId: currentInterviewId, // Incluir el interviewId
         surveyId,
-        intervieweeId: intervieweeId || 'anonymous',
+        intervieweeId: interviewee?._id || intervieweeId || 'anonymous',
+        moduleId: router.query.moduleId as string, // Obtener moduleId de la URL
         responses: interviewResponses,
         slideTimeData,
         totalInterviewTimeSeconds: totalInterviewTime,
@@ -216,8 +259,10 @@ export default function SurveyView({ surveyId, intervieweeId }: SurveyViewProps)
         startedAt: interviewStartTime
       };
 
-      // Enviar a API
-      const response = await apiConnection.post('/interviews', submission);
+      console.log('Submitting interview response:', submission);
+
+      // Enviar a API usando el endpoint específico para interviewees
+      const response = await apiConnection.post('/interviews/interviewee/submit', submission);
 
       // Redirect to success page
       router.push('/interviewed/success');
