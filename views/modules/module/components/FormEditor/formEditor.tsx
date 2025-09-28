@@ -34,12 +34,27 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
   } = useFieldArray({ control, name: "interviewer" });
 
   const addField = (target: "professional" | "interviewer") => {
-    const base: DynamicField = { id: uuid(), label: "", type: "shortText", question: "" };
+    const base: DynamicField = { 
+      id: uuid(), 
+      label: "", 
+      type: "shortText", 
+      question: "",
+      options: [],
+      scaleMin: 1,
+      scaleMax: 10,
+      scaleLabel: "",
+      numberValue: "",
+      maxFileSize: undefined,
+      multipleFiles: false,
+      selectedFiles: [],
+      required: false
+    };
 
     if (target === "professional") {
       appendPro(base);
       setState((v) => {
         const newSlides = [...v.slides];
+        if (!newSlides[i].professional) newSlides[i].professional = [];
         newSlides[i].professional.push(base);
         return { ...v, slides: newSlides };
       });
@@ -47,6 +62,7 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
       appendInt(base);
       setState((v) => {
         const newSlides = [...v.slides];
+        if (!newSlides[i].interviewer) newSlides[i].interviewer = [];
         newSlides[i].interviewer.push(base);
         return { ...v, slides: newSlides };
       });
@@ -72,30 +88,38 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { name: string; value: any } },
   ) => {
     const { name, value } = e.target;
     const [list, idx, field] = name.split(".");
 
     setState((v) => {
-      const activeSlide = v.slides.find((e) => e.index === activeIndex);
+      const newSlides = [...v.slides];
+      const activeSlide = newSlides.find((slide) => slide.index === activeIndex) || newSlides[activeIndex];
 
-      if (!idx) activeSlide[list] = value;
-      if (list && idx) {
-        activeSlide[list] = activeSlide[list].map((e, i) => {
+      if (!activeSlide) return v;
+
+      if (!idx) {
+        // Campo de nivel superior (title, comments)
+        activeSlide[list] = value;
+      } else if (list && idx && field) {
+        // Campo anidado (professional.0.question, etc.)
+        if (!activeSlide[list]) activeSlide[list] = [];
+        
+        activeSlide[list] = activeSlide[list].map((item, i) => {
           return i === parseInt(idx)
             ? {
-                ...(e || {}),
+                ...(item || {}),
                 [field]: value,
               }
-            : e;
+            : item;
         });
       }
 
       return {
         ...v,
-        slides: v.slides.map((e, index) =>
-          index === activeIndex ? activeSlide : e,
+        slides: newSlides.map((slide, index) =>
+          index === activeIndex ? activeSlide : slide,
         ),
       };
     });
