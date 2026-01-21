@@ -8,7 +8,7 @@ import DynamicInput, { DynamicField } from "./DynamicField";
 import { FormValues } from "../../types/form.types";
 import { useEffect, useState } from "react";
 
-export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
+export default function FormPanel({ onSubmit, activeIndex, state, setState, isPreviousForm = false }) {
   const activeSlide = state.slides[activeIndex];
   const [i, setI] = useState(activeIndex);
   const { register, control, handleSubmit, reset } = useForm<FormValues>({
@@ -34,10 +34,10 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
   } = useFieldArray({ control, name: "interviewer" });
 
   const addField = (target: "professional" | "interviewer") => {
-    const base: DynamicField = { 
-      id: uuid(), 
-      label: "", 
-      type: "shortText", 
+    const base: DynamicField = {
+      id: uuid(),
+      label: "",
+      type: "shortText",
       question: "",
       options: [],
       scaleMin: 1,
@@ -105,7 +105,7 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
       } else if (list && idx && field) {
         // Campo anidado (professional.0.question, etc.)
         if (!activeSlide[list]) activeSlide[list] = [];
-        
+
         activeSlide[list] = activeSlide[list].map((item, i) => {
           return i === parseInt(idx)
             ? {
@@ -158,19 +158,23 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
       />
       <Divider className="!mt-5" />
       {/* Campos dinámicos */}
-      <h6>Campos del profesional:</h6>
-      {proFields.map((f, idx) => (
-        <DynamicInput
-          key={f.id}
-          field={f as DynamicField}
-          index={idx}
-          register={register}
-          control={control}
-          remove={(index) => removeField("professional", index)}
-          namePrefix="professional"
-          onFieldChange={handleChange}
-        />
-      ))}
+      {!isPreviousForm && (
+        <>
+          <h6>Campos del profesional:</h6>
+          {proFields.map((f, idx) => (
+            <DynamicInput
+              key={f.id}
+              field={f as DynamicField}
+              index={idx}
+              register={register}
+              control={control}
+              remove={(index) => removeField("professional", index)}
+              namePrefix="professional"
+              onFieldChange={handleChange}
+            />
+          ))}
+        </>
+      )}
 
       <Divider className="!mt-7" />
       <h6>Campos del entrevistado:</h6>
@@ -189,15 +193,17 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState }) {
 
       {/* botones agregar */}
       <div className="flex gap-3">
-        <Button
-          variant="bordered"
-          size="sm"
-          className="inline-flex items-center gap-1"
-          type="button"
-          onClick={() => addField("professional")}
-        >
-          <PlusIcon className="h-4 w-4" /> Campo profesional
-        </Button>
+        {!isPreviousForm && (
+          <Button
+            variant="bordered"
+            size="sm"
+            className="inline-flex items-center gap-1"
+            type="button"
+            onClick={() => addField("professional")}
+          >
+            <PlusIcon className="h-4 w-4" /> Campo profesional
+          </Button>
+        )}
         <Button
           variant="bordered"
           size="sm"

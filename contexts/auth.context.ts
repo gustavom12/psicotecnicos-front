@@ -27,7 +27,7 @@ export const useAuthContext = create<AuthState>((set) => {
     })
     .catch((error) => {
       // TODO: REACTIVAR
-      // Router.push("/auth/login");
+      Router.push("/auth/login");
       console.log("Error: ", error);
     });
   return {
@@ -107,19 +107,19 @@ export const useAuthContext = create<AuthState>((set) => {
     updateUserProfile: async (userData: any) => {
       try {
         const { data } = await apiConnection.patch("/users/profile", userData);
-        
+
         // Actualizar el usuario en el estado
         set((state) => ({
           ...state,
           user: { ...state.user, ...data },
         }));
-        
+
         Notification("Perfil actualizado exitosamente", "success");
         return true;
       } catch (error: any) {
         console.log({ error });
-        const errorMessage = error?.response?.data?.message || 
-                            error?.response?.data?.errorMessage || 
+        const errorMessage = error?.response?.data?.message ||
+                            error?.response?.data?.errorMessage ||
                             "Error al actualizar perfil";
         Notification(errorMessage, "error");
         return false;

@@ -126,11 +126,16 @@ const IntervieweeHome = () => {
               }),
             );
 
+            // Filter modules to only show those with isPreviousForm === true
+            const previousFormModules = modulesWithDetails.filter(
+              (module) => module.isPreviousForm === true
+            );
+
             return {
               ...interview,
               surveyId: {
                 ...interview.surveyId,
-                modules: modulesWithDetails,
+                modules: previousFormModules,
               },
             };
           }

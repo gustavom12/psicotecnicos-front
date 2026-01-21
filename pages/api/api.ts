@@ -8,7 +8,7 @@ apiConnection.interceptors.request.use((req) => {
   if (typeof window !== "undefined") {
     if (window.localStorage) {
       let accessToken = localStorage.getItem("accessToken");
-      if(localStorage.getItem("intervieweeAccessToken")) {
+      if (!accessToken && localStorage.getItem("intervieweeAccessToken")) {
         accessToken = localStorage.getItem("intervieweeAccessToken");
       }
       if (accessToken) {
@@ -30,8 +30,8 @@ apiConnection.interceptors.response.use(undefined, (error) => {
 
 const originalRequest = axios.request;
 axios.request = function (config) {
-  if (typeof config !== 'object') {
-    console.error('Axios config inválido:', config);
+  if (typeof config !== "object") {
+    console.error("Axios config inválido:", config);
   }
   return originalRequest.call(this, config);
 };

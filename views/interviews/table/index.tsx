@@ -4,6 +4,7 @@ import NavbarApp from "@/common/navbar";
 import Addition from "@/public/icons/addition";
 import Pencil2 from "@/public/icons/pencil2";
 import Trash from "@/public/icons/trashgrey";
+import Eye from "@/public/icons/eye";
 import { Button, Chip, Input, Select, SelectItem } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -32,9 +33,6 @@ const TableInterviewsView = () => {
           apiConnection.get("/users/table"),
         ]);
 
-      console.log("Interviews data:", interviewsRes.data);
-      console.log("Interviewees response:", intervieweesRes.data);
-      console.log("Professionals response:", professionalsRes.data);
 
       // Crear mapas para búsqueda rápida
       const intervieweesMap = new Map();
@@ -511,6 +509,15 @@ const TableInterviewsView = () => {
                       label: "Acciones",
                       render: (value: any, item: any) => (
                         <div className="flex items-center gap-1">
+                          <Link href={`/interviews/view/${item._id}`}>
+                            <button
+                              className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors duration-200 group"
+                              title="Ver entrevista"
+                            >
+                              <Eye />
+                            </button>
+                          </Link>
+
                           <Link href={`/interviews/information/${item._id}`}>
                             <button
                               className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200 group"
@@ -520,7 +527,7 @@ const TableInterviewsView = () => {
                             </button>
                           </Link>
 
-                          {item.status === "NOT_STARTED" && (
+                          {/* {item.status === "NOT_STARTED" && (
                             <button
                               onClick={() => handleStartInterview(item._id)}
                               className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors duration-200"
@@ -529,7 +536,7 @@ const TableInterviewsView = () => {
                               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                               Iniciar
                             </button>
-                          )}
+                          )} */}
 
                           {item.status === "IN_PROGRESS" && (
                             <button

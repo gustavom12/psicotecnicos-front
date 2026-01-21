@@ -16,9 +16,10 @@ const FormEditor = dynamic(() => import("./components/FormEditor/formEditor"), {
 
 interface ModuleProps {
   id?: string;
+  isPreviousForm?: boolean;
 }
 
-export default function Module({ id }: ModuleProps = {}) {
+export default function Module({ id, isPreviousForm = false }: ModuleProps = {}) {
   const [state, setState] = useState({
     slides: [{ ...defaultSlide }],
     title: "Módulo",
@@ -28,6 +29,8 @@ export default function Module({ id }: ModuleProps = {}) {
   const router = useRouter();
   const titleRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
+
+  console.log("isPreviousForm:", isPreviousForm);
 
   // Mantén el título sincronizado cuando cambie desde el formulario
   useEffect(() => {
@@ -59,9 +62,14 @@ export default function Module({ id }: ModuleProps = {}) {
 
   const onSubmit = async () => {
     try {
-      console.log("stateL ", state);
+      const formData = {
+        ...state,
+        isPreviousForm
+      };
 
-      id ? await updateForm(id, state) : await createForm(state);
+      console.log("formData: ", formData);
+
+      id ? await updateForm(id, formData) : await createForm(formData);
       Notification("Entrevista guardada con éxito", "success");
       router.push("/modules");
     } catch (error) {
@@ -120,6 +128,7 @@ export default function Module({ id }: ModuleProps = {}) {
                   activeIndex={state.slides.find((e) => e.selected).index}
                   setState={setState}
                   onSubmit={onSubmit}
+                  isPreviousForm={isPreviousForm}
                 />
               )}
             </div>
