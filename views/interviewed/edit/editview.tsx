@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import apiConnection from '@/pages/api/api';
 import { Notification } from '@/common/notification';
+import ReportsTab from './reports/ReportsTab';
 
 interface PersonalInfo {
   firstName: string;
@@ -185,15 +186,7 @@ const DetailInterviewed = () => {
         Notification('Entrevistado actualizado exitosamente', 'success');
       } else {
         const response = await apiConnection.post('/interviewees', formData);
-
-        // Show success notification with email info
-        const message = response.data?.message || 'Entrevistado creado exitosamente';
-        const email = formData.email;
-
-        Notification(
-          `${message}${email ? ` (${email})` : ''}`,
-          'success'
-        );
+        Notification('Entrevistado creado exitosamente', 'success');
 
         router.push('/interviewed/table');
       }
@@ -355,8 +348,7 @@ const DetailInterviewed = () => {
                     />
                   ) : (
                     <span className="text-gray-400 text-2xl">
-                      {formData.personalInfo.firstName?.[0] || ''}
-                      {!formData.profileImage && formData.personalInfo.firstName?.[0] || 'E'}
+                      {formData.personalInfo.firstName?.[0] || 'E'}
                     </span>
                   )}
                 </div>
@@ -685,6 +677,10 @@ const DetailInterviewed = () => {
                 </div>
               )}
             </div>
+          )}
+
+          {activeTab === 'reports' && isEditing && typeof id === 'string' && (
+            <ReportsTab intervieweeId={id} />
           )}
 
           {activeTab === 'ev' && isEditing && (

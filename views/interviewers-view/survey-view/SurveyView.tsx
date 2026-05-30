@@ -261,8 +261,11 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
 
       console.log('Submitting interview response:', submission);
 
-      // Enviar a API usando el endpoint específico para interviewees
-      const response = await apiConnection.post('/interviews/interviewee/submit', submission);
+      // Enviar a API usando el endpoint de interview-responses
+      const response = await apiConnection.post('/interview-responses', {
+        ...submission,
+        status: 'COMPLETED',
+      });
 
       // Redirect to success page
       router.push('/interviewed/success');

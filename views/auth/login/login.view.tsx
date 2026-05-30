@@ -2,13 +2,23 @@ import { useAuthContext } from "@/contexts/auth.context";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import Star from "@/public/icons/Star";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const LoginView = () => {
   const { register, handleSubmit } = useForm();
   const { login } = useAuthContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const { token } = router.query;
+    if (token && typeof token === "string") {
+      localStorage.setItem("accessToken", token);
+      router.replace("/home");
+    }
+  }, [router.query]);
 
   const onSubmit = async (data) => {
     await login(data.email, data.password);

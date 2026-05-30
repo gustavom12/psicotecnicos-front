@@ -5,6 +5,7 @@ interface BasicInfoProps {
   title: string;
   description: string;
   position: string;
+  positionDescription?: string;
   scheduledAt: string;
   status: string;
   survey?: {
@@ -17,6 +18,7 @@ const BasicInfo: React.FC<BasicInfoProps> = ({
   title,
   description,
   position,
+  positionDescription,
   scheduledAt,
   status,
   survey,
@@ -104,6 +106,17 @@ const BasicInfo: React.FC<BasicInfoProps> = ({
               {description || "Sin descripción"}
             </div>
           </div>
+
+          {positionDescription && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Descripción de puesto
+              </label>
+              <div className="p-3 bg-gray-50 rounded-lg border min-h-[80px]">
+                {positionDescription}
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>

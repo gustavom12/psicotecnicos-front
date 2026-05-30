@@ -20,6 +20,15 @@ const IntervieweeLoginView = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  // Magic link: si la URL trae ?token, iniciar sesión automáticamente
+  useEffect(() => {
+    const { token } = router.query;
+    if (token && typeof token === "string") {
+      localStorage.setItem("intervieweeAccessToken", token);
+      router.replace("/interviewee");
+    }
+  }, [router.query]);
+
   // Redirect if already authenticated
   useEffect(() => {
     if (authenticated) {

@@ -94,7 +94,6 @@ const IntervieweeHome = () => {
             interview.surveyId?.modules &&
             interview.surveyId.modules.length > 0
           ) {
-            // Get detailed information for each module/form
             const modulesWithDetails = await Promise.all(
               interview.surveyId.modules.map(async (module) => {
                 try {
@@ -115,7 +114,6 @@ const IntervieweeHome = () => {
                     `Error loading form details for module ${module.id}:`,
                     error,
                   );
-                  // Return module with fallback data if form loading fails
                   return {
                     ...module,
                     name: `Módulo ${module.order}`,
@@ -126,19 +124,15 @@ const IntervieweeHome = () => {
               }),
             );
 
-            // Filter modules to only show those with isPreviousForm === true
-            const previousFormModules = modulesWithDetails.filter(
-              (module) => module.isPreviousForm === true
-            );
-
             return {
               ...interview,
               surveyId: {
                 ...interview.surveyId,
-                modules: previousFormModules,
+                modules: modulesWithDetails,
               },
             };
           }
+
           return interview;
         }),
       );
@@ -247,16 +241,13 @@ const IntervieweeHome = () => {
 
       // Filter interviews to only show those assigned to current interviewee
       const allInterviews = response.data || [];
+
       const myInterviews = allInterviews.filter(
         (interview: any) =>
           interview.interviewees &&
           interview.interviewees.includes(interviewee._id),
       );
 
-      // Debug log to check professional data
-      console.log('DEBUG - First interview professionals:', myInterviews[0]?.professionals);
-
-      // Load detailed module information
       const interviewsWithDetails = await loadModuleDetails(myInterviews);
       setInterviews(interviewsWithDetails);
 
@@ -338,12 +329,6 @@ const IntervieweeHome = () => {
     );
   };
 
-  const getModuleProgress = (module: Module) => {
-    return module.status === "FINISHED"
-      ? { completed: true, progress: 100 }
-      : { completed: false, progress: 0 };
-  };
-
   const getInterviewProgress = (interview: Interview) => {
     if (
       !interview.surveyId?.modules ||
@@ -352,9 +337,10 @@ const IntervieweeHome = () => {
       return { completed: 0, total: 0, percentage: 0 };
     }
 
-    const completed = interview.surveyId.modules.filter(
-      (module) => getModuleProgress(module).completed,
-    ).length;
+    const completed = interview.surveyId.modules.filter((module: any) => {
+      const key = `${interview._id}_${module.id}`;
+      return moduleProgress[key]?.completed === true;
+    }).length;
 
     const total = interview.surveyId.modules.length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -503,6 +489,14 @@ const IntervieweeHome = () => {
                           </div>
                         </div>
 
+                        {/* Google Calendar notice */}
+                        <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-4 text-sm text-blue-800">
+                          <Calendar className="w-4 h-4 mt-0.5 shrink-0 text-blue-500" />
+                          <span>
+                            El link de la entrevista fue enviado a tu casilla de correo y debería aparecer en tu calendario.
+                          </span>
+                        </div>
+
                         {/* Professional Contact Information */}
                         {interview.professionals && interview.professionals.length > 0 && (
                           <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
@@ -589,10 +583,9 @@ const IntervieweeHome = () => {
                           {interview.surveyId.modules
                             .sort((a, b) => a.order - b.order)
                             .map((module: any, index) => {
-                              const moduleProgress = getModuleProgress(module);
-                              const moduleStatus = getModuleStatusConfig(
-                                module.status === "FINISHED",
-                              );
+                              const moduleKey = `${interview._id}_${module.id}`;
+                              const moduleProgressData = moduleProgress[moduleKey] || { completed: false, progress: 0 };
+                              const moduleStatus = getModuleStatusConfig(moduleProgressData.completed);
 
                               return (
                                 <div
@@ -620,17 +613,17 @@ const IntervieweeHome = () => {
                                               {module.description}
                                             </p>
                                           )}
-                                        {!moduleProgress.completed &&
-                                          moduleProgress.progress > 0 && (
+                                        {!moduleProgressData.completed &&
+                                          moduleProgressData.progress > 0 && (
                                             <div className="mt-2">
                                               <Progress
-                                                value={moduleProgress.progress}
+                                                value={moduleProgressData.progress}
                                                 size="sm"
                                                 color="primary"
                                                 className="w-full max-w-xs"
                                               />
                                               <span className="text-xs text-gray-500">
-                                                {moduleProgress.progress}%
+                                                {moduleProgressData.progress}%
                                                 completado
                                               </span>
                                             </div>
@@ -649,7 +642,7 @@ const IntervieweeHome = () => {
                                         {moduleStatus.label}
                                       </Chip>
 
-                                      {!moduleProgress.completed ? (
+                                      {!moduleProgressData.completed ? (
                                         <Link
                                           href={`/survey/${interview.surveyId._id}?moduleId=${module.id}`}
                                         >
@@ -658,14 +651,14 @@ const IntervieweeHome = () => {
                                             variant="solid"
                                             size="sm"
                                             startContent={
-                                              moduleProgress.progress > 0 ? (
+                                              moduleProgressData.progress > 0 ? (
                                                 <Play className="w-4 h-4" />
                                               ) : (
                                                 <ArrowRight className="w-4 h-4" />
                                               )
                                             }
                                           >
-                                            {moduleProgress.progress > 0
+                                            {moduleProgressData.progress > 0
                                               ? "Continuar"
                                               : "Iniciar"}
                                           </Button>

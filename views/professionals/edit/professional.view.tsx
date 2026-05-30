@@ -161,6 +161,7 @@ const ProfessionalView = ({ id }: { id?: string }) => {
             <Controller
               control={control}
               name="fullname"
+              rules={{ required: true }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -168,15 +169,15 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   label="Nombre completo"
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
-                  placeholder="Toyota "
-                  {...register("fullname", { required: true })}
+                  placeholder="José González"
                 />
               )}
             />
 
             <Controller
               control={control}
-              name="fullname"
+              name="email"
+              rules={{ required: true, pattern: /^\S+@\S+$/i }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -184,17 +185,14 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   label="E-mail"
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
-                  placeholder="jose.gonzalez@gmail.com "
-                  {...register("email", {
-                    required: true,
-                    pattern: /^\S+@\S+$/i,
-                  })}
+                  placeholder="jose.gonzalez@gmail.com"
                 />
               )}
             />
             <Controller
               control={control}
-              name="fullname"
+              name="phoneNumber"
+              rules={{ required: true, minLength: 9 }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -203,10 +201,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
                   placeholder="+54 11 8888 5555"
-                  {...register("phoneNumber", {
-                    required: true,
-                    minLength: 9,
-                  })}
                 />
               )}
             />
@@ -220,7 +214,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
                   placeholder="Nacionalidad"
-                  {...register("nacionality")}
                 />
               )}
             />
@@ -234,7 +227,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
                   placeholder="Documento"
-                  {...register("personalID")}
                 />
               )}
             />
@@ -248,7 +240,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
                   placeholder="Especialidad"
-                  {...register("speciality")}
                 />
               )}
             />
@@ -274,7 +265,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   className="color-[#F4F4F5] my-6 "
                   placeholder="Fecha de nacimiento"
                   type="date"
-                  {...register("birthDate")}
                 />
               )}
             />
@@ -299,7 +289,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
                   placeholder="Córdoba, Argentina "
-                  {...register("location")}
                 />
               )}
             />
@@ -313,7 +302,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
                   placeholder="Tests"
-                  {...register("favouriteTests")}
                 />
               )}
             />
@@ -327,7 +315,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                   labelPlacement="outside"
                   className="color-[#F4F4F5] my-6 "
                   placeholder="Matrícula"
-                  {...register("registrationNumber")}
                 />
               )}
             />
@@ -345,7 +332,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                       className="color-[#F4F4F5] my-6 "
                       placeholder="23/7/2023 "
                       type="date"
-                      {...register("privateData.ingressDate")}
                     />
                   )}
                 />
@@ -360,7 +346,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                       labelPlacement="outside"
                       className="color-[#F4F4F5] my-6 "
                       placeholder="Observaciones"
-                      {...register("privateData.notes")}
                     />
                   )}
                 />
@@ -375,13 +360,13 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                       className="color-[#F4F4F5] my-6 "
                       placeholder="1000"
                       type="number"
-                      {...register("privateData.pricing")}
                     />
                   )}
                 />
                 <Controller
                   name="privateData.groupPricing"
                   control={control}
+                  rules={{ setValueAs: (v) => (v === "" ? undefined : Number(v)) } as any}
                   render={({ field }) => (
                     <Input
                       {...field}
@@ -390,9 +375,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                       className="color-[#F4F4F5] my-6 "
                       placeholder="1000"
                       type="number"
-                      {...register("privateData.groupPricing", {
-                        valueAsNumber: true,
-                      })}
                     />
                   )}
                 />
@@ -406,7 +388,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                       labelPlacement="outside"
                       className="color-[#F4F4F5] my-6 "
                       placeholder="Assestment"
-                      {...register("privateData.assestment")}
                     />
                   )}
                 />
@@ -420,7 +401,6 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                       labelPlacement="outside"
                       className="color-[#F4F4F5] my-6 "
                       placeholder="Potential"
-                      {...register("privateData.potential")}
                     />
                   )}
                 />

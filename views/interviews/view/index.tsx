@@ -16,6 +16,7 @@ interface InterviewData {
   title: string;
   description: string;
   position: string;
+  positionDescription?: string;
   scheduledAt: string;
   status: string;
   survey?: {
@@ -192,6 +193,7 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
                 title={data.title}
                 description={data.description}
                 position={data.position}
+                positionDescription={data.positionDescription}
                 scheduledAt={data.scheduledAt}
                 status={data.status}
                 survey={data.surveyId || data.survey}
@@ -210,7 +212,24 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
             )}
 
             {selectedTab === "reports" && (
-              <ReportsSection interviewId={data._id} />
+              <ReportsSection
+                interviewId={data._id}
+                interviewPosition={data.position}
+                interviewScheduledAt={data.scheduledAt}
+                intervieweeNames={
+                  data.interviewees
+                    ?.map((ie) =>
+                      ie.personalInfo
+                        ? `${ie.personalInfo.firstName} ${ie.personalInfo.lastName}`.trim()
+                        : "",
+                    )
+                    .filter(Boolean) ?? []
+                }
+                professionalNames={
+                  data.professionals?.map((p) => p.fullname).filter(Boolean) ??
+                  []
+                }
+              />
             )}
           </div>
         </div>
