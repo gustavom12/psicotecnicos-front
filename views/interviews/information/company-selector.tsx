@@ -63,7 +63,7 @@ const CompanySelector: React.FC<Props> = ({ value, onChange }) => {
         }}
       >
         {companies.map((c) => (
-          <SelectItem key={c._id} value={c._id} textValue={c.name ?? c._id}>
+          <SelectItem key={c._id} textValue={c.name ?? c._id}>
             <div className="flex flex-col">
               <span className="font-medium">{c.name ?? "(sin nombre)"}</span>
               {(c.sector || c.location) && (

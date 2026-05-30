@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Textarea } from "@heroui/react";
-import { FileText, Plus, RefreshCw } from "lucide-react";
+import { FileText, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { Notification } from "@/common/notification";
 import apiConnection from "@/pages/api/api";
 import ReportCard from "@/views/interviewed/edit/reports/ReportCard";

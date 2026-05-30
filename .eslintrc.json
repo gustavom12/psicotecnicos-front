@@ -53,7 +53,7 @@
       }
     ],
     "react/self-closing-comp": "warn",
-    "react/jsx-sort-props": false,
+    "react/jsx-sort-props": "off",
     "padding-line-between-statements": "off"
   }
 }

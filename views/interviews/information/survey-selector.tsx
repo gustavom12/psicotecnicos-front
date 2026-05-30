@@ -62,7 +62,7 @@ console.log("Surveys state:", surveys.map(s => s._id));
           }}
         >
           {surveys.map((survey) => (
-            <SelectItem key={survey._id} value={survey._id} textValue={survey.name}>
+            <SelectItem key={survey._id} textValue={survey.name}>
               <div className="flex flex-col">
                 <span className="font-medium">{survey.name}</span>
                 <span className="text-sm text-gray-500">
