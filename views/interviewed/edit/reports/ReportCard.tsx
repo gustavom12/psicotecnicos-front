@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Textarea } from "@heroui/react";
-import { FileDown } from "lucide-react";
+import { FileDown, Trash2 } from "lucide-react";
 import { Notification } from "@/common/notification";
 import AttachmentUploader, { Attachment } from "@/common/AttachmentUploader";
 import { InterviewMeta, Report, ReportContent } from "./reports.types";
