@@ -102,7 +102,7 @@ export const useIntervieweeAuthContext = create<IntervieweeAuthState>(
           Notification("Has iniciado sesión exitosamente", "success");
 
           // Redirect to interviewee home
-          Router.push("/interviewee");
+          if (typeof window !== "undefined") Router.push("/interviewee");
         } catch (error: any) {
           console.log({ error: error?.response?.data });
           const errorMessage =
@@ -126,7 +126,7 @@ export const useIntervieweeAuthContext = create<IntervieweeAuthState>(
         });
 
         Notification("Sesión cerrada exitosamente", "success");
-        Router.push("/interviewee/login");
+        if (typeof window !== "undefined") Router.push("/interviewee/login");
       },
 
       checkAuth: async () => {
@@ -165,7 +165,7 @@ export const useIntervieweeAuthContext = create<IntervieweeAuthState>(
           });
 
           // Redirect to login if not already there
-          if (Router.pathname !== "/interviewee/login") {
+          if (typeof window !== "undefined" && Router.pathname !== "/interviewee/login") {
             Router.push("/interviewee/login");
           }
         }

@@ -16,20 +16,21 @@ interface AuthState {
 }
 
 export const useAuthContext = create<AuthState>((set) => {
-  apiConnection
-    .get("users/self")
-    .then(({ data }) => {
-      set({
-        authorized: true,
-        roles: data.roles,
-        user: data,
+  if (typeof window !== "undefined") {
+    apiConnection
+      .get("users/self")
+      .then(({ data }) => {
+        set({
+          authorized: true,
+          roles: data.roles,
+          user: data,
+        });
+      })
+      .catch((error) => {
+        Router.push("/auth/login");
+        console.log("Error: ", error);
       });
-    })
-    .catch((error) => {
-      // TODO: REACTIVAR
-      Router.push("/auth/login");
-      console.log("Error: ", error);
-    });
+  }
   return {
     authorized: false,
     roles: [],
@@ -45,8 +46,7 @@ export const useAuthContext = create<AuthState>((set) => {
 
         set({ authorized: true, roles: data.user.roles, user: data.user });
         Notification("Haz iniciado sesión éxitosamente", "success");
-        // Pushea al inicio
-        Router.push("/home");
+        if (typeof window !== "undefined") Router.push("/home");
       } catch (error: any) {
         console.log({ error: error?.response?.data });
         const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al iniciar sesión";
@@ -129,7 +129,7 @@ export const useAuthContext = create<AuthState>((set) => {
       localStorage.removeItem("accessToken");
       set({ authorized: false, roles: [], user: {} });
       Notification("Sesión cerrada exitosamente", "success");
-      Router.push("/auth/login");
+      if (typeof window !== "undefined") Router.push("/auth/login");
     },
   };
 });
