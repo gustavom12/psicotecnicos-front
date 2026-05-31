@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let baseURL = "http://localhost:3213";
+let baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3213";
 
 const apiConnection = axios.create({ baseURL });
 
