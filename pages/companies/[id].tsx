@@ -1,5 +1,4 @@
 import React from "react";
-import CompaniesTable from "@/views/companies/table.view";
 import { useParams } from "next/navigation";
 import EditCompany from "@/views/companies/edit.view";
 

@@ -11,4 +11,3 @@ const IntervieweeHomePage = () => {
 };
 
 export default IntervieweeHomePage;
-

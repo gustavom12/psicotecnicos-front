@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, CardBody, Button } from '@heroui/react';
-import { CheckCircleIcon } from '@heroicons/react/24/solid';
-import { useRouter } from 'next/router';
+import React from "react";
+import { Card, CardBody, Button } from "@heroui/react";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/router";
 
 export default function InterviewSuccess() {
   const router = useRouter();
@@ -17,14 +17,15 @@ export default function InterviewSuccess() {
           </h1>
 
           <p className="text-gray-600 mb-6">
-            Gracias por completar la entrevista. Tus respuestas han sido enviadas exitosamente.
+            Gracias por completar la entrevista. Tus respuestas han sido
+            enviadas exitosamente.
           </p>
 
           <div className="space-y-3">
             <Button
               color="primary"
               className="w-full"
-              onPress={() => router.push('/interviewee')}
+              onPress={() => router.push("/interviewee")}
             >
               Volver al Inicio
             </Button>

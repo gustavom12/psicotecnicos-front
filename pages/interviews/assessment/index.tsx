@@ -1,11 +1,8 @@
-
 import AssessmentView from "@/views/interviews/module";
 import React from "react";
 
 const Assessment = () => {
-  return (
-    <AssessmentView />
-  )
-}
+  return <AssessmentView />;
+};
 
 export default Assessment;

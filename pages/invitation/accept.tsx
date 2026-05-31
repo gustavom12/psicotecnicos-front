@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Button, Card, CardBody, CardHeader } from '@heroui/react';
-import apiConnection from '@/pages/api/api';
-import { Notification } from '@/common/notification';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { Button, Card, CardBody, CardHeader } from "@heroui/react";
+import apiConnection from "@/pages/api/api";
+import { Notification } from "@/common/notification";
 
 interface Interviewee {
   _id: string;
@@ -25,7 +25,7 @@ const AcceptInvitation = () => {
   const [loading, setLoading] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [interviewee, setInterviewee] = useState<Interviewee | null>(null);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     if (token) {
@@ -36,17 +36,19 @@ const AcceptInvitation = () => {
   const validateToken = async () => {
     try {
       setLoading(true);
-      setError('');
+      setError("");
 
       // Intentar obtener información de la invitación
-      const response = await apiConnection.get(`/interviewees/accept-invitation/${token}`);
+      const response = await apiConnection.get(
+        `/interviewees/accept-invitation/${token}`,
+      );
       setInterviewee(response.data);
     } catch (error: any) {
-      console.error('Error validating token:', error);
+      console.error("Error validating token:", error);
       if (error?.response?.status === 400) {
-        setError('Token de invitación inválido o expirado');
+        setError("Token de invitación inválido o expirado");
       } else {
-        setError('Error al validar la invitación');
+        setError("Error al validar la invitación");
       }
     } finally {
       setLoading(false);
@@ -60,17 +62,17 @@ const AcceptInvitation = () => {
       setAccepting(true);
       await apiConnection.get(`/interviewees/accept-invitation/${token}`);
 
-      Notification('¡Invitación aceptada exitosamente!', 'success');
+      Notification("¡Invitación aceptada exitosamente!", "success");
 
       // Redirigir a la página de entrevista o dashboard
       setTimeout(() => {
-        router.push('/interview/start'); // Ajustar según la ruta de entrevistas
+        router.push("/interview/start"); // Ajustar según la ruta de entrevistas
       }, 2000);
-
     } catch (error: any) {
-      console.error('Error accepting invitation:', error);
-      const errorMessage = error?.response?.data?.message || 'Error al aceptar la invitación';
-      Notification(errorMessage, 'error');
+      console.error("Error accepting invitation:", error);
+      const errorMessage =
+        error?.response?.data?.message || "Error al aceptar la invitación";
+      Notification(errorMessage, "error");
       setError(errorMessage);
     } finally {
       setAccepting(false);
@@ -78,12 +80,12 @@ const AcceptInvitation = () => {
   };
 
   const formatDate = (dateString: string | Date) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -91,7 +93,7 @@ const AcceptInvitation = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#635BFF] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#635BFF] mx-auto mb-4" />
           <p className="text-gray-600">Validando invitación...</p>
         </div>
       </div>
@@ -105,13 +107,16 @@ const AcceptInvitation = () => {
           <CardHeader className="text-center">
             <div className="w-full">
               <div className="text-6xl mb-4">❌</div>
-              <h1 className="text-2xl font-bold text-gray-900">Invitación Inválida</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Invitación Inválida
+              </h1>
             </div>
           </CardHeader>
           <CardBody className="text-center">
             <p className="text-gray-600 mb-6">{error}</p>
             <p className="text-sm text-gray-500">
-              Si crees que esto es un error, contacta al administrador del sistema.
+              Si crees que esto es un error, contacta al administrador del
+              sistema.
             </p>
           </CardBody>
         </Card>
@@ -129,7 +134,9 @@ const AcceptInvitation = () => {
     );
   }
 
-  const isExpired = interviewee.invitationInfo?.expiresAt && new Date(interviewee.invitationInfo.expiresAt) < new Date();
+  const isExpired =
+    interviewee.invitationInfo?.expiresAt &&
+    new Date(interviewee.invitationInfo.expiresAt) < new Date();
   const isAlreadyAccepted = interviewee.invitationInfo?.acceptedAt;
 
   return (
@@ -138,7 +145,9 @@ const AcceptInvitation = () => {
         <CardHeader className="text-center bg-[#635BFF] text-white rounded-t-lg">
           <div className="w-full py-6">
             <div className="text-6xl mb-4">📋</div>
-            <h1 className="text-3xl font-bold">Invitación para Entrevista Psicotécnica</h1>
+            <h1 className="text-3xl font-bold">
+              Invitación para Entrevista Psicotécnica
+            </h1>
             <p className="text-blue-100 mt-2">
               {interviewee.companyName && `${interviewee.companyName}`}
             </p>
@@ -148,7 +157,8 @@ const AcceptInvitation = () => {
         <CardBody className="p-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-              Hola {interviewee.personalInfo.firstName} {interviewee.personalInfo.lastName}
+              Hola {interviewee.personalInfo.firstName}{" "}
+              {interviewee.personalInfo.lastName}
             </h2>
             <p className="text-gray-600">
               Has sido invitado/a a participar en una entrevista psicotécnica.
@@ -158,25 +168,32 @@ const AcceptInvitation = () => {
           {isExpired ? (
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
               <div className="text-4xl mb-4">⏰</div>
-              <h3 className="text-xl font-semibold text-red-800 mb-2">Invitación Expirada</h3>
+              <h3 className="text-xl font-semibold text-red-800 mb-2">
+                Invitación Expirada
+              </h3>
               <p className="text-red-600 mb-4">
-                Esta invitación expiró el {formatDate(interviewee.invitationInfo!.expiresAt)}
+                Esta invitación expiró el{" "}
+                {formatDate(interviewee.invitationInfo!.expiresAt)}
               </p>
               <p className="text-sm text-red-500">
-                Por favor, contacta al administrador para solicitar una nueva invitación.
+                Por favor, contacta al administrador para solicitar una nueva
+                invitación.
               </p>
             </div>
           ) : isAlreadyAccepted ? (
             <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
               <div className="text-4xl mb-4">✅</div>
-              <h3 className="text-xl font-semibold text-green-800 mb-2">Invitación Ya Aceptada</h3>
+              <h3 className="text-xl font-semibold text-green-800 mb-2">
+                Invitación Ya Aceptada
+              </h3>
               <p className="text-green-600 mb-4">
-                Ya has aceptado esta invitación el {formatDate(interviewee.invitationInfo!.acceptedAt!)}
+                Ya has aceptado esta invitación el{" "}
+                {formatDate(interviewee.invitationInfo!.acceptedAt!)}
               </p>
               <Button
                 color="primary"
                 className="bg-[#635BFF]"
-                onClick={() => router.push('/interview/start')}
+                onClick={() => router.push("/interview/start")}
               >
                 Continuar con la Entrevista
               </Button>
@@ -184,7 +201,9 @@ const AcceptInvitation = () => {
           ) : (
             <div className="space-y-6">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-800 mb-3">Información de la Invitación</h3>
+                <h3 className="text-lg font-semibold text-blue-800 mb-3">
+                  Información de la Invitación
+                </h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Email:</span>
@@ -193,7 +212,9 @@ const AcceptInvitation = () => {
                   {interviewee.companyName && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Empresa:</span>
-                      <span className="font-medium">{interviewee.companyName}</span>
+                      <span className="font-medium">
+                        {interviewee.companyName}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between">
@@ -209,10 +230,13 @@ const AcceptInvitation = () => {
                 <div className="flex items-start">
                   <div className="text-2xl mr-3">⚠️</div>
                   <div>
-                    <h4 className="font-semibold text-yellow-800 mb-1">Importante</h4>
+                    <h4 className="font-semibold text-yellow-800 mb-1">
+                      Importante
+                    </h4>
                     <p className="text-sm text-yellow-700">
-                      Al aceptar esta invitación, podrás acceder al proceso de entrevista psicotécnica.
-                      Asegúrate de tener tiempo suficiente para completar el proceso.
+                      Al aceptar esta invitación, podrás acceder al proceso de
+                      entrevista psicotécnica. Asegúrate de tener tiempo
+                      suficiente para completar el proceso.
                     </p>
                   </div>
                 </div>
@@ -227,13 +251,13 @@ const AcceptInvitation = () => {
                   isLoading={accepting}
                   disabled={accepting}
                 >
-                  {accepting ? 'Aceptando...' : 'Aceptar Invitación'}
+                  {accepting ? "Aceptando..." : "Aceptar Invitación"}
                 </Button>
 
                 <Button
                   variant="bordered"
                   size="lg"
-                  onClick={() => router.push('/')}
+                  onClick={() => router.push("/")}
                   disabled={accepting}
                 >
                   Cancelar
@@ -244,7 +268,8 @@ const AcceptInvitation = () => {
 
           <div className="mt-8 pt-6 border-t border-gray-200 text-center">
             <p className="text-xs text-gray-500">
-              Si tienes alguna pregunta o problema técnico, contacta al administrador del sistema.
+              Si tienes alguna pregunta o problema técnico, contacta al
+              administrador del sistema.
             </p>
           </div>
         </CardBody>

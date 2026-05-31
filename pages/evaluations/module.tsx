@@ -1,6 +1,6 @@
-import ModuleEvaluationsView from "../../views/surveys/module/module"
+import ModuleEvaluationsView from "../../views/surveys/module/module";
 
-const ModuleEvaluations = () =>{
-return <ModuleEvaluationsView/>
-}
-export default ModuleEvaluations
+const ModuleEvaluations = () => {
+  return <ModuleEvaluationsView />;
+};
+export default ModuleEvaluations;

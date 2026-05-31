@@ -1,10 +1,8 @@
-import ProcessDetailModuleView from '@/views/surveys/processModule/processModule'
-import React from 'react'
+import ProcessDetailModuleView from "@/views/surveys/processModule/processModule";
+import React from "react";
 
 const ProcessModule = () => {
-  return (
-    <ProcessDetailModuleView />
-  )
-}
+  return <ProcessDetailModuleView />;
+};
 
-export default ProcessModule
+export default ProcessModule;

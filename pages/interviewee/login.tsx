@@ -6,4 +6,3 @@ const IntervieweeLoginPage = () => {
 };
 
 export default IntervieweeLoginPage;
-

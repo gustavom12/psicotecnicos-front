@@ -1,10 +1,7 @@
-import AddModuleView from "../../views/surveys/addModule/addModule"
-
+import AddModuleView from "../../views/surveys/addModule/addModule";
 
 const AddModule = () => {
-  return (
-    <AddModuleView />
-  )
-}
+  return <AddModuleView />;
+};
 
-export default AddModule
+export default AddModule;

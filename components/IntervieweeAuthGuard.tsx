@@ -38,10 +38,13 @@ const IntervieweeAuthGuard: React.FC<IntervieweeAuthGuardProps> = ({
   if (loading) {
     return (
       fallback || (
-        <IntervieweeLayout title="Cargando..." description="Verificando autenticación">
+        <IntervieweeLayout
+          title="Cargando..."
+          description="Verificando autenticación"
+        >
           <div className="container mx-auto px-6 py-8">
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
               <span className="ml-4 text-gray-600">Verificando acceso...</span>
             </div>
           </div>
@@ -58,4 +61,3 @@ const IntervieweeAuthGuard: React.FC<IntervieweeAuthGuardProps> = ({
 };
 
 export default IntervieweeAuthGuard;
-
