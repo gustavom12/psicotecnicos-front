@@ -54,9 +54,9 @@ const IntervieweesSelector: React.FC<Props> = ({ value = [], onChange }) => {
       fetchInterviewees();
     };
 
-    window.addEventListener('focus', handleFocus);
+    window.addEventListener("focus", handleFocus);
     return () => {
-      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener("focus", handleFocus);
     };
   }, []);
 
@@ -66,7 +66,9 @@ const IntervieweesSelector: React.FC<Props> = ({ value = [], onChange }) => {
   };
 
   const getSelectedInterviewees = () => {
-    return interviewees.filter(interviewee => value.includes(interviewee._id));
+    return interviewees.filter((interviewee) =>
+      value.includes(interviewee._id),
+    );
   };
 
   return (
@@ -83,7 +85,9 @@ const IntervieweesSelector: React.FC<Props> = ({ value = [], onChange }) => {
         </div>
         <Select
           radius="sm"
-          placeholder={loading ? "Cargando entrevistados..." : "Selecciona entrevistados…"}
+          placeholder={
+            loading ? "Cargando entrevistados..." : "Selecciona entrevistados…"
+          }
           className="w-full"
           selectionMode="multiple"
           selectedKeys={new Set(value)}
@@ -91,15 +95,28 @@ const IntervieweesSelector: React.FC<Props> = ({ value = [], onChange }) => {
           isDisabled={loading}
         >
           {interviewees.map((interviewee) => (
-            <SelectItem key={interviewee._id} textValue={interviewee.personalInfo.firstName && interviewee.personalInfo.lastName ? `${interviewee.personalInfo.firstName} ${interviewee.personalInfo.lastName}` : interviewee.email} >
+            <SelectItem
+              key={interviewee._id}
+              textValue={
+                interviewee.personalInfo.firstName &&
+                interviewee.personalInfo.lastName
+                  ? `${interviewee.personalInfo.firstName} ${interviewee.personalInfo.lastName}`
+                  : interviewee.email
+              }
+            >
               <div className="flex flex-col">
                 <span className="font-medium">
-                  {interviewee.personalInfo.firstName} {interviewee.personalInfo.lastName}
+                  {interviewee.personalInfo.firstName}{" "}
+                  {interviewee.personalInfo.lastName}
                 </span>
                 <span className="text-sm text-gray-500">
                   {interviewee.email}
-                  {interviewee.personalInfo.position ? ` - ${interviewee.personalInfo.position}` : ''}
-                  {interviewee.companyName ? ` (${interviewee.companyName})` : ''}
+                  {interviewee.personalInfo.position
+                    ? ` - ${interviewee.personalInfo.position}`
+                    : ""}
+                  {interviewee.companyName
+                    ? ` (${interviewee.companyName})`
+                    : ""}
                 </span>
               </div>
             </SelectItem>
@@ -109,19 +126,24 @@ const IntervieweesSelector: React.FC<Props> = ({ value = [], onChange }) => {
         {/* Mostrar entrevistados seleccionados */}
         {value.length > 0 && (
           <div className="mt-4 p-3 bg-gray-50 rounded-md">
-            <h4 className="font-medium text-gray-800 mb-2">Entrevistados seleccionados:</h4>
+            <h4 className="font-medium text-gray-800 mb-2">
+              Entrevistados seleccionados:
+            </h4>
             <div className="flex flex-wrap gap-2">
               {getSelectedInterviewees().map((interviewee) => (
                 <Chip
                   key={interviewee._id}
                   onClose={() => {
-                    const newSelection = value.filter(id => id !== interviewee._id);
+                    const newSelection = value.filter(
+                      (id) => id !== interviewee._id,
+                    );
                     onChange(newSelection);
                   }}
                   variant="flat"
                   color="secondary"
                 >
-                  {interviewee.personalInfo.firstName} {interviewee.personalInfo.lastName}
+                  {interviewee.personalInfo.firstName}{" "}
+                  {interviewee.personalInfo.lastName}
                 </Chip>
               ))}
             </div>

@@ -7,9 +7,9 @@ import { InterviewMeta, Report } from "./reports.types";
  * Helpers locales (defensivos contra distintas formas de respuesta del backend)
  * --------------------------------------------------------------------------- */
 
-const unwrap = <T,>(data: any): T => (data?.data ?? data) as T;
+const unwrap = <T>(data: any): T => (data?.data ?? data) as T;
 
-const toArray = <T,>(data: any): T[] => {
+const toArray = <T>(data: any): T[] => {
   if (Array.isArray(data)) return data as T[];
   if (Array.isArray(data?.data)) return data.data as T[];
   return [];
@@ -45,14 +45,13 @@ export const reportsApi = {
     notes?: { text: string }[],
     attachments?: { url: string; description: string }[],
   ): Promise<Report> {
-    const { data } = await apiConnection.post(
-      `/reports/${reportId}/feedback`,
-      {
-        feedback: feedback.trim(),
-        ...(notes?.length ? { notes } : {}),
-        ...(attachments?.length ? { attachments: attachments.map((a) => ({ ...a, type: "image" })) } : {}),
-      },
-    );
+    const { data } = await apiConnection.post(`/reports/${reportId}/feedback`, {
+      feedback: feedback.trim(),
+      ...(notes?.length ? { notes } : {}),
+      ...(attachments?.length
+        ? { attachments: attachments.map((a) => ({ ...a, type: "image" })) }
+        : {}),
+    });
     return unwrap<Report>(data);
   },
 };
@@ -120,7 +119,12 @@ export const useReports = (intervieweeId: string): UseReportsResult => {
       attachments?: { url: string; description: string }[],
     ): Promise<Report | null> => {
       try {
-        const updated = await reportsApi.submitFeedback(reportId, feedback, notes, attachments);
+        const updated = await reportsApi.submitFeedback(
+          reportId,
+          feedback,
+          notes,
+          attachments,
+        );
         Notification("Reporte regenerado con tus sugerencias", "success");
         updateLocalReport(updated);
         return updated;

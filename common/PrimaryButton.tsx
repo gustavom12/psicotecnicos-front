@@ -1,15 +1,15 @@
-import { Button } from '@heroui/react'
-import { px } from 'framer-motion'
-import React from 'react'
+import { Button } from "@heroui/react";
+import React from "react";
 
-const PrimaryButton = ({ text}) => {
+const PrimaryButton = ({ text }) => {
   return (
     <Button
       radius="none"
-      className='flex flex-row bg-[#635BFF] text-white rounded-md' >
+      className="flex flex-row bg-[#635BFF] text-white rounded-md"
+    >
       {text}
     </Button>
-  )
-}
+  );
+};
 
-export default PrimaryButton
+export default PrimaryButton;

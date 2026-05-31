@@ -87,7 +87,11 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
         notes: notes.map((n) => ({ text: n.text })),
         attachments: attachments
           .filter((a) => a.url)
-          .map((a) => ({ url: a.url, type: "image", description: a.description })),
+          .map((a) => ({
+            url: a.url,
+            type: "image",
+            description: a.description,
+          })),
       });
       Notification("Informe generado correctamente", "success");
       setNotes([]);
@@ -161,7 +165,12 @@ const ReportsSection: React.FC<ReportsSectionProps> = ({
     }
     win.document.write(html);
     win.document.close();
-    win.addEventListener("load", () => setTimeout(() => { win.focus(); win.print(); }, 400));
+    win.addEventListener("load", () =>
+      setTimeout(() => {
+        win.focus();
+        win.print();
+      }, 400),
+    );
   };
 
   /* ── Render ─────────────────────────────────────────────────────────────── */

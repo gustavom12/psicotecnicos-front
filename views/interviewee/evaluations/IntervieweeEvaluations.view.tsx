@@ -6,7 +6,14 @@ import { useIntervieweeAuthContext } from "@/contexts/interviewee-auth.context";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import apiConnection from "@/pages/api/api";
-import { Calendar, Clock, FileText, Play, CheckCircle, BookOpen } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  FileText,
+  Play,
+  CheckCircle,
+  BookOpen,
+} from "lucide-react";
 
 // Interface for Interview data with surveys
 interface Interview {
@@ -15,7 +22,7 @@ interface Interview {
   description: string;
   position: string;
   scheduledAt: string;
-  status: 'DRAFT' | 'NOT_STARTED' | 'IN_PROGRESS' | 'CLOSED';
+  status: "DRAFT" | "NOT_STARTED" | "IN_PROGRESS" | "CLOSED";
   surveyId: {
     _id: string;
     name: string;
@@ -45,7 +52,9 @@ const IntervieweeEvaluations = () => {
   const { authenticated, interviewee } = useIntervieweeAuthContext();
   const router = useRouter();
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [evaluationStatuses, setEvaluationStatuses] = useState<EvaluationStatus[]>([]);
+  const [evaluationStatuses, setEvaluationStatuses] = useState<
+    EvaluationStatus[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,51 +64,60 @@ const IntervieweeEvaluations = () => {
 
     try {
       // Get all responses for this interviewee
-      const response = await apiConnection.get(`/interview-responses/interviewee/${interviewee._id}`);
+      const response = await apiConnection.get(
+        `/interview-responses/interviewee/${interviewee._id}`,
+      );
       const responses = response.data || [];
 
-      console.log('Loaded interview responses for evaluations:', responses);
+      console.log("Loaded interview responses for evaluations:", responses);
 
       // Create evaluation statuses based on real data
-      const statuses: EvaluationStatus[] = interviews.map((interview: Interview) => {
-        // Find response for this survey
-        const surveyResponse = responses.find((r: any) =>
-          r.surveyId === interview.surveyId._id ||
-          r.surveyId._id === interview.surveyId._id
-        );
+      const statuses: EvaluationStatus[] = interviews.map(
+        (interview: Interview) => {
+          // Find response for this survey
+          const surveyResponse = responses.find(
+            (r: any) =>
+              r.surveyId === interview.surveyId._id ||
+              r.surveyId._id === interview.surveyId._id,
+          );
 
-        if (surveyResponse) {
-          return {
-            surveyId: interview.surveyId._id,
-            completed: surveyResponse.status === 'COMPLETED',
-            completedAt: surveyResponse.completedAt,
-            progress: surveyResponse.status === 'COMPLETED' ? 100 :
-                     surveyResponse.status === 'IN_PROGRESS' ?
-                     Math.round((surveyResponse.responses?.length || 0) * 10) : 0 // Rough progress estimation
-          };
-        } else {
-          // No response found, evaluation not started
-          return {
-            surveyId: interview.surveyId._id,
-            completed: false,
-            completedAt: undefined,
-            progress: 0
-          };
-        }
-      });
+          if (surveyResponse) {
+            return {
+              surveyId: interview.surveyId._id,
+              completed: surveyResponse.status === "COMPLETED",
+              completedAt: surveyResponse.completedAt,
+              progress:
+                surveyResponse.status === "COMPLETED"
+                  ? 100
+                  : surveyResponse.status === "IN_PROGRESS"
+                    ? Math.round((surveyResponse.responses?.length || 0) * 10)
+                    : 0, // Rough progress estimation
+            };
+          } else {
+            // No response found, evaluation not started
+            return {
+              surveyId: interview.surveyId._id,
+              completed: false,
+              completedAt: undefined,
+              progress: 0,
+            };
+          }
+        },
+      );
 
       setEvaluationStatuses(statuses);
-      console.log('Evaluation statuses updated:', statuses);
-
+      console.log("Evaluation statuses updated:", statuses);
     } catch (error) {
-      console.error('Error loading evaluation statuses:', error);
+      console.error("Error loading evaluation statuses:", error);
       // If we can't load statuses, initialize with empty statuses
-      const emptyStatuses: EvaluationStatus[] = interviews.map((interview: Interview) => ({
-        surveyId: interview.surveyId._id,
-        completed: false,
-        completedAt: undefined,
-        progress: 0
-      }));
+      const emptyStatuses: EvaluationStatus[] = interviews.map(
+        (interview: Interview) => ({
+          surveyId: interview.surveyId._id,
+          completed: false,
+          completedAt: undefined,
+          progress: 0,
+        }),
+      );
       setEvaluationStatuses(emptyStatuses);
     }
   };
@@ -113,14 +131,17 @@ const IntervieweeEvaluations = () => {
       setError(null);
 
       // Get interviews where the current interviewee is assigned
-      const response = await apiConnection.get("/interviews/interviewee/filtered");
+      const response = await apiConnection.get(
+        "/interviews/interviewee/filtered",
+      );
       console.log("interviews response: ", response);
 
       // Filter interviews to only show those assigned to current interviewee
       const allInterviews = response.data || [];
-      const myInterviews = allInterviews.filter((interview: any) =>
-        interview.interviewees &&
-        interview.interviewees.includes(interviewee._id)
+      const myInterviews = allInterviews.filter(
+        (interview: any) =>
+          interview.interviewees &&
+          interview.interviewees.includes(interviewee._id),
       );
 
       setInterviews(myInterviews);
@@ -166,7 +187,7 @@ const IntervieweeEvaluations = () => {
   };
 
   const getEvaluationStatus = (surveyId: string) => {
-    return evaluationStatuses.find(status => status.surveyId === surveyId);
+    return evaluationStatuses.find((status) => status.surveyId === surveyId);
   };
 
   const getStatusConfig = (completed: boolean) => {
@@ -192,13 +213,15 @@ const IntervieweeEvaluations = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <IntervieweeNavbar links={[
-          { label: "Mis Entrevistas", href: "/interviewee" },
-          { label: "Evaluaciones", href: "/interviewee/evaluations" }
-        ]} />
+        <IntervieweeNavbar
+          links={[
+            { label: "Mis Entrevistas", href: "/interviewee" },
+            { label: "Evaluaciones", href: "/interviewee/evaluations" },
+          ]}
+        />
         <div className="container mx-auto px-6 py-8">
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
             <span className="ml-4 text-gray-600">Cargando evaluaciones...</span>
           </div>
         </div>
@@ -207,11 +230,16 @@ const IntervieweeEvaluations = () => {
   }
 
   return (
-    <IntervieweeLayout title="Mis Evaluaciones" description="Evaluaciones previas para entrevistas">
-      <IntervieweeNavbar links={[
-        { label: "Mis Entrevistas", href: "/interviewee" },
-        { label: "Evaluaciones", href: "/interviewee/evaluations" }
-      ]} />
+    <IntervieweeLayout
+      title="Mis Evaluaciones"
+      description="Evaluaciones previas para entrevistas"
+    >
+      <IntervieweeNavbar
+        links={[
+          { label: "Mis Entrevistas", href: "/interviewee" },
+          { label: "Evaluaciones", href: "/interviewee/evaluations" },
+        ]}
+      />
 
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
@@ -220,7 +248,8 @@ const IntervieweeEvaluations = () => {
             📋 Mis Evaluaciones Previas
           </h1>
           <p className="text-gray-600">
-            Completa las evaluaciones requeridas antes de tus entrevistas programadas
+            Completa las evaluaciones requeridas antes de tus entrevistas
+            programadas
           </p>
         </div>
 
@@ -244,7 +273,7 @@ const IntervieweeEvaluations = () => {
                 <div>
                   <p className="text-amber-100 text-sm">Pendientes</p>
                   <p className="text-2xl font-bold">
-                    {evaluationStatuses.filter(s => !s.completed).length}
+                    {evaluationStatuses.filter((s) => !s.completed).length}
                   </p>
                 </div>
                 <Clock className="w-8 h-8 text-amber-200" />
@@ -258,7 +287,7 @@ const IntervieweeEvaluations = () => {
                 <div>
                   <p className="text-green-100 text-sm">Completadas</p>
                   <p className="text-2xl font-bold">
-                    {evaluationStatuses.filter(s => s.completed).length}
+                    {evaluationStatuses.filter((s) => s.completed).length}
                   </p>
                 </div>
                 <CheckCircle className="w-8 h-8 text-green-200" />
@@ -277,7 +306,8 @@ const IntervieweeEvaluations = () => {
                   No tienes evaluaciones asignadas
                 </h3>
                 <p className="text-gray-500">
-                  Cuando tengas entrevistas programadas con evaluaciones previas, aparecerán aquí.
+                  Cuando tengas entrevistas programadas con evaluaciones
+                  previas, aparecerán aquí.
                 </p>
               </div>
             </CardBody>
@@ -285,17 +315,26 @@ const IntervieweeEvaluations = () => {
         ) : (
           <div className="grid gap-6">
             {interviews.map((interview) => {
-              const evaluationStatus = getEvaluationStatus(interview.surveyId._id);
-              const statusConfig = getStatusConfig(evaluationStatus?.completed || false);
+              const evaluationStatus = getEvaluationStatus(
+                interview.surveyId._id,
+              );
+              const statusConfig = getStatusConfig(
+                evaluationStatus?.completed || false,
+              );
 
               return (
-                <Card key={interview._id} className="shadow-md hover:shadow-lg transition-shadow">
+                <Card
+                  key={interview._id}
+                  className="shadow-md hover:shadow-lg transition-shadow"
+                >
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start w-full">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <h3 className="text-xl font-semibold text-gray-900">
-                            {interview.surveyId.name || interview.surveyId.title || 'Evaluación'}
+                            {interview.surveyId.name ||
+                              interview.surveyId.title ||
+                              "Evaluación"}
                           </h3>
                           <Chip
                             color={statusConfig.color}
@@ -355,7 +394,11 @@ const IntervieweeEvaluations = () => {
                           <FileText className="w-4 h-4" />
                           <div>
                             <p className="font-medium">Progreso</p>
-                            <p>{evaluationStatus.completed ? '100%' : `${evaluationStatus.progress}%`}</p>
+                            <p>
+                              {evaluationStatus.completed
+                                ? "100%"
+                                : `${evaluationStatus.progress}%`}
+                            </p>
                           </div>
                         </div>
                       )}
@@ -380,9 +423,10 @@ const IntervieweeEvaluations = () => {
                             startContent={<Play className="w-4 h-4" />}
                             className="font-medium"
                           >
-                            {evaluationStatus?.progress && evaluationStatus.progress > 0
-                              ? 'Continuar Evaluación'
-                              : 'Iniciar Evaluación'}
+                            {evaluationStatus?.progress &&
+                            evaluationStatus.progress > 0
+                              ? "Continuar Evaluación"
+                              : "Iniciar Evaluación"}
                           </Button>
                         </Link>
                       )}
@@ -399,14 +443,17 @@ const IntervieweeEvaluations = () => {
                     </div>
 
                     {/* Completion Info */}
-                    {evaluationStatus?.completed && evaluationStatus.completedAt && (
-                      <div className="mt-4 p-3 bg-green-50 rounded-lg">
-                        <p className="text-sm text-green-700">
-                          <CheckCircle className="w-4 h-4 inline mr-1" />
-                          Completada el {formatDate(evaluationStatus.completedAt)} a las {formatTime(evaluationStatus.completedAt)}
-                        </p>
-                      </div>
-                    )}
+                    {evaluationStatus?.completed &&
+                      evaluationStatus.completedAt && (
+                        <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                          <p className="text-sm text-green-700">
+                            <CheckCircle className="w-4 h-4 inline mr-1" />
+                            Completada el{" "}
+                            {formatDate(evaluationStatus.completedAt)} a las{" "}
+                            {formatTime(evaluationStatus.completedAt)}
+                          </p>
+                        </div>
+                      )}
                   </CardBody>
                 </Card>
               );

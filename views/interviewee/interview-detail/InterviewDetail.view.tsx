@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardBody, CardHeader, Chip, Divider } from "@heroui/react";
+import { Button, Card, CardBody, CardHeader, Chip } from "@heroui/react";
 import IntervieweeNavbar from "@/common/interviewee-navbar";
 import IntervieweeLayout from "@/layouts/interviewee.layout";
 import Link from "next/link";
@@ -14,7 +14,6 @@ import {
   ArrowLeft,
   User,
   Building,
-  MapPin
 } from "lucide-react";
 
 interface InterviewDetailProps {
@@ -27,7 +26,7 @@ interface Interview {
   description: string;
   position: string;
   scheduledAt: string;
-  status: 'DRAFT' | 'NOT_STARTED' | 'IN_PROGRESS' | 'CLOSED';
+  status: "DRAFT" | "NOT_STARTED" | "IN_PROGRESS" | "CLOSED";
   surveyId: {
     _id: string;
     name: string;
@@ -48,7 +47,9 @@ interface Interview {
   updatedAt: string;
 }
 
-const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewId }) => {
+const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({
+  interviewId,
+}) => {
   const router = useRouter();
   const [interview, setInterview] = useState<Interview | null>(null);
   const [loading, setLoading] = useState(true);
@@ -139,19 +140,26 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
   };
 
   const canStartInterview = (interview: Interview) => {
-    return interview.status === 'NOT_STARTED' || interview.status === 'IN_PROGRESS';
+    return (
+      interview.status === "NOT_STARTED" || interview.status === "IN_PROGRESS"
+    );
   };
 
   if (loading) {
     return (
-      <IntervieweeLayout title="Detalles de Entrevista" description="Información detallada de la entrevista">
-        <IntervieweeNavbar links={[
-          { label: "Mis Entrevistas", href: "/interviewee" },
-          { label: "Detalles", href: "#" }
-        ]} />
+      <IntervieweeLayout
+        title="Detalles de Entrevista"
+        description="Información detallada de la entrevista"
+      >
+        <IntervieweeNavbar
+          links={[
+            { label: "Mis Entrevistas", href: "/interviewee" },
+            { label: "Detalles", href: "#" },
+          ]}
+        />
         <div className="container mx-auto px-6 py-8">
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
             <span className="ml-4 text-gray-600">Cargando detalles...</span>
           </div>
         </div>
@@ -161,11 +169,16 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
 
   if (error || !interview) {
     return (
-      <IntervieweeLayout title="Error" description="Error al cargar la entrevista">
-        <IntervieweeNavbar links={[
-          { label: "Mis Entrevistas", href: "/interviewee" },
-          { label: "Detalles", href: "#" }
-        ]} />
+      <IntervieweeLayout
+        title="Error"
+        description="Error al cargar la entrevista"
+      >
+        <IntervieweeNavbar
+          links={[
+            { label: "Mis Entrevistas", href: "/interviewee" },
+            { label: "Detalles", href: "#" },
+          ]}
+        />
         <div className="container mx-auto px-6 py-8">
           <Card className="p-8">
             <CardBody className="text-center">
@@ -194,11 +207,16 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
   const statusConfig = getStatusConfig(interview.status);
 
   return (
-    <IntervieweeLayout title={interview.title} description={`Detalles de la entrevista: ${interview.title}`}>
-        <IntervieweeNavbar links={[
-        { label: "Mis Entrevistas", href: "/interviewee" },
-        { label: interview.title, href: "#" }
-      ]} />
+    <IntervieweeLayout
+      title={interview.title}
+      description={`Detalles de la entrevista: ${interview.title}`}
+    >
+      <IntervieweeNavbar
+        links={[
+          { label: "Mis Entrevistas", href: "/interviewee" },
+          { label: interview.title, href: "#" },
+        ]}
+      />
 
       <div className="container mx-auto px-6 py-8">
         {/* Back Button */}
@@ -236,14 +254,14 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
                 {interview.position && (
                   <div className="flex items-center gap-2 text-gray-600 mb-2">
                     <Building className="w-4 h-4" />
-                    <span className="font-medium">Posición: {interview.position}</span>
+                    <span className="font-medium">
+                      Posición: {interview.position}
+                    </span>
                   </div>
                 )}
 
                 {interview.description && (
-                  <p className="text-gray-600">
-                    {interview.description}
-                  </p>
+                  <p className="text-gray-600">{interview.description}</p>
                 )}
               </div>
             </div>
@@ -260,10 +278,12 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
                     startContent={<Play className="w-5 h-5" />}
                     className="font-medium"
                   >
-                    {interview.status === 'IN_PROGRESS' ? 'Continuar Entrevista' : 'Iniciar Entrevista'}
+                    {interview.status === "IN_PROGRESS"
+                      ? "Continuar Entrevista"
+                      : "Iniciar Entrevista"}
                   </Button>
                 </Link>
-              ) : interview.status === 'CLOSED' ? (
+              ) : interview.status === "CLOSED" ? (
                 <Button
                   color="success"
                   size="lg"
@@ -274,12 +294,7 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
                   Entrevista Completada
                 </Button>
               ) : (
-                <Button
-                  color="default"
-                  size="lg"
-                  variant="flat"
-                  disabled
-                >
+                <Button color="default" size="lg" variant="flat" disabled>
                   No Disponible
                 </Button>
               )}
@@ -399,7 +414,10 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
               <CardBody>
                 <div className="space-y-3">
                   {interview.professionals.map((professional, index) => (
-                    <div key={professional._id} className="flex items-center gap-3">
+                    <div
+                      key={professional._id}
+                      className="flex items-center gap-3"
+                    >
                       <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                         <User className="w-5 h-5 text-blue-600" />
                       </div>
@@ -407,10 +425,11 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
                         <p className="font-medium text-gray-900">
                           {professional.firstName && professional.lastName
                             ? `${professional.firstName} ${professional.lastName}`
-                            : professional.email
-                          }
+                            : professional.email}
                         </p>
-                        <p className="text-sm text-gray-500">{professional.email}</p>
+                        <p className="text-sm text-gray-500">
+                          {professional.email}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -447,23 +466,25 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
                   </p>
                 </div>
 
-                {interview.totalInterviewTimeSeconds && interview.totalInterviewTimeSeconds > 0 && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
-                      Tiempo total de entrevista
-                    </label>
-                    <p className="text-gray-900 font-medium">
-                      {Math.floor(interview.totalInterviewTimeSeconds / 60)} minutos
-                    </p>
-                  </div>
-                )}
+                {interview.totalInterviewTimeSeconds &&
+                  interview.totalInterviewTimeSeconds > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">
+                        Tiempo total de entrevista
+                      </label>
+                      <p className="text-gray-900 font-medium">
+                        {Math.floor(interview.totalInterviewTimeSeconds / 60)}{" "}
+                        minutos
+                      </p>
+                    </div>
+                  )}
               </div>
             </CardBody>
           </Card>
         </div>
 
         {/* Status-specific Information */}
-        {interview.status === 'CLOSED' && interview.completedAt && (
+        {interview.status === "CLOSED" && interview.completedAt && (
           <Card className="mt-6 bg-green-50 border-green-200">
             <CardBody className="text-center py-6">
               <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
@@ -471,7 +492,9 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({ interviewI
                 ¡Entrevista Completada!
               </h3>
               <p className="text-green-700">
-                Has completado exitosamente esta entrevista el {formatDate(interview.completedAt)} a las {formatTime(interview.completedAt)}.
+                Has completado exitosamente esta entrevista el{" "}
+                {formatDate(interview.completedAt)} a las{" "}
+                {formatTime(interview.completedAt)}.
               </p>
             </CardBody>
           </Card>

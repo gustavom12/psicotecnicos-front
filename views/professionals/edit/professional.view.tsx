@@ -68,7 +68,7 @@ const ProfessionalView = ({ id }: { id?: string }) => {
       // Call API to save data
       if (editingData) {
         await apiConnection.patch(`/users/${editingData._id}`, dataToSubmit);
-        
+
         // Si estamos editando el perfil del usuario logueado, actualizar el contexto
         if (editingData._id === user._id) {
           await updateUserProfile(dataToSubmit);
@@ -133,20 +133,20 @@ const ProfessionalView = ({ id }: { id?: string }) => {
 
             <div>
               <div className="flex flex-row space-x-1 ml-4 mt-7">
-                <ButtonSubmitPhoto 
+                <ButtonSubmitPhoto
                   onImageUploaded={(imageUrl) => {
                     setProfileImageUrl(imageUrl);
                   }}
                   currentImage={profileImageUrl}
                 />
-                <ButtonDelete 
+                <ButtonDelete
                   onDelete={() => {
-                    setProfileImageUrl('');
+                    setProfileImageUrl("");
                   }}
                   hasImage={!!profileImageUrl}
                 />
               </div>
-              
+
               <div className="ml-8 mt-1">
                 <p className="text-[#A1A1AA] font-light text-[12px] w-auto">
                   La imagen será visible dentro de la plataforma.
@@ -366,7 +366,11 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                 <Controller
                   name="privateData.groupPricing"
                   control={control}
-                  rules={{ setValueAs: (v) => (v === "" ? undefined : Number(v)) } as any}
+                  rules={
+                    {
+                      setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                    } as any
+                  }
                   render={({ field }) => (
                     <Input
                       {...field}
@@ -406,7 +410,7 @@ const ProfessionalView = ({ id }: { id?: string }) => {
                 />
               </>
             )}
-            <div></div>
+            <div />
             <Button
               type="submit"
               radius="none"

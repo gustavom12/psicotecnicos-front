@@ -137,7 +137,10 @@ const AttachmentUploader: React.FC<Props> = ({
                 {/* Thumbnail / loader */}
                 <div className="w-12 h-12 rounded-md overflow-hidden border border-gray-200 shrink-0 bg-gray-100 flex items-center justify-center">
                   {isUploading ? (
-                    <Loader2 size={18} className="text-indigo-500 animate-spin" />
+                    <Loader2
+                      size={18}
+                      className="text-indigo-500 animate-spin"
+                    />
                   ) : a.url ? (
                     <img
                       src={a.url}

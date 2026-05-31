@@ -43,25 +43,23 @@ interface Company {
   name: string;
 }
 
-
 const InterviewTableView = () => {
   const [data, setData] = useState<Interviewee[]>([]);
   const [loading, setLoading] = useState(false);
   const [statistics, setStatistics] = useState<any>({});
 
-
   const statusLabels = {
-    'PENDING': { label: 'Pendiente', color: 'default' as const },
-    'INVITED': { label: 'Invitado', color: 'primary' as const },
-    'IN_PROGRESS': { label: 'En Progreso', color: 'warning' as const },
-    'COMPLETED': { label: 'Completado', color: 'success' as const },
-    'CANCELLED': { label: 'Cancelado', color: 'danger' as const },
-    'EXPIRED': { label: 'Expirado', color: 'danger' as const },
+    PENDING: { label: "Pendiente", color: "default" as const },
+    INVITED: { label: "Invitado", color: "primary" as const },
+    IN_PROGRESS: { label: "En Progreso", color: "warning" as const },
+    COMPLETED: { label: "Completado", color: "success" as const },
+    CANCELLED: { label: "Cancelado", color: "danger" as const },
+    EXPIRED: { label: "Expirado", color: "danger" as const },
   };
 
   const stateLabels = {
-    'ACTIVE': { label: 'Activo', color: 'success' as const },
-    'INACTIVE': { label: 'Inactivo', color: 'default' as const },
+    ACTIVE: { label: "Activo", color: "success" as const },
+    INACTIVE: { label: "Inactivo", color: "default" as const },
   };
 
   useEffect(() => {
@@ -72,43 +70,49 @@ const InterviewTableView = () => {
     try {
       setLoading(true);
       const [intervieweesRes, statisticsRes] = await Promise.all([
-        apiConnection.get('/interviewees/filtered'),
-        apiConnection.get('/interviewees/statistics').catch(() => ({ data: {} }))
+        apiConnection.get("/interviewees/filtered"),
+        apiConnection
+          .get("/interviewees/statistics")
+          .catch(() => ({ data: {} })),
       ]);
 
       const interviewees = intervieweesRes.data.data || intervieweesRes.data;
       setData(interviewees);
       setStatistics(statisticsRes.data);
     } catch (error) {
-      console.error('Error loading data:', error);
-      Notification('Error al cargar datos', 'error');
+      console.error("Error loading data:", error);
+      Notification("Error al cargar datos", "error");
     } finally {
       setLoading(false);
     }
   };
 
-
-
   const handleResendCredentials = async (intervieweeId: string) => {
     try {
       setLoading(true);
-      const response = await apiConnection.post(`/interviewees/${intervieweeId}/resend-credentials`);
+      const response = await apiConnection.post(
+        `/interviewees/${intervieweeId}/resend-credentials`,
+      );
 
       // Show success notification with email info
-      const email = response.data?.email || '';
-      const message = response.data?.message || 'Credenciales reenviadas exitosamente';
+      const email = response.data?.email || "";
+      const message =
+        response.data?.message || "Credenciales reenviadas exitosamente";
 
       Notification(
         email
           ? `${message}. Email enviado a: ${email}`
           : `${message}. Email enviado exitosamente`,
-        'success'
+        "success",
       );
 
       loadData(); // Recargar datos para actualizar el estado
     } catch (error: any) {
-      console.error('Error resending credentials:', error);
-      Notification(error?.response?.data?.message || 'Error al reenviar credenciales', 'error');
+      console.error("Error resending credentials:", error);
+      Notification(
+        error?.response?.data?.message || "Error al reenviar credenciales",
+        "error",
+      );
     } finally {
       setLoading(false);
     }
@@ -118,41 +122,50 @@ const InterviewTableView = () => {
     try {
       setLoading(true);
       await apiConnection.post(`/interviewees/${intervieweeId}/send-reminder`);
-      Notification('Recordatorio enviado exitosamente', 'success');
+      Notification("Recordatorio enviado exitosamente", "success");
       loadData();
     } catch (error: any) {
-      console.error('Error sending reminder:', error);
-      Notification(error?.response?.data?.message || 'Error al enviar recordatorio', 'error');
+      console.error("Error sending reminder:", error);
+      Notification(
+        error?.response?.data?.message || "Error al enviar recordatorio",
+        "error",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-
-
   // Transformar datos para la tabla
-  const tableData = data.map(item => ({
+  const tableData = data.map((item) => ({
     id: item._id,
     name: `${item.personalInfo.firstName} ${item.personalInfo.lastName}`,
     email: item.email,
-    company: item.companyName || 'N/A',
+    company: item.companyName || "N/A",
     interviews: `${item.completedInterviews}/${item.totalInterviews}`,
     status: (
       <Chip
-        color={statusLabels[item.status as keyof typeof statusLabels]?.color || 'default'}
+        color={
+          statusLabels[item.status as keyof typeof statusLabels]?.color ||
+          "default"
+        }
         size="sm"
         variant="flat"
       >
-        {statusLabels[item.status as keyof typeof statusLabels]?.label || item.status}
+        {statusLabels[item.status as keyof typeof statusLabels]?.label ||
+          item.status}
       </Chip>
     ),
     state: (
       <Chip
-        color={stateLabels[item.state as keyof typeof stateLabels]?.color || 'default'}
+        color={
+          stateLabels[item.state as keyof typeof stateLabels]?.color ||
+          "default"
+        }
         size="sm"
         variant="flat"
       >
-        {stateLabels[item.state as keyof typeof stateLabels]?.label || item.state}
+        {stateLabels[item.state as keyof typeof stateLabels]?.label ||
+          item.state}
       </Chip>
     ),
     actions: (
@@ -162,7 +175,7 @@ const InterviewTableView = () => {
             Editar
           </Button>
         </Link>
-        {(item.status === 'PENDING' || item.status === 'INVITED') && (
+        {(item.status === "PENDING" || item.status === "INVITED") && (
           <Button
             size="sm"
             variant="light"
@@ -172,7 +185,7 @@ const InterviewTableView = () => {
             Reenviar credenciales
           </Button>
         )}
-        {item.status === 'INVITED' && (
+        {item.status === "INVITED" && (
           <Button
             size="sm"
             variant="light"
@@ -199,24 +212,31 @@ const InterviewTableView = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="font-inter font-semibold text-[22px]">Entrevistados</h1>
+                <h1 className="font-inter font-semibold text-[22px]">
+                  Entrevistados
+                </h1>
                 {statistics.total ? (
                   <p className="text-sm text-gray-600 mt-1">
-                    Total: {statistics.total} | Activos: {statistics.byStatus?.pending + statistics.byStatus?.invited + statistics.byStatus?.inProgress || 0}
+                    Total: {statistics.total} | Activos:{" "}
+                    {statistics.byStatus?.pending +
+                      statistics.byStatus?.invited +
+                      statistics.byStatus?.inProgress || 0}
                   </p>
                 ) : null}
               </div>
 
               <div className="flex flex-row space-x-4">
                 <Link href="/interviewed/edit">
-                  <Button radius="none" className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md">
-                    <Addition fill={'#635BFF'} />
+                  <Button
+                    radius="none"
+                    className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md"
+                  >
+                    <Addition fill={"#635BFF"} />
                     <p>Nuevo Entrevistado</p>
                   </Button>
                 </Link>
               </div>
             </div>
-
 
             {/* Tabla */}
             <div className="mt-8">
@@ -258,7 +278,6 @@ const InterviewTableView = () => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

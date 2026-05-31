@@ -23,7 +23,7 @@ const CompanySelector: React.FC<Props> = ({ value, onChange }) => {
       try {
         setLoading(true);
         const { data } = await apiConnection.get("/companies/filtered");
-        const list = Array.isArray(data) ? data : data?.data ?? [];
+        const list = Array.isArray(data) ? data : (data?.data ?? []);
         setCompanies(list);
       } catch (error) {
         console.error("Error loading companies:", error);

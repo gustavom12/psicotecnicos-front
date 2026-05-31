@@ -30,15 +30,42 @@ export default function MenuLeft() {
         </p>
       </div>
 
-
       <nav className="flex flex-col gap-1 px-4 py-2">
-        <MenuItem title="Inicio" icon={<House className="w-5 h-5 text-zinc-500" />} href="/home" />
-        <MenuItem title="Módulos" icon={<Puzzle className="w-5 h-5 text-zinc-500" />} href="/modules" />
-        <MenuItem title="Evaluaciones" icon={<BookOpenText className="w-5 h-5 text-zinc-500" />} href="/surveys/table" />
-        <MenuItem title="Entrevistas" icon={<MessageCircleCode className="w-5 h-5 text-zinc-500" />} href="/interviews/table" />
-        <MenuItem title="Profesionales" icon={<User className="w-5 h-5 text-zinc-500" />} href="/professional/table" />
-        <MenuItem title="Entrevistados" icon={<Users className="w-5 h-5 text-zinc-500" />} href="/interviewed/table" />
-        <MenuItem title="Empresas" icon={<Building2 className="w-5 h-5 text-zinc-500" />} href="/companies" />
+        <MenuItem
+          title="Inicio"
+          icon={<House className="w-5 h-5 text-zinc-500" />}
+          href="/home"
+        />
+        <MenuItem
+          title="Módulos"
+          icon={<Puzzle className="w-5 h-5 text-zinc-500" />}
+          href="/modules"
+        />
+        <MenuItem
+          title="Evaluaciones"
+          icon={<BookOpenText className="w-5 h-5 text-zinc-500" />}
+          href="/surveys/table"
+        />
+        <MenuItem
+          title="Entrevistas"
+          icon={<MessageCircleCode className="w-5 h-5 text-zinc-500" />}
+          href="/interviews/table"
+        />
+        <MenuItem
+          title="Profesionales"
+          icon={<User className="w-5 h-5 text-zinc-500" />}
+          href="/professional/table"
+        />
+        <MenuItem
+          title="Entrevistados"
+          icon={<Users className="w-5 h-5 text-zinc-500" />}
+          href="/interviewed/table"
+        />
+        <MenuItem
+          title="Empresas"
+          icon={<Building2 className="w-5 h-5 text-zinc-500" />}
+          href="/companies"
+        />
       </nav>
 
       <div className="mt-auto p-4">
@@ -49,11 +76,16 @@ export default function MenuLeft() {
             className="w-full flex items-center gap-3 bg-[#E4E4E7] hover:bg-[#d4d4d8] h-14 transition"
           >
             {user.imageURL ? (
-              <img src={user.imageURL} className="w-9 h-9 rounded-full object-cover" />
+              <img
+                src={user.imageURL}
+                className="w-9 h-9 rounded-full object-cover"
+              />
             ) : (
               <Person />
             )}
-            <span className="text-sm font-medium text-gray-700 truncate">{user.fullname || ""}</span>
+            <span className="text-sm font-medium text-gray-700 truncate">
+              {user.fullname || ""}
+            </span>
           </Button>
         </Link>
       </div>

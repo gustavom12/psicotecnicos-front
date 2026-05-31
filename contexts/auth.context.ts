@@ -49,7 +49,10 @@ export const useAuthContext = create<AuthState>((set) => {
         if (typeof window !== "undefined") Router.push("/home");
       } catch (error: any) {
         console.log({ error: error?.response?.data });
-        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al iniciar sesión";
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.response?.data?.errorMessage ||
+          "Error al iniciar sesión";
         Notification(errorMessage, "error");
       }
     },
@@ -63,7 +66,10 @@ export const useAuthContext = create<AuthState>((set) => {
         }
         return true;
       } catch (error: any) {
-        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al restablecer contraseña";
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.response?.data?.errorMessage ||
+          "Error al restablecer contraseña";
         Notification(errorMessage, "error");
         return false;
       }
@@ -86,7 +92,10 @@ export const useAuthContext = create<AuthState>((set) => {
         return false;
       } catch (error: any) {
         console.log({ error });
-        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al cambiar contraseña";
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.response?.data?.errorMessage ||
+          "Error al cambiar contraseña";
         Notification(errorMessage, "error");
         return false;
       }
@@ -99,7 +108,10 @@ export const useAuthContext = create<AuthState>((set) => {
         return true;
       } catch (error: any) {
         console.log({ error });
-        const errorMessage = error?.response?.data?.message || error?.response?.data?.errorMessage || "Error al cambiar nombre de usuario";
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.response?.data?.errorMessage ||
+          "Error al cambiar nombre de usuario";
         Notification(errorMessage, "error");
         return false;
       }
@@ -118,9 +130,10 @@ export const useAuthContext = create<AuthState>((set) => {
         return true;
       } catch (error: any) {
         console.log({ error });
-        const errorMessage = error?.response?.data?.message ||
-                            error?.response?.data?.errorMessage ||
-                            "Error al actualizar perfil";
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.response?.data?.errorMessage ||
+          "Error al actualizar perfil";
         Notification(errorMessage, "error");
         return false;
       }

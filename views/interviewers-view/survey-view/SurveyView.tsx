@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Card, CardBody, Spinner, Button } from '@heroui/react';
-import { Survey, Form, Slide, InterviewResponse, InterviewSubmission, FieldType, Module } from '../../../types/survey.types';
-import SlideView from './components/SlideView';
-import apiConnection from '../../../pages/api/api';
-import { useTimeTracker } from './hooks/useTimeTracker';
-import { useIntervieweeAuthContext } from '../../../contexts/interviewee-auth.context';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { Card, CardBody, Spinner, Button } from "@heroui/react";
+import {
+  Survey,
+  Form,
+  Slide,
+  InterviewResponse,
+  InterviewSubmission,
+  FieldType,
+  Module,
+} from "../../../types/survey.types";
+import SlideView from "./components/SlideView";
+import apiConnection from "../../../pages/api/api";
+import { useTimeTracker } from "./hooks/useTimeTracker";
+import { useIntervieweeAuthContext } from "../../../contexts/interviewee-auth.context";
 
 interface SurveyViewProps {
   surveyId: string;
@@ -13,7 +21,11 @@ interface SurveyViewProps {
   interviewId?: string;
 }
 
-export default function SurveyView({ surveyId, intervieweeId, interviewId }: SurveyViewProps) {
+export default function SurveyView({
+  surveyId,
+  intervieweeId,
+  interviewId,
+}: SurveyViewProps) {
   const router = useRouter();
   const { interviewee } = useIntervieweeAuthContext();
   const [survey, setSurvey] = useState<Survey | null>(null);
@@ -23,35 +35,38 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [currentInterviewId, setCurrentInterviewId] = useState<string | null>(interviewId || null);
+  const [currentInterviewId, setCurrentInterviewId] = useState<string | null>(
+    interviewId || null,
+  );
 
   // Obtener todos los slides ordenados por módulo y luego por slide index
-  const allSlides: (Slide & { formId: string; moduleOrder: number })[] = (() => {
-    if (!survey?.modules) return [];
+  const allSlides: (Slide & { formId: string; moduleOrder: number })[] =
+    (() => {
+      if (!survey?.modules) return [];
 
-    // Crear un mapa de formId a moduleOrder para mantener el orden
-    const moduleOrderMap = new Map<string, number>();
-    survey.modules.forEach(module => {
-      moduleOrderMap.set(module.id, module.order);
-    });
+      // Crear un mapa de formId a moduleOrder para mantener el orden
+      const moduleOrderMap = new Map<string, number>();
+      survey.modules.forEach((module) => {
+        moduleOrderMap.set(module.id, module.order);
+      });
 
-    // Obtener slides con información de módulo y ordenar correctamente
-    return forms
-      .map(form => ({
-        form,
-        moduleOrder: moduleOrderMap.get(form?._id) || 0
-      }))
-      .sort((a, b) => a.moduleOrder - b.moduleOrder) // Primero ordenar por módulo
-      .flatMap(({ form, moduleOrder }) =>
-        form.slides
-          .sort((a, b) => a.index - b.index) // Luego ordenar slides dentro del módulo
-          .map(slide => ({
-            ...slide,
-            formId: form._id,
-            moduleOrder
-          }))
-      );
-  })();
+      // Obtener slides con información de módulo y ordenar correctamente
+      return forms
+        .map((form) => ({
+          form,
+          moduleOrder: moduleOrderMap.get(form?._id) || 0,
+        }))
+        .sort((a, b) => a.moduleOrder - b.moduleOrder) // Primero ordenar por módulo
+        .flatMap(({ form, moduleOrder }) =>
+          form.slides
+            .sort((a, b) => a.index - b.index) // Luego ordenar slides dentro del módulo
+            .map((slide) => ({
+              ...slide,
+              formId: form._id,
+              moduleOrder,
+            })),
+        );
+    })();
 
   const currentSlide = allSlides[currentSlideIndex];
 
@@ -62,11 +77,11 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
     interviewStartTime,
     finishInterview,
     formatTime,
-    getCurrentSlideStats
+    getCurrentSlideStats,
   } = useTimeTracker({
     currentSlideIndex,
-    currentFormId: currentSlide?.formId || '',
-    totalSlides: allSlides.length
+    currentFormId: currentSlide?.formId || "",
+    totalSlides: allSlides.length,
   });
 
   useEffect(() => {
@@ -80,7 +95,7 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
       // Fetch survey
       const surveyResponse = await apiConnection.get(`/surveys/${surveyId}`);
       const surveyData = surveyResponse.data;
-      console.log('Survey data loaded:', surveyData);
+      console.log("Survey data loaded:", surveyData);
       setSurvey(surveyData);
 
       // Fetch forms from modules or forms array
@@ -88,39 +103,45 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
 
       if (surveyData.modules && surveyData.modules.length > 0) {
         // Si tiene modules, usar los IDs de los modules ordenados
-        const sortedModules = [...surveyData.modules].sort((a, b) => a.order - b.order);
+        const sortedModules = [...surveyData.modules].sort(
+          (a, b) => a.order - b.order,
+        );
         formIds = sortedModules.map((module: Module) => module.id);
       } else if (surveyData.forms && surveyData.forms.length > 0) {
         // Fallback: si tiene forms directamente
-        formIds = Array.isArray(surveyData.forms) ? surveyData.forms : [surveyData.forms];
+        formIds = Array.isArray(surveyData.forms)
+          ? surveyData.forms
+          : [surveyData.forms];
       }
 
       if (formIds.length > 0) {
-        console.log('Loading forms for IDs:', formIds);
-        const formsPromises = formIds.map(async (formId: string, index: number) => {
-          try {
-            const formResponse = await apiConnection.get(`/forms/${formId}`);
-            console.log(`Form ${formId} loaded:`, formResponse.data);
-            return {
-              ...formResponse.data,
-              _originalOrder: index // Mantener el orden original
-            };
-          } catch (error) {
-            console.error(`Error loading form ${formId}:`, error);
-            return null;
-          }
-        });
+        console.log("Loading forms for IDs:", formIds);
+        const formsPromises = formIds.map(
+          async (formId: string, index: number) => {
+            try {
+              const formResponse = await apiConnection.get(`/forms/${formId}`);
+              console.log(`Form ${formId} loaded:`, formResponse.data);
+              return {
+                ...formResponse.data,
+                _originalOrder: index, // Mantener el orden original
+              };
+            } catch (error) {
+              console.error(`Error loading form ${formId}:`, error);
+              return null;
+            }
+          },
+        );
 
         const formsData = await Promise.all(formsPromises);
         const validForms = formsData
-          .filter(form => form !== null)
+          .filter((form) => form !== null)
           .sort((a, b) => a._originalOrder - b._originalOrder); // Mantener orden original
 
-        console.log('Valid forms loaded in order:', validForms);
-        console.log('Form IDs in order:', formIds);
+        console.log("Valid forms loaded in order:", validForms);
+        console.log("Form IDs in order:", formIds);
         setForms(validForms);
       } else {
-        console.log('No form IDs found in survey data');
+        console.log("No form IDs found in survey data");
       }
 
       // Obtener interviewId si no se proporciona
@@ -128,7 +149,7 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
         await fetchInterviewId();
       }
     } catch (error) {
-      console.error('Error fetching survey data:', error);
+      console.error("Error fetching survey data:", error);
       // TODO: Show error notification
     } finally {
       setLoading(false);
@@ -139,43 +160,54 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
   const fetchInterviewId = async () => {
     const actualIntervieweeId = interviewee?._id || intervieweeId;
 
-    if (!actualIntervieweeId || actualIntervieweeId === 'anonymous') {
-      console.log('No intervieweeId provided or anonymous user, skipping interview lookup');
+    if (!actualIntervieweeId || actualIntervieweeId === "anonymous") {
+      console.log(
+        "No intervieweeId provided or anonymous user, skipping interview lookup",
+      );
       return;
     }
 
     try {
       // Buscar entrevistas del interviewee que usen este survey
-      const response = await apiConnection.get('/interviews/interviewee/filtered');
+      const response = await apiConnection.get(
+        "/interviews/interviewee/filtered",
+      );
       const interviews = response.data;
 
       // Encontrar la entrevista que corresponde a este survey
-      const matchingInterview = interviews.find((interview: any) =>
-        interview.surveyId?._id === surveyId &&
-        interview.interviewees.includes(actualIntervieweeId)
+      const matchingInterview = interviews.find(
+        (interview: any) =>
+          interview.surveyId?._id === surveyId &&
+          interview.interviewees.includes(actualIntervieweeId),
       );
 
       if (matchingInterview) {
         setCurrentInterviewId(matchingInterview._id);
-        console.log('Interview ID found:', matchingInterview._id);
+        console.log("Interview ID found:", matchingInterview._id);
       } else {
-        console.log('No matching interview found, proceeding without interviewId');
+        console.log(
+          "No matching interview found, proceeding without interviewId",
+        );
       }
     } catch (error) {
-      console.error('Error fetching interview ID:', error);
-      console.log('Proceeding without interviewId');
+      console.error("Error fetching interview ID:", error);
+      console.log("Proceeding without interviewId");
     }
   };
 
-  const handleResponseChange = (questionId: string, value: any, questionType: FieldType) => {
-    setResponses(prev => ({
+  const handleResponseChange = (
+    questionId: string,
+    value: any,
+    questionType: FieldType,
+  ) => {
+    setResponses((prev) => ({
       ...prev,
-      [questionId]: value
+      [questionId]: value,
     }));
 
     // Clear error when user provides response
     if (errors[questionId]) {
-      setErrors(prev => {
+      setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[questionId];
         return newErrors;
@@ -200,8 +232,8 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
       const questionId = `${currentSlide.formId}_${currentSlide.index}_${index}`;
       const response = responses[questionId];
 
-      if (!response || response === '') {
-        newErrors[questionId] = 'Esta pregunta es requerida';
+      if (!response || response === "") {
+        newErrors[questionId] = "Esta pregunta es requerida";
       }
     });
 
@@ -213,7 +245,7 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
     if (!validateCurrentSlide()) return;
 
     if (currentSlideIndex < allSlides.length - 1) {
-      setCurrentSlideIndex(prev => prev + 1);
+      setCurrentSlideIndex((prev) => prev + 1);
     } else {
       handleSubmit();
     }
@@ -221,7 +253,7 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
 
   const handlePrevious = () => {
     if (currentSlideIndex > 0) {
-      setCurrentSlideIndex(prev => prev - 1);
+      setCurrentSlideIndex((prev) => prev - 1);
     }
   };
 
@@ -230,9 +262,13 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
       setSubmitting(true);
 
       // Preparar respuestas para envío
-      const interviewResponses: InterviewResponse[] = Object.entries(responses).map(([questionId, answer]) => {
-        const [formId, slideIndex, questionIndex] = questionId.split('_');
-        const slide = allSlides.find(s => s.formId === formId && s.index === parseInt(slideIndex));
+      const interviewResponses: InterviewResponse[] = Object.entries(
+        responses,
+      ).map(([questionId, answer]) => {
+        const [formId, slideIndex, questionIndex] = questionId.split("_");
+        const slide = allSlides.find(
+          (s) => s.formId === formId && s.index === parseInt(slideIndex),
+        );
         const question = slide?.interviewer[parseInt(questionIndex)];
 
         return {
@@ -240,7 +276,7 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
           slideIndex: parseInt(slideIndex),
           formId,
           answer,
-          questionType: question?.type || FieldType.SHORT_TEXT
+          questionType: question?.type || FieldType.SHORT_TEXT,
         };
       });
 
@@ -250,28 +286,27 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
       const submission: InterviewSubmission = {
         interviewId: currentInterviewId, // Incluir el interviewId
         surveyId,
-        intervieweeId: interviewee?._id || intervieweeId || 'anonymous',
+        intervieweeId: interviewee?._id || intervieweeId || "anonymous",
         moduleId: router.query.moduleId as string, // Obtener moduleId de la URL
         responses: interviewResponses,
         slideTimeData,
         totalInterviewTimeSeconds: totalInterviewTime,
         completedAt: new Date(),
-        startedAt: interviewStartTime
+        startedAt: interviewStartTime,
       };
 
-      console.log('Submitting interview response:', submission);
+      console.log("Submitting interview response:", submission);
 
       // Enviar a API usando el endpoint de interview-responses
-      const response = await apiConnection.post('/interview-responses', {
+      const response = await apiConnection.post("/interview-responses", {
         ...submission,
-        status: 'COMPLETED',
+        status: "COMPLETED",
       });
 
       // Redirect to success page
-      router.push('/interviewed/success');
-
+      router.push("/interviewed/success");
     } catch (error) {
-      console.error('Error submitting interview:', error);
+      console.error("Error submitting interview:", error);
       // TODO: Show error notification
     } finally {
       setSubmitting(false);
@@ -310,8 +345,12 @@ export default function SurveyView({ surveyId, intervieweeId, interviewId }: Sur
         <Card className="max-w-md">
           <CardBody className="text-center">
             <Spinner size="lg" className="mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Enviando respuestas...</h2>
-            <p className="text-gray-600">Por favor espera mientras procesamos tu entrevista.</p>
+            <h2 className="text-xl font-semibold mb-2">
+              Enviando respuestas...
+            </h2>
+            <p className="text-gray-600">
+              Por favor espera mientras procesamos tu entrevista.
+            </p>
           </CardBody>
         </Card>
       </div>

@@ -5,7 +5,7 @@ import { Button, ButtonGroup } from "@heroui/button";
 import { Input } from "@heroui/input";
 import React from "react";
 const InterviewedProfession = () => {
-  return(
+  return (
     <div className="flex flex-row w-full ">
       <div>
         <MenuLeft />
@@ -21,22 +21,24 @@ const InterviewedProfession = () => {
           </div>
 
           <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[340px] mt-8 mb-6 h-[36px] rounded-xl">
-            <Button className="rounded-sm bg-[#F4F4F5] text-[#71717A]  h-[28px]">Información</Button>
+            <Button className="rounded-sm bg-[#F4F4F5] text-[#71717A]  h-[28px]">
+              Información
+            </Button>
             <Button className="bg-white   h-[28px]">Entrevistados</Button>
-            <Button className="bg-[#F4F4F5] text-[#71717A]  h-[28px]">Entrevistas</Button>
+            <Button className="bg-[#F4F4F5] text-[#71717A]  h-[28px]">
+              Entrevistas
+            </Button>
           </ButtonGroup>
 
           <hr />
 
-          <Input className='mt-6' />
-          <hr className='mt-12' />
-          <hr className='mt-12' />
-          <hr className='mt-12' />
-          <hr className='mt-12' />
-
+          <Input className="mt-6" />
+          <hr className="mt-12" />
+          <hr className="mt-12" />
+          <hr className="mt-12" />
+          <hr className="mt-12" />
         </div>
       </div>
     </div>
-
-  )
-}
+  );
+};

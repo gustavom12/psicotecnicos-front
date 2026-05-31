@@ -1,2 +1,1 @@
-export { default } from './IntervieweeHome.view';
-
+export { default } from "./IntervieweeHome.view";

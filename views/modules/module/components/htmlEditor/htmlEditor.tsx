@@ -69,59 +69,69 @@ class CustomUploadAdapter {
       return new Promise((resolve, reject) => {
         // Validar que el archivo sea una imagen (bloquear videos y otros tipos)
         const allowedImageTypes = [
-          'image/jpeg',
-          'image/jpg',
-          'image/png',
-          'image/gif',
-          'image/webp',
-          'image/bmp',
-          'image/svg+xml'
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/gif",
+          "image/webp",
+          "image/bmp",
+          "image/svg+xml",
         ];
 
-        if (!file.type.startsWith('image/') || file.type.startsWith('video/')) {
-          console.error('Tipo de archivo no válido:', file.type);
-          reject('Solo se permiten archivos de imagen. No se pueden subir videos.');
+        if (!file.type.startsWith("image/") || file.type.startsWith("video/")) {
+          console.error("Tipo de archivo no válido:", file.type);
+          reject(
+            "Solo se permiten archivos de imagen. No se pueden subir videos.",
+          );
           return;
         }
 
         if (!allowedImageTypes.includes(file.type)) {
-          console.error('Formato de imagen no soportado:', file.type);
-          reject(`Formato de imagen no soportado: ${file.type}. Formatos permitidos: JPEG, PNG, GIF, WebP, BMP, SVG`);
+          console.error("Formato de imagen no soportado:", file.type);
+          reject(
+            `Formato de imagen no soportado: ${file.type}. Formatos permitidos: JPEG, PNG, GIF, WebP, BMP, SVG`,
+          );
           return;
         }
 
         // Validar tamaño del archivo (máximo 10MB)
         const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
-          console.error('Archivo demasiado grande:', file.size);
-          reject('El archivo es demasiado grande. Máximo 10MB permitido');
+          console.error("Archivo demasiado grande:", file.size);
+          reject("El archivo es demasiado grande. Máximo 10MB permitido");
           return;
         }
 
         const formData = new FormData();
-        formData.append('file', file);
-        formData.append('title', file.name);
+        formData.append("file", file);
+        formData.append("title", file.name);
 
-        apiConnection.post('/files', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-          .then(response => {
+        apiConnection
+          .post("/files", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((response) => {
             const result = response.data;
             if (result.url) {
               resolve({
-                default: result.url
+                default: result.url,
               });
             } else {
-              console.error('URL no encontrada en respuesta:', result);
-              reject('Error al subir la imagen: URL no encontrada en la respuesta');
+              console.error("URL no encontrada en respuesta:", result);
+              reject(
+                "Error al subir la imagen: URL no encontrada en la respuesta",
+              );
             }
           })
-          .catch(error => {
-            console.error('Error al subir imagen:', error);
-            console.error('Error response:', error.response);
-            const errorMessage = error.response?.data?.message || error.message || 'Error desconocido';
+          .catch((error) => {
+            console.error("Error al subir imagen:", error);
+            console.error("Error response:", error.response);
+            const errorMessage =
+              error.response?.data?.message ||
+              error.message ||
+              "Error desconocido";
             reject(`Error al subir la imagen: ${errorMessage}`);
           });
       });
@@ -134,15 +144,14 @@ class CustomUploadAdapter {
 }
 
 function CustomUploadAdapterPlugin(editor: any) {
-
   try {
-    const fileRepository = editor.plugins.get('FileRepository');
+    const fileRepository = editor.plugins.get("FileRepository");
 
     fileRepository.createUploadAdapter = (loader: any) => {
       return new CustomUploadAdapter(loader);
     };
   } catch (error) {
-    console.error('Error al configurar el adaptador de subida:', error);
+    console.error("Error al configurar el adaptador de subida:", error);
   }
 }
 
@@ -161,12 +170,11 @@ export default function HtmlEditor({
   };
 
   const onReady = (editor: any) => {
-
     // Verificar si FileRepository está disponible
     try {
-      const fileRepository = editor.plugins.get('FileRepository');
+      const fileRepository = editor.plugins.get("FileRepository");
     } catch (error) {
-      console.error('FileRepository no disponible:', error);
+      console.error("FileRepository no disponible:", error);
     }
   };
   return (
@@ -278,8 +286,8 @@ export default function HtmlEditor({
             "linkImage",
           ],
           upload: {
-            types: ['jpeg', 'jpg', 'png', 'gif', 'webp', 'bmp', 'svg']
-          }
+            types: ["jpeg", "jpg", "png", "gif", "webp", "bmp", "svg"],
+          },
         },
         table: {
           contentToolbar: [

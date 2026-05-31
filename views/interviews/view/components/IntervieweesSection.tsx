@@ -47,14 +47,20 @@ const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
   };
 
   const getIntervieweeName = (interviewee: Interviewee) => {
-    if (interviewee.personalInfo?.firstName && interviewee.personalInfo?.lastName) {
+    if (
+      interviewee.personalInfo?.firstName &&
+      interviewee.personalInfo?.lastName
+    ) {
       return `${interviewee.personalInfo.firstName} ${interviewee.personalInfo.lastName}`;
     }
     return interviewee.email || "Sin nombre";
   };
 
   const getInitials = (interviewee: Interviewee) => {
-    if (interviewee.personalInfo?.firstName && interviewee.personalInfo?.lastName) {
+    if (
+      interviewee.personalInfo?.firstName &&
+      interviewee.personalInfo?.lastName
+    ) {
       return `${interviewee.personalInfo.firstName[0]}${interviewee.personalInfo.lastName[0]}`.toUpperCase();
     }
     return interviewee.email?.[0]?.toUpperCase() || "E";
@@ -64,11 +70,10 @@ const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Entrevistados
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">Entrevistados</h2>
           <span className="text-sm text-gray-500">
-            {interviewees.length} entrevistado{interviewees.length !== 1 ? 's' : ''}
+            {interviewees.length} entrevistado
+            {interviewees.length !== 1 ? "s" : ""}
           </span>
         </div>
 
@@ -89,7 +94,10 @@ const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
                   <p className="text-sm text-gray-600">{interviewee.email}</p>
                   {interviewee.completedAt && (
                     <p className="text-xs text-green-600 mt-1">
-                      Completado: {new Date(interviewee.completedAt).toLocaleDateString("es-ES")}
+                      Completado:{" "}
+                      {new Date(interviewee.completedAt).toLocaleDateString(
+                        "es-ES",
+                      )}
                     </p>
                   )}
                 </div>
@@ -103,7 +111,10 @@ const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
                   </Chip>
                   {interviewee.startedAt && (
                     <p className="text-xs text-gray-500">
-                      Iniciado: {new Date(interviewee.startedAt).toLocaleDateString("es-ES")}
+                      Iniciado:{" "}
+                      {new Date(interviewee.startedAt).toLocaleDateString(
+                        "es-ES",
+                      )}
                     </p>
                   )}
                 </div>

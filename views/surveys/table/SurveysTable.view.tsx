@@ -6,7 +6,6 @@ import Link from "next/link";
 import AuthLayout from "@/layouts/auth.layout";
 import apiConnection from "@/pages/api/api";
 import Pencil2 from "@/public/icons/pencil2";
-import Trash from "@/public/icons/trashgrey";
 
 const SurveysTableView = () => {
   const [data, setData] = useState<any>([]);
@@ -40,7 +39,7 @@ const SurveysTableView = () => {
     {
       key: "previousEvaluations",
       label: "Es una evaluación previa",
-      render: (key, record) => record.previousEvaluations ? "Sí" : "No",
+      render: (key, record) => (record.previousEvaluations ? "Sí" : "No"),
     },
     {
       key: "actions",

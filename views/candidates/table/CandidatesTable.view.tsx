@@ -1,10 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const CandidatesTable = ()=>{
-return (
-<div className='CandidatesTable'>
-</div>
-)
-}
+const CandidatesTable = () => {
+  return <div className="CandidatesTable" />;
+};
 
-export default CandidatesTable
+export default CandidatesTable;

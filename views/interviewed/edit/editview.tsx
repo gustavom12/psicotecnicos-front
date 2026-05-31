@@ -1,15 +1,21 @@
-import ButtonDelete from '@/common/buttondelete';
-import ButtonSubmitPhoto from '@/common/buttonSubmitPhoto';
-import MenuLeft from '@/layouts/menu/MenuLeft';
-import NavbarApp from '@/common/navbar';
-import ArrowLeft from '@/public/icons/arrowleft';
-import { Button, ButtonGroup, Select, SelectItem, Textarea } from '@heroui/react';
-import { Form, Input } from '@heroui/react';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import apiConnection from '@/pages/api/api';
-import { Notification } from '@/common/notification';
-import ReportsTab from './reports/ReportsTab';
+import ButtonDelete from "@/common/buttondelete";
+import ButtonSubmitPhoto from "@/common/buttonSubmitPhoto";
+import MenuLeft from "@/layouts/menu/MenuLeft";
+import NavbarApp from "@/common/navbar";
+import ArrowLeft from "@/public/icons/arrowleft";
+import {
+  Button,
+  ButtonGroup,
+  Select,
+  SelectItem,
+  Textarea,
+} from "@heroui/react";
+import { Form, Input } from "@heroui/react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import apiConnection from "@/pages/api/api";
+import { Notification } from "@/common/notification";
+import ReportsTab from "./reports/ReportsTab";
 
 interface PersonalInfo {
   firstName: string;
@@ -46,13 +52,14 @@ interface Professional {
   speciality?: string;
 }
 
-
 const DetailInterviewed = () => {
   const router = useRouter();
   const { id } = router.query;
   const isEditing = !!id;
 
-  const [activeTab, setActiveTab] = useState<'info' | 'interviews' | 'ev' | 'reports'>('info');
+  const [activeTab, setActiveTab] = useState<
+    "info" | "interviews" | "ev" | "reports"
+  >("info");
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
@@ -62,23 +69,23 @@ const DetailInterviewed = () => {
   const [loadingEvaluations, setLoadingEvaluations] = useState(false);
   const [formData, setFormData] = useState<IntervieweeData>({
     personalInfo: {
-      firstName: '',
-      lastName: '',
-      phone: '',
-      position: '',
-      department: '',
-      location: '',
+      firstName: "",
+      lastName: "",
+      phone: "",
+      position: "",
+      department: "",
+      location: "",
     },
-    email: '',
-    companyId: '',
-    companyName: '',
-    teamId: '',
-    status: 'PENDING',
-    state: 'ACTIVE',
-    profileImage: '',
-    notes: '',
-    assignedTo: '',
-    registrationDate: new Date().toISOString().split('T')[0],
+    email: "",
+    companyId: "",
+    companyName: "",
+    teamId: "",
+    status: "PENDING",
+    state: "ACTIVE",
+    profileImage: "",
+    notes: "",
+    assignedTo: "",
+    registrationDate: new Date().toISOString().split("T")[0],
   });
 
   useEffect(() => {
@@ -91,22 +98,25 @@ const DetailInterviewed = () => {
   const loadInitialData = async () => {
     try {
       const [companiesRes, professionalsRes] = await Promise.all([
-        apiConnection.get('/companies/filtered'),
-        apiConnection.get('/users/table')
+        apiConnection.get("/companies/filtered"),
+        apiConnection.get("/users/table"),
       ]);
 
       setCompanies(companiesRes.data.data || companiesRes.data);
       console.log("professionalsRes.data", professionalsRes.data);
-      console.log("professionalsRes.data structure:", professionalsRes.data?.map(p => ({
-        id: p._id,
-        name: p.fullname,
-        speciality: p.speciality
-      })));
+      console.log(
+        "professionalsRes.data structure:",
+        professionalsRes.data?.map((p) => ({
+          id: p._id,
+          name: p.fullname,
+          speciality: p.speciality,
+        })),
+      );
 
       setProfessionals(professionalsRes.data || []);
     } catch (error) {
-      console.error('Error loading initial data:', error);
-      Notification('Error al cargar datos iniciales', 'error');
+      console.error("Error loading initial data:", error);
+      Notification("Error al cargar datos iniciales", "error");
     }
   };
 
@@ -118,27 +128,29 @@ const DetailInterviewed = () => {
 
       setFormData({
         personalInfo: data.personalInfo || {
-          firstName: '',
-          lastName: '',
-          phone: '',
-          position: '',
-          department: '',
-          location: '',
+          firstName: "",
+          lastName: "",
+          phone: "",
+          position: "",
+          department: "",
+          location: "",
         },
-        email: data.email || '',
-        companyId: data.companyId || '',
-        companyName: data.companyName || '',
-        teamId: data.teamId || '',
-        status: data.status || 'PENDING',
-        state: data.state || 'ACTIVE',
-        profileImage: data.profileImage || '',
-        notes: data.notes || '',
-        assignedTo: data.assignedTo || '',
-        registrationDate: data.registrationDate ? new Date(data.registrationDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        email: data.email || "",
+        companyId: data.companyId || "",
+        companyName: data.companyName || "",
+        teamId: data.teamId || "",
+        status: data.status || "PENDING",
+        state: data.state || "ACTIVE",
+        profileImage: data.profileImage || "",
+        notes: data.notes || "",
+        assignedTo: data.assignedTo || "",
+        registrationDate: data.registrationDate
+          ? new Date(data.registrationDate).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0],
       });
     } catch (error) {
-      console.error('Error loading interviewee data:', error);
-      Notification('Error al cargar datos del entrevistado', 'error');
+      console.error("Error loading interviewee data:", error);
+      Notification("Error al cargar datos del entrevistado", "error");
     } finally {
       setLoading(false);
     }
@@ -146,9 +158,9 @@ const DetailInterviewed = () => {
 
   const handleInputChange = (field: string, value: string) => {
     console.log(`handleInputChange: ${field} = ${value}`);
-    if (field.startsWith('personalInfo.')) {
-      const personalField = field.replace('personalInfo.', '');
-      setFormData(prev => ({
+    if (field.startsWith("personalInfo.")) {
+      const personalField = field.replace("personalInfo.", "");
+      setFormData((prev) => ({
         ...prev,
         personalInfo: {
           ...prev.personalInfo,
@@ -156,7 +168,7 @@ const DetailInterviewed = () => {
         },
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [field]: value,
       }));
@@ -166,33 +178,40 @@ const DetailInterviewed = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.personalInfo.firstName || !formData.personalInfo.lastName || !formData.email) {
-      Notification('Por favor completa todos los campos requeridos', 'error');
+    if (
+      !formData.personalInfo.firstName ||
+      !formData.personalInfo.lastName ||
+      !formData.email
+    ) {
+      Notification("Por favor completa todos los campos requeridos", "error");
       return;
     }
 
     if (!formData.assignedTo) {
-      Notification('Por favor selecciona un profesional asignado', 'error');
+      Notification("Por favor selecciona un profesional asignado", "error");
       return;
     }
 
     try {
       setLoading(true);
 
-      console.log('Submitting interviewee data:', formData);
+      console.log("Submitting interviewee data:", formData);
 
       if (isEditing) {
         await apiConnection.patch(`/interviewees/${id}`, formData);
-        Notification('Entrevistado actualizado exitosamente', 'success');
+        Notification("Entrevistado actualizado exitosamente", "success");
       } else {
-        const response = await apiConnection.post('/interviewees', formData);
-        Notification('Entrevistado creado exitosamente', 'success');
+        const response = await apiConnection.post("/interviewees", formData);
+        Notification("Entrevistado creado exitosamente", "success");
 
-        router.push('/interviewed/table');
+        router.push("/interviewed/table");
       }
     } catch (error: any) {
-      console.error('Error saving interviewee:', error);
-      Notification(error?.response?.data?.message || 'Error al guardar entrevistado', 'error');
+      console.error("Error saving interviewee:", error);
+      Notification(
+        error?.response?.data?.message || "Error al guardar entrevistado",
+        "error",
+      );
     } finally {
       setLoading(false);
     }
@@ -204,12 +223,14 @@ const DetailInterviewed = () => {
 
   const loadInterviews = async () => {
     if (!id) return;
-    
+
     try {
       setLoadingInterviews(true);
-      const response = await apiConnection.get(`/interviews/filtered?intervieweeId=${id}`);
+      const response = await apiConnection.get(
+        `/interviews/filtered?intervieweeId=${id}`,
+      );
       console.log("Interviews for interviewee:", response.data);
-      
+
       const interviewsData = Array.isArray(response.data) ? response.data : [];
       setInterviews(interviewsData);
     } catch (error) {
@@ -222,16 +243,18 @@ const DetailInterviewed = () => {
 
   const loadEvaluations = async () => {
     if (!id) return;
-    
+
     try {
       setLoadingEvaluations(true);
       // Buscar evaluaciones/surveys relacionadas con el entrevistado
       const response = await apiConnection.get(`/surveys?intervieweeId=${id}`);
       console.log("Evaluations for interviewee:", response.data);
-      
-      const evaluationsData = Array.isArray(response.data?.data) ? 
-        response.data.data : 
-        Array.isArray(response.data) ? response.data : [];
+
+      const evaluationsData = Array.isArray(response.data?.data)
+        ? response.data.data
+        : Array.isArray(response.data)
+          ? response.data
+          : [];
       setEvaluations(evaluationsData);
     } catch (error) {
       console.error("Error loading evaluations:", error);
@@ -243,31 +266,33 @@ const DetailInterviewed = () => {
 
   // Cargar datos cuando se cambia de pestaña
   useEffect(() => {
-    if (activeTab === 'interviews' && isEditing) {
+    if (activeTab === "interviews" && isEditing) {
       loadInterviews();
-    } else if (activeTab === 'ev' && isEditing) {
+    } else if (activeTab === "ev" && isEditing) {
       loadEvaluations();
     }
   }, [activeTab, id]);
 
   const statusOptions = [
-    { key: 'PENDING', label: 'Pendiente' },
-    { key: 'INVITED', label: 'Invitado' },
-    { key: 'IN_PROGRESS', label: 'En Progreso' },
-    { key: 'COMPLETED', label: 'Completado' },
-    { key: 'CANCELLED', label: 'Cancelado' },
-    { key: 'EXPIRED', label: 'Expirado' },
+    { key: "PENDING", label: "Pendiente" },
+    { key: "INVITED", label: "Invitado" },
+    { key: "IN_PROGRESS", label: "En Progreso" },
+    { key: "COMPLETED", label: "Completado" },
+    { key: "CANCELLED", label: "Cancelado" },
+    { key: "EXPIRED", label: "Expirado" },
   ];
 
   const stateOptions = [
-    { key: 'ACTIVE', label: 'Activo' },
-    { key: 'INACTIVE', label: 'Inactivo' },
+    { key: "ACTIVE", label: "Activo" },
+    { key: "INACTIVE", label: "Inactivo" },
   ];
 
   if (loading && isEditing) {
     return (
       <div className="flex flex-row w-full">
-        <div><MenuLeft /></div>
+        <div>
+          <MenuLeft />
+        </div>
         <div className="w-full ml-10 mr-10">
           <NavbarApp />
           <div className="flex justify-center items-center h-64">
@@ -295,38 +320,37 @@ const DetailInterviewed = () => {
             </button>
             <h1 className="font-bold text-[22px]">
               {isEditing
-                ? `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}` || 'Editar Entrevistado'
-                : 'Nuevo Entrevistado'
-              }
+                ? `${formData.personalInfo.firstName} ${formData.personalInfo.lastName}` ||
+                  "Editar Entrevistado"
+                : "Nuevo Entrevistado"}
             </h1>
           </div>
 
           {/*  seccion de botones de informacion y entrevistas*/}
           <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[390px] mt-8 mb-6 h-[36px] rounded-xl">
             <Button
-              className={`rounded-sm h-[28px] ${activeTab === 'info' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
-              onClick={() => setActiveTab('info')}
-              
+              className={`rounded-sm h-[28px] ${activeTab === "info" ? "bg-white" : "bg-[#F4F4F5] text-[#71717A]"}`}
+              onClick={() => setActiveTab("info")}
             >
               Información
             </Button>
             <Button
-              className={`rounded-sm h-[28px] ${activeTab === 'interviews' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
-              onClick={() => setActiveTab('interviews')}
+              className={`rounded-sm h-[28px] ${activeTab === "interviews" ? "bg-white" : "bg-[#F4F4F5] text-[#71717A]"}`}
+              onClick={() => setActiveTab("interviews")}
               disabled={!isEditing}
             >
               Entrevistas
             </Button>
             <Button
-              className={`rounded-sm h-[28px] ${activeTab === 'ev' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
-              onClick={() => setActiveTab('ev')}
+              className={`rounded-sm h-[28px] ${activeTab === "ev" ? "bg-white" : "bg-[#F4F4F5] text-[#71717A]"}`}
+              onClick={() => setActiveTab("ev")}
               disabled={!isEditing}
             >
               Ev. Previa
             </Button>
             <Button
-              className={`rounded-sm h-[28px] ${activeTab === 'reports' ? 'bg-white' : 'bg-[#F4F4F5] text-[#71717A]'}`}
-              onClick={() => setActiveTab('reports')}
+              className={`rounded-sm h-[28px] ${activeTab === "reports" ? "bg-white" : "bg-[#F4F4F5] text-[#71717A]"}`}
+              onClick={() => setActiveTab("reports")}
               disabled={!isEditing}
             >
               Informes
@@ -335,7 +359,7 @@ const DetailInterviewed = () => {
 
           <hr />
 
-          {activeTab === 'info' && (
+          {activeTab === "info" && (
             <div className="mt-8">
               {/* seccion de imagen de perfil */}
               <div className="flex flex-row mt-8">
@@ -348,7 +372,7 @@ const DetailInterviewed = () => {
                     />
                   ) : (
                     <span className="text-gray-400 text-2xl">
-                      {formData.personalInfo.firstName?.[0] || 'E'}
+                      {formData.personalInfo.firstName?.[0] || "E"}
                     </span>
                   )}
                 </div>
@@ -356,14 +380,20 @@ const DetailInterviewed = () => {
                   <div className="flex flex-row space-x-1 ml-4 mt-7">
                     <ButtonSubmitPhoto
                       onImageUploaded={(imageUrl) => {
-                        console.log('Image uploaded for interviewee:', imageUrl);
-                        setFormData(prev => ({ ...prev, profileImage: imageUrl }));
+                        console.log(
+                          "Image uploaded for interviewee:",
+                          imageUrl,
+                        );
+                        setFormData((prev) => ({
+                          ...prev,
+                          profileImage: imageUrl,
+                        }));
                       }}
                       currentImage={formData.profileImage}
                     />
                     <ButtonDelete
                       onDelete={() => {
-                        setFormData(prev => ({ ...prev, profileImage: '' }));
+                        setFormData((prev) => ({ ...prev, profileImage: "" }));
                       }}
                       hasImage={!!formData.profileImage}
                     />
@@ -377,7 +407,10 @@ const DetailInterviewed = () => {
               </div>
 
               {/* Form */}
-              <Form onSubmit={handleSubmit} className="flex flex-col mt-8 space-y-6 max-w-2xl">
+              <Form
+                onSubmit={handleSubmit}
+                className="flex flex-col mt-8 space-y-6 max-w-2xl"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
                     isRequired
@@ -385,7 +418,12 @@ const DetailInterviewed = () => {
                     labelPlacement="outside"
                     placeholder="Ingresa el nombre"
                     value={formData.personalInfo.firstName}
-                    onChange={(e) => handleInputChange('personalInfo.firstName', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "personalInfo.firstName",
+                        e.target.value,
+                      )
+                    }
                     className="w-full"
                   />
                   <Input
@@ -394,7 +432,9 @@ const DetailInterviewed = () => {
                     labelPlacement="outside"
                     placeholder="Ingresa el apellido"
                     value={formData.personalInfo.lastName}
-                    onChange={(e) => handleInputChange('personalInfo.lastName', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("personalInfo.lastName", e.target.value)
+                    }
                     className="w-full"
                   />
                 </div>
@@ -406,7 +446,7 @@ const DetailInterviewed = () => {
                   labelPlacement="outside"
                   placeholder="correo@ejemplo.com"
                   value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                   className="w-full"
                 />
 
@@ -416,7 +456,9 @@ const DetailInterviewed = () => {
                     labelPlacement="outside"
                     placeholder="+54 11 1234 5678"
                     value={formData.personalInfo.phone}
-                    onChange={(e) => handleInputChange('personalInfo.phone', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("personalInfo.phone", e.target.value)
+                    }
                     className="w-full"
                   />
                   <Input
@@ -424,7 +466,9 @@ const DetailInterviewed = () => {
                     labelPlacement="outside"
                     placeholder="Cargo o posición"
                     value={formData.personalInfo.position}
-                    onChange={(e) => handleInputChange('personalInfo.position', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("personalInfo.position", e.target.value)
+                    }
                     className="w-full"
                   />
                 </div>
@@ -435,7 +479,12 @@ const DetailInterviewed = () => {
                     labelPlacement="outside"
                     placeholder="Departamento"
                     value={formData.personalInfo.department}
-                    onChange={(e) => handleInputChange('personalInfo.department', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "personalInfo.department",
+                        e.target.value,
+                      )
+                    }
                     className="w-full"
                   />
                   <Input
@@ -443,7 +492,9 @@ const DetailInterviewed = () => {
                     labelPlacement="outside"
                     placeholder="Ciudad, País"
                     value={formData.personalInfo.location}
-                    onChange={(e) => handleInputChange('personalInfo.location', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("personalInfo.location", e.target.value)
+                    }
                     className="w-full"
                   />
                 </div>
@@ -453,51 +504,74 @@ const DetailInterviewed = () => {
                     label="Empresa (opcional)"
                     labelPlacement="outside"
                     placeholder="Selecciona una empresa"
-                    selectedKeys={formData.companyId ? new Set([formData.companyId]) : new Set()}
+                    selectedKeys={
+                      formData.companyId
+                        ? new Set([formData.companyId])
+                        : new Set()
+                    }
                     onSelectionChange={(keys) => {
                       const keysArray = Array.from(keys);
-                      const selectedKey = keysArray.length > 0 ? keysArray[0] as string : '';
-                      const selectedCompany = companies.find(c => c._id === selectedKey);
-                      handleInputChange('companyId', selectedKey);
-                      handleInputChange('companyName', selectedCompany?.name || '');
+                      const selectedKey =
+                        keysArray.length > 0 ? (keysArray[0] as string) : "";
+                      const selectedCompany = companies.find(
+                        (c) => c._id === selectedKey,
+                      );
+                      handleInputChange("companyId", selectedKey);
+                      handleInputChange(
+                        "companyName",
+                        selectedCompany?.name || "",
+                      );
                     }}
                     className="w-full"
                   >
                     {companies.map((company) => (
-                      <SelectItem key={company._id}>
-                        {company.name}
-                      </SelectItem>
+                      <SelectItem key={company._id}>{company.name}</SelectItem>
                     ))}
                   </Select>
 
                   <div className="group flex flex-col data-[hidden=true]:hidden w-full">
                     <div className="flex flex-col">
                       <label className="block text-foreground-600 font-medium text-small pb-1.5 will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none">
-                        Profesional Asignado <span className="text-danger">*</span>
+                        Profesional Asignado{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <div className="relative">
                         <select
                           required
                           value={formData.assignedTo}
                           onChange={(e) => {
-                            console.log('Native select changed:', e.target.value);
-                            handleInputChange('assignedTo', e.target.value);
+                            console.log(
+                              "Native select changed:",
+                              e.target.value,
+                            );
+                            handleInputChange("assignedTo", e.target.value);
                           }}
                           className="w-full min-h-unit-10 px-3 py-2 rounded-medium border-2 border-default-200 bg-default-50 text-small text-foreground placeholder:text-foreground-500 focus:border-focus focus:bg-default-100 focus:outline-none hover:border-default-300 transition-colors motion-reduce:transition-none appearance-none"
                           style={{
                             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-                            backgroundPosition: 'right 0.5rem center',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: '1.5em 1.5em',
-                            paddingRight: '2.5rem'
+                            backgroundPosition: "right 0.5rem center",
+                            backgroundRepeat: "no-repeat",
+                            backgroundSize: "1.5em 1.5em",
+                            paddingRight: "2.5rem",
                           }}
                         >
-                          <option value="" disabled className="text-foreground-500">
+                          <option
+                            value=""
+                            disabled
+                            className="text-foreground-500"
+                          >
                             Selecciona un profesional
                           </option>
                           {professionals.map((professional) => (
-                            <option key={professional._id} value={professional._id} className="text-foreground">
-                              {professional.fullname} {professional.speciality ? `(${professional.speciality})` : ''}
+                            <option
+                              key={professional._id}
+                              value={professional._id}
+                              className="text-foreground"
+                            >
+                              {professional.fullname}{" "}
+                              {professional.speciality
+                                ? `(${professional.speciality})`
+                                : ""}
                             </option>
                           ))}
                         </select>
@@ -512,18 +586,19 @@ const DetailInterviewed = () => {
                       label="Estado"
                       labelPlacement="outside"
                       placeholder="Selecciona un estado"
-                      selectedKeys={formData.status ? new Set([formData.status]) : new Set()}
+                      selectedKeys={
+                        formData.status ? new Set([formData.status]) : new Set()
+                      }
                       onSelectionChange={(keys) => {
                         const keysArray = Array.from(keys);
-                        const selectedKey = keysArray.length > 0 ? keysArray[0] as string : '';
-                        handleInputChange('status', selectedKey);
+                        const selectedKey =
+                          keysArray.length > 0 ? (keysArray[0] as string) : "";
+                        handleInputChange("status", selectedKey);
                       }}
                       className="w-full"
                     >
                       {statusOptions.map((option) => (
-                        <SelectItem key={option.key}>
-                          {option.label}
-                        </SelectItem>
+                        <SelectItem key={option.key}>{option.label}</SelectItem>
                       ))}
                     </Select>
 
@@ -531,18 +606,19 @@ const DetailInterviewed = () => {
                       label="Estado Activo"
                       labelPlacement="outside"
                       placeholder="Selecciona estado activo"
-                      selectedKeys={formData.state ? new Set([formData.state]) : new Set()}
+                      selectedKeys={
+                        formData.state ? new Set([formData.state]) : new Set()
+                      }
                       onSelectionChange={(keys) => {
                         const keysArray = Array.from(keys);
-                        const selectedKey = keysArray.length > 0 ? keysArray[0] as string : '';
-                        handleInputChange('state', selectedKey);
+                        const selectedKey =
+                          keysArray.length > 0 ? (keysArray[0] as string) : "";
+                        handleInputChange("state", selectedKey);
                       }}
                       className="w-full"
                     >
                       {stateOptions.map((option) => (
-                        <SelectItem key={option.key}>
-                          {option.label}
-                        </SelectItem>
+                        <SelectItem key={option.key}>{option.label}</SelectItem>
                       ))}
                     </Select>
                   </div>
@@ -554,7 +630,9 @@ const DetailInterviewed = () => {
                     label="Fecha de registro"
                     labelPlacement="outside"
                     value={formData.registrationDate}
-                    onChange={(e) => handleInputChange('registrationDate', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("registrationDate", e.target.value)
+                    }
                     className="w-full"
                   />
                 </div>
@@ -564,7 +642,7 @@ const DetailInterviewed = () => {
                   labelPlacement="outside"
                   placeholder="Notas adicionales sobre el entrevistado"
                   value={formData.notes}
-                  onChange={(e) => handleInputChange('notes', e.target.value)}
+                  onChange={(e) => handleInputChange("notes", e.target.value)}
                   className="w-full"
                   minRows={3}
                 />
@@ -576,7 +654,7 @@ const DetailInterviewed = () => {
                     isLoading={loading}
                     className="bg-[#635BFF] text-white"
                   >
-                    {isEditing ? 'Actualizar' : 'Crear'} Entrevistado
+                    {isEditing ? "Actualizar" : "Crear"} Entrevistado
                   </Button>
                   <Button
                     type="button"
@@ -591,24 +669,30 @@ const DetailInterviewed = () => {
             </div>
           )}
 
-          {activeTab === 'interviews' && isEditing && (
+          {activeTab === "interviews" && isEditing && (
             <div className="mt-8">
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Entrevistas</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Entrevistas
+                </h3>
                 <p className="text-gray-500">
                   Entrevistas asociadas a este entrevistado
                 </p>
               </div>
-              
+
               {loadingInterviews ? (
                 <div className="flex justify-center items-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                  <span className="ml-2 text-gray-600">Cargando entrevistas...</span>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+                  <span className="ml-2 text-gray-600">
+                    Cargando entrevistas...
+                  </span>
                 </div>
               ) : interviews.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
                   <div className="text-4xl mb-4">📅</div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">No hay entrevistas</h4>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                    No hay entrevistas
+                  </h4>
                   <p className="text-gray-500">
                     Este entrevistado aún no tiene entrevistas programadas.
                   </p>
@@ -616,32 +700,37 @@ const DetailInterviewed = () => {
               ) : (
                 <div className="space-y-4">
                   {interviews.map((interview: any) => (
-                    <div key={interview._id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                    <div
+                      key={interview._id}
+                      className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+                    >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900 mb-2">
-                            {interview.title || 'Entrevista sin título'}
+                            {interview.title || "Entrevista sin título"}
                           </h4>
                           <p className="text-gray-600 text-sm mb-3">
-                            {interview.description || 'Sin descripción'}
+                            {interview.description || "Sin descripción"}
                           </p>
-                          
+
                           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                             {interview.scheduledAt && (
                               <div className="flex items-center gap-1">
                                 <span>📅</span>
                                 <span>
-                                  {new Date(interview.scheduledAt).toLocaleDateString('es-ES', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
+                                  {new Date(
+                                    interview.scheduledAt,
+                                  ).toLocaleDateString("es-ES", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
                                   })}
                                 </span>
                               </div>
                             )}
-                            
+
                             {interview.position && (
                               <div className="flex items-center gap-1">
                                 <span>💼</span>
@@ -650,23 +739,35 @@ const DetailInterviewed = () => {
                             )}
                           </div>
                         </div>
-                        
+
                         <div className="ml-4 flex flex-col items-end gap-2">
-                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            interview.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                            interview.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
-                            interview.status === 'NOT_STARTED' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {interview.status === 'COMPLETED' ? '✅ Completada' :
-                             interview.status === 'IN_PROGRESS' ? '🔄 En progreso' :
-                             interview.status === 'NOT_STARTED' ? '⏳ No iniciada' :
-                             interview.status || 'Sin estado'}
+                          <div
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              interview.status === "COMPLETED"
+                                ? "bg-green-100 text-green-800"
+                                : interview.status === "IN_PROGRESS"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : interview.status === "NOT_STARTED"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {interview.status === "COMPLETED"
+                              ? "✅ Completada"
+                              : interview.status === "IN_PROGRESS"
+                                ? "🔄 En progreso"
+                                : interview.status === "NOT_STARTED"
+                                  ? "⏳ No iniciada"
+                                  : interview.status || "Sin estado"}
                           </div>
-                          
-                          <button 
+
+                          <button
                             className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                            onClick={() => router.push(`/interviews/information/${interview._id}`)}
+                            onClick={() =>
+                              router.push(
+                                `/interviews/information/${interview._id}`,
+                              )
+                            }
                           >
                             Ver detalles →
                           </button>
@@ -679,28 +780,34 @@ const DetailInterviewed = () => {
             </div>
           )}
 
-          {activeTab === 'reports' && isEditing && typeof id === 'string' && (
+          {activeTab === "reports" && isEditing && typeof id === "string" && (
             <ReportsTab intervieweeId={id} />
           )}
 
-          {activeTab === 'ev' && isEditing && (
+          {activeTab === "ev" && isEditing && (
             <div className="mt-8">
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Evaluación Previa</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Evaluación Previa
+                </h3>
                 <p className="text-gray-500">
                   Evaluaciones y surveys completadas por este entrevistado
                 </p>
               </div>
-              
+
               {loadingEvaluations ? (
                 <div className="flex justify-center items-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                  <span className="ml-2 text-gray-600">Cargando evaluaciones...</span>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+                  <span className="ml-2 text-gray-600">
+                    Cargando evaluaciones...
+                  </span>
                 </div>
               ) : evaluations.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
                   <div className="text-4xl mb-4">📋</div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">No hay evaluaciones</h4>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                    No hay evaluaciones
+                  </h4>
                   <p className="text-gray-500">
                     Este entrevistado aún no ha completado evaluaciones previas.
                   </p>
@@ -708,22 +815,27 @@ const DetailInterviewed = () => {
               ) : (
                 <div className="space-y-4">
                   {evaluations.map((evaluation: any) => (
-                    <div key={evaluation._id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                    <div
+                      key={evaluation._id}
+                      className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+                    >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-2xl">
-                              {evaluation.previousEvaluations ? '📋' : '📊'}
+                              {evaluation.previousEvaluations ? "📋" : "📊"}
                             </span>
                             <h4 className="font-semibold text-gray-900">
-                              {evaluation.name || evaluation.title || 'Evaluación sin título'}
+                              {evaluation.name ||
+                                evaluation.title ||
+                                "Evaluación sin título"}
                             </h4>
                           </div>
-                          
+
                           <p className="text-gray-600 text-sm mb-3">
-                            {evaluation.description || 'Sin descripción'}
+                            {evaluation.description || "Sin descripción"}
                           </p>
-                          
+
                           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                             {evaluation.position && (
                               <div className="flex items-center gap-1">
@@ -731,37 +843,48 @@ const DetailInterviewed = () => {
                                 <span>{evaluation.position}</span>
                               </div>
                             )}
-                            
+
                             {evaluation.modules && (
                               <div className="flex items-center gap-1">
                                 <span>📚</span>
-                                <span>{evaluation.modules.length} módulo(s)</span>
+                                <span>
+                                  {evaluation.modules.length} módulo(s)
+                                </span>
                               </div>
                             )}
-                            
+
                             {evaluation.createdAt && (
                               <div className="flex items-center gap-1">
                                 <span>📅</span>
                                 <span>
-                                  Creada: {new Date(evaluation.createdAt).toLocaleDateString('es-ES')}
+                                  Creada:{" "}
+                                  {new Date(
+                                    evaluation.createdAt,
+                                  ).toLocaleDateString("es-ES")}
                                 </span>
                               </div>
                             )}
                           </div>
                         </div>
-                        
+
                         <div className="ml-4 flex flex-col items-end gap-2">
-                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            evaluation.previousEvaluations 
-                              ? 'bg-blue-100 text-blue-800' 
-                              : 'bg-purple-100 text-purple-800'
-                          }`}>
-                            {evaluation.previousEvaluations ? '📋 Ev. Previa' : '📊 Evaluación'}
+                          <div
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              evaluation.previousEvaluations
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-purple-100 text-purple-800"
+                            }`}
+                          >
+                            {evaluation.previousEvaluations
+                              ? "📋 Ev. Previa"
+                              : "📊 Evaluación"}
                           </div>
-                          
-                          <button 
+
+                          <button
                             className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                            onClick={() => router.push(`/surveys/${evaluation._id}`)}
+                            onClick={() =>
+                              router.push(`/surveys/${evaluation._id}`)
+                            }
                           >
                             Ver evaluación →
                           </button>

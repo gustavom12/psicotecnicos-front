@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ArrowLeft from "@/public/icons/arrowleft";
-import { Button, ButtonGroup } from "@heroui/button";
+import { Button } from "@heroui/button";
 import { Form, Checkbox, Tooltip } from "@heroui/react";
 import InputForms from "@/common/inputForms";
 import AuthLayout from "@/layouts/auth.layout";
@@ -50,7 +50,7 @@ const InformationView = ({ id }: { id?: string }) => {
       setData({ ...data, [field]: e.target.value });
 
   const save = async () => {
-    if (!data.title  || !data.description) {
+    if (!data.title || !data.description) {
       Notification("Debe completar todos los campos requeridos", "error");
       return;
     }
@@ -121,7 +121,9 @@ const InformationView = ({ id }: { id?: string }) => {
           <div className="flex items-center gap-2">
             <Checkbox
               isSelected={data.previousEvaluations}
-              onValueChange={(value) => setData({ ...data, previousEvaluations: value })}
+              onValueChange={(value) =>
+                setData({ ...data, previousEvaluations: value })
+              }
             >
               ¿Es una evaluación previa?
             </Checkbox>

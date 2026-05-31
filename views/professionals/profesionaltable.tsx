@@ -1,4 +1,3 @@
-import Document from "@/public/icons/document";
 import Pencil2 from "@/public/icons/pencil2";
 import Trash from "@/public/icons/trashgrey";
 import React from "react";

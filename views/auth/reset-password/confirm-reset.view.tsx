@@ -14,7 +14,12 @@ interface FormData {
 }
 
 const ConfirmResetView = () => {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<FormData>();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
@@ -38,7 +43,8 @@ const ConfirmResetView = () => {
       setIsSuccess(true);
       Notification("Contraseña actualizada exitosamente", "success");
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || "Error al actualizar la contraseña";
+      const errorMessage =
+        error?.response?.data?.message || "Error al actualizar la contraseña";
       Notification(errorMessage, "error");
     } finally {
       setIsLoading(false);
@@ -53,16 +59,29 @@ const ConfirmResetView = () => {
           <div className="flex flex-col items-center mb-8">
             <div className="flex items-center gap-2 mb-6">
               <Star />
-              <p className="text-[20px] text-[#635BFF] font-semibold">Psicotécnicos</p>
+              <p className="text-[20px] text-[#635BFF] font-semibold">
+                Psicotécnicos
+              </p>
             </div>
             <div className="flex items-center justify-center bg-green-100 rounded-full w-16 h-16 mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="w-8 h-8 text-green-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
-            <h1 className="text-[#3F3F46] text-[24px] font-semibold mb-2 text-center">¡Contraseña actualizada!</h1>
+            <h1 className="text-[#3F3F46] text-[24px] font-semibold mb-2 text-center">
+              ¡Contraseña actualizada!
+            </h1>
             <p className="text-[#A1A1AA] text-[14px] font-light text-center">
-              Tu contraseña ha sido actualizada exitosamente. Ya puedes iniciar sesión con tu nueva contraseña.
+              Tu contraseña ha sido actualizada exitosamente. Ya puedes iniciar
+              sesión con tu nueva contraseña.
             </p>
           </div>
 
@@ -85,14 +104,26 @@ const ConfirmResetView = () => {
           <div className="flex flex-col items-center mb-8">
             <div className="flex items-center gap-2 mb-6">
               <Star />
-              <p className="text-[20px] text-[#635BFF] font-semibold">Psicotécnicos</p>
+              <p className="text-[20px] text-[#635BFF] font-semibold">
+                Psicotécnicos
+              </p>
             </div>
             <div className="flex items-center justify-center bg-red-100 rounded-full w-16 h-16 mb-4">
-              <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                className="w-8 h-8 text-red-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
-            <h1 className="text-[#3F3F46] text-[24px] font-semibold mb-2 text-center">Enlace inválido</h1>
+            <h1 className="text-[#3F3F46] text-[24px] font-semibold mb-2 text-center">
+              Enlace inválido
+            </h1>
             <p className="text-[#A1A1AA] text-[14px] font-light text-center">
               El enlace de recuperación no es válido o ha expirado.
             </p>
@@ -125,9 +156,13 @@ const ConfirmResetView = () => {
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-2 mb-6">
             <Star />
-            <p className="text-[20px] text-[#635BFF] font-semibold">Psicotécnicos</p>
+            <p className="text-[20px] text-[#635BFF] font-semibold">
+              Psicotécnicos
+            </p>
           </div>
-          <h1 className="text-[#3F3F46] text-[28px] font-semibold mb-2">Nueva contraseña</h1>
+          <h1 className="text-[#3F3F46] text-[28px] font-semibold mb-2">
+            Nueva contraseña
+          </h1>
           <p className="text-[#A1A1AA] text-[14px] font-light text-center">
             Ingresa tu nueva contraseña
           </p>
@@ -146,18 +181,20 @@ const ConfirmResetView = () => {
                 required: "La contraseña es requerida",
                 minLength: {
                   value: 8,
-                  message: "La contraseña debe tener al menos 8 caracteres"
+                  message: "La contraseña debe tener al menos 8 caracteres",
                 },
                 pattern: {
                   value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                  message: "La contraseña debe contener al menos una mayúscula, una minúscula y un número"
-                }
+                  message:
+                    "La contraseña debe contener al menos una mayúscula, una minúscula y un número",
+                },
               })}
               className="w-full"
               classNames={{
                 label: "text-[#3F3F46] text-sm font-medium mb-2",
                 input: "text-[#3F3F46]",
-                inputWrapper: "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]"
+                inputWrapper:
+                  "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]",
               }}
               isRequired
               isInvalid={!!errors.password}
@@ -172,13 +209,15 @@ const ConfirmResetView = () => {
               placeholder="Confirma tu nueva contraseña"
               {...register("confirmPassword", {
                 required: "Debes confirmar tu contraseña",
-                validate: (value) => value === password || "Las contraseñas no coinciden"
+                validate: (value) =>
+                  value === password || "Las contraseñas no coinciden",
               })}
               className="w-full"
               classNames={{
                 label: "text-[#3F3F46] text-sm font-medium",
                 input: "text-[#3F3F46]",
-                inputWrapper: "border-gray-200 mt-6 hover:border-[#635BFF] focus-within:border-[#635BFF]"
+                inputWrapper:
+                  "border-gray-200 mt-6 hover:border-[#635BFF] focus-within:border-[#635BFF]",
               }}
               isRequired
               isInvalid={!!errors.confirmPassword}

@@ -1,2 +1,1 @@
-export { default } from './InterviewDetail.view';
-
+export { default } from "./InterviewDetail.view";

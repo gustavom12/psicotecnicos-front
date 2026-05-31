@@ -1,8 +1,7 @@
 import NavbarApp from "@/common/navbar";
 import MenuLeft from "@/layouts/menu/MenuLeft";
 import ArrowLeft from "@/public/icons/arrowleft";
-import { Button, ButtonGroup, Input } from "@heroui/react";
-import BoxEvaluations from './boxEvaluations'
+import { Input } from "@heroui/react";
 import ListModules from "./listModules";
 import PrimaryButton from "@/common/PrimaryButton";
 
@@ -33,7 +32,6 @@ const AddModuleView = () => {
 
           <Input placeholder="Busqueda" className="w-full mt-4 mb-4" />
 
-
           <PrimaryButton text={"Agregar modulo personalizado"} />
           <h2 className="font-medium text-[20px] mt-4 mb-2">Categoria</h2>
           <hr />
@@ -42,7 +40,7 @@ const AddModuleView = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AddModuleView
+export default AddModuleView;

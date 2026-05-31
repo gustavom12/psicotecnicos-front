@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { SlideTimeData } from '../../../../types/survey.types';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { SlideTimeData } from "../../../../types/survey.types";
 
 interface UseTimeTrackerProps {
   currentSlideIndex: number;
@@ -7,7 +7,11 @@ interface UseTimeTrackerProps {
   totalSlides: number;
 }
 
-export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }: UseTimeTrackerProps) => {
+export const useTimeTracker = ({
+  currentSlideIndex,
+  currentFormId,
+  totalSlides,
+}: UseTimeTrackerProps) => {
   const [slideTimeData, setSlideTimeData] = useState<SlideTimeData[]>([]);
   const [currentSlideTime, setCurrentSlideTime] = useState(0);
   const [totalInterviewTime, setTotalInterviewTime] = useState(0);
@@ -27,12 +31,16 @@ export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }
     if (!currentFormId) return;
 
     const endTime = new Date();
-    const timeSpent = Math.floor((endTime.getTime() - currentSlideStartTime.current.getTime()) / 1000);
+    const timeSpent = Math.floor(
+      (endTime.getTime() - currentSlideStartTime.current.getTime()) / 1000,
+    );
     const slideKey = getSlideKey(currentSlideIndex, currentFormId);
 
-    setSlideTimeData(prev => {
+    setSlideTimeData((prev) => {
       const existingSlideIndex = prev.findIndex(
-        slide => slide.slideIndex === currentSlideIndex && slide.formId === currentFormId
+        (slide) =>
+          slide.slideIndex === currentSlideIndex &&
+          slide.formId === currentFormId,
       );
 
       if (existingSlideIndex >= 0) {
@@ -41,8 +49,9 @@ export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }
         updatedSlides[existingSlideIndex] = {
           ...updatedSlides[existingSlideIndex],
           endTime,
-          totalTimeSeconds: updatedSlides[existingSlideIndex].totalTimeSeconds + timeSpent,
-          visitCount: updatedSlides[existingSlideIndex].visitCount + 1
+          totalTimeSeconds:
+            updatedSlides[existingSlideIndex].totalTimeSeconds + timeSpent,
+          visitCount: updatedSlides[existingSlideIndex].visitCount + 1,
         };
         return updatedSlides;
       } else {
@@ -53,7 +62,7 @@ export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }
           startTime: currentSlideStartTime.current,
           endTime,
           totalTimeSeconds: timeSpent,
-          visitCount: 1
+          visitCount: 1,
         };
         return [...prev, newSlideData];
       }
@@ -73,7 +82,9 @@ export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }
     // Iniciar nuevo intervalo para el slide actual
     intervalRef.current = setInterval(() => {
       const now = new Date();
-      const elapsed = Math.floor((now.getTime() - currentSlideStartTime.current.getTime()) / 1000);
+      const elapsed = Math.floor(
+        (now.getTime() - currentSlideStartTime.current.getTime()) / 1000,
+      );
       setCurrentSlideTime(elapsed);
     }, 1000);
   }, []);
@@ -101,7 +112,9 @@ export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }
   useEffect(() => {
     totalIntervalRef.current = setInterval(() => {
       const now = new Date();
-      const elapsed = Math.floor((now.getTime() - interviewStartTime.getTime()) / 1000);
+      const elapsed = Math.floor(
+        (now.getTime() - interviewStartTime.getTime()) / 1000,
+      );
       setTotalInterviewTime(elapsed);
     }, 1000);
 
@@ -128,23 +141,34 @@ export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }
   const formatTime = useCallback((seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   }, []);
 
   // Función para obtener estadísticas del slide actual
   const getCurrentSlideStats = useCallback(() => {
     const existingSlide = slideTimeData.find(
-      slide => slide.slideIndex === currentSlideIndex && slide.formId === currentFormId
+      (slide) =>
+        slide.slideIndex === currentSlideIndex &&
+        slide.formId === currentFormId,
     );
 
     return {
       currentTime: currentSlideTime,
-      totalTimeOnSlide: (existingSlide?.totalTimeSeconds || 0) + currentSlideTime,
+      totalTimeOnSlide:
+        (existingSlide?.totalTimeSeconds || 0) + currentSlideTime,
       visitCount: (existingSlide?.visitCount || 0) + 1,
       formattedCurrentTime: formatTime(currentSlideTime),
-      formattedTotalTime: formatTime((existingSlide?.totalTimeSeconds || 0) + currentSlideTime)
+      formattedTotalTime: formatTime(
+        (existingSlide?.totalTimeSeconds || 0) + currentSlideTime,
+      ),
     };
-  }, [slideTimeData, currentSlideIndex, currentFormId, currentSlideTime, formatTime]);
+  }, [
+    slideTimeData,
+    currentSlideIndex,
+    currentFormId,
+    currentSlideTime,
+    formatTime,
+  ]);
 
   return {
     slideTimeData,
@@ -153,6 +177,6 @@ export const useTimeTracker = ({ currentSlideIndex, currentFormId, totalSlides }
     interviewStartTime,
     finishInterview,
     formatTime,
-    getCurrentSlideStats
+    getCurrentSlideStats,
   };
 };

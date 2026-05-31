@@ -21,20 +21,25 @@ const Narrative: React.FC<{ text: string }> = ({ text }) => (
   <p className="text-gray-700 whitespace-pre-line leading-relaxed">{text}</p>
 );
 
-const BadgeRow: React.FC<{ label: string; value: string; colorClass?: string }> = ({
-  label,
-  value,
-  colorClass = "bg-gray-100 text-gray-700",
-}) => (
+const BadgeRow: React.FC<{
+  label: string;
+  value: string;
+  colorClass?: string;
+}> = ({ label, value, colorClass = "bg-gray-100 text-gray-700" }) => (
   <div className="flex items-center justify-between py-1 border-b border-gray-50 last:border-0">
     <span className="text-gray-500 text-xs">{label}</span>
-    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${colorClass}`}>
+    <span
+      className={`px-2 py-0.5 rounded-full text-xs font-medium ${colorClass}`}
+    >
       {value}
     </span>
   </div>
 );
 
-const ListItems: React.FC<{ items: string[]; icon: string }> = ({ items, icon }) => (
+const ListItems: React.FC<{ items: string[]; icon: string }> = ({
+  items,
+  icon,
+}) => (
   <ul className="space-y-1">
     {items.map((it, i) => (
       <li key={i} className="text-gray-700 flex items-start gap-2">
@@ -46,8 +51,10 @@ const ListItems: React.FC<{ items: string[]; icon: string }> = ({ items, icon })
 );
 
 const veredictoStyle = (v: Veredicto) => {
-  if (v === "RECOMENDABLE") return "bg-green-100 text-green-800 border border-green-200";
-  if (v === "RECOMENDABLE CON RESERVAS") return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+  if (v === "RECOMENDABLE")
+    return "bg-green-100 text-green-800 border border-green-200";
+  if (v === "RECOMENDABLE CON RESERVAS")
+    return "bg-yellow-100 text-yellow-800 border border-yellow-200";
   return "bg-red-100 text-red-800 border border-red-200";
 };
 
@@ -65,7 +72,6 @@ const ReportDetails: React.FC<Props> = ({ content }) => {
 
   return (
     <div className="space-y-6 text-sm">
-
       {/* 1. PRESENTACIÓN */}
       {c.presentacion && (
         <Section title="Presentación">
@@ -76,22 +82,34 @@ const ReportDetails: React.FC<Props> = ({ content }) => {
                 label="Disposición en entrevista"
                 value={c.presentacion.datosRelevantes.disposicionEnEntrevista}
               />
-              {c.presentacion.datosRelevantes.estilosComunicativos?.length > 0 && (
+              {c.presentacion.datosRelevantes.estilosComunicativos?.length >
+                0 && (
                 <div className="flex items-start justify-between py-1">
-                  <span className="text-gray-500 text-xs shrink-0">Estilo comunicativo</span>
+                  <span className="text-gray-500 text-xs shrink-0">
+                    Estilo comunicativo
+                  </span>
                   <div className="flex flex-wrap gap-1 justify-end">
-                    {c.presentacion.datosRelevantes.estilosComunicativos.map((e, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full text-xs">
-                        {e}
-                      </span>
-                    ))}
+                    {c.presentacion.datosRelevantes.estilosComunicativos.map(
+                      (e, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full text-xs"
+                        >
+                          {e}
+                        </span>
+                      ),
+                    )}
                   </div>
                 </div>
               )}
-              {c.presentacion.datosRelevantes.antecedentesLaboralesDestacados && (
+              {c.presentacion.datosRelevantes
+                .antecedentesLaboralesDestacados && (
                 <div className="pt-1 text-xs text-gray-600">
                   <span className="font-medium">Trayectoria destacada: </span>
-                  {c.presentacion.datosRelevantes.antecedentesLaboralesDestacados}
+                  {
+                    c.presentacion.datosRelevantes
+                      .antecedentesLaboralesDestacados
+                  }
                 </div>
               )}
               {c.presentacion.datosRelevantes.motivacionPostulacion && (
@@ -110,12 +128,21 @@ const ReportDetails: React.FC<Props> = ({ content }) => {
         <Section title="Aspectos Intelectuales">
           <Narrative text={c.aspectosIntelectuales.narrativa} />
           <div className="mt-3 border border-gray-100 rounded-md p-3 space-y-1 bg-gray-50">
-            <BadgeRow label="Nivel de capacidad" value={c.aspectosIntelectuales.nivelCapacidad} />
-            <BadgeRow label="Estilo cognitivo" value={c.aspectosIntelectuales.estiloCognitivo} />
+            <BadgeRow
+              label="Nivel de capacidad"
+              value={c.aspectosIntelectuales.nivelCapacidad}
+            />
+            <BadgeRow
+              label="Estilo cognitivo"
+              value={c.aspectosIntelectuales.estiloCognitivo}
+            />
           </div>
           {c.aspectosIntelectuales.puntosDestacados?.length > 0 && (
             <div className="mt-3">
-              <ListItems items={c.aspectosIntelectuales.puntosDestacados} icon="•" />
+              <ListItems
+                items={c.aspectosIntelectuales.puntosDestacados}
+                icon="•"
+              />
             </div>
           )}
         </Section>
@@ -126,13 +153,25 @@ const ReportDetails: React.FC<Props> = ({ content }) => {
         <Section title="Modalidad de Vinculación">
           <Narrative text={c.modalidadVinculacion.narrativa} />
           <div className="mt-3 border border-gray-100 rounded-md p-3 space-y-1 bg-gray-50">
-            <BadgeRow label="Preferencia laboral" value={c.modalidadVinculacion.preferenciaLaboral} />
-            <BadgeRow label="Gestión de conflictos" value={c.modalidadVinculacion.gestionConflictos} />
-            <BadgeRow label="Relación con jerarquía" value={c.modalidadVinculacion.relacionConJerarquia} />
+            <BadgeRow
+              label="Preferencia laboral"
+              value={c.modalidadVinculacion.preferenciaLaboral}
+            />
+            <BadgeRow
+              label="Gestión de conflictos"
+              value={c.modalidadVinculacion.gestionConflictos}
+            />
+            <BadgeRow
+              label="Relación con jerarquía"
+              value={c.modalidadVinculacion.relacionConJerarquia}
+            />
           </div>
           {c.modalidadVinculacion.puntosDestacados?.length > 0 && (
             <div className="mt-3">
-              <ListItems items={c.modalidadVinculacion.puntosDestacados} icon="•" />
+              <ListItems
+                items={c.modalidadVinculacion.puntosDestacados}
+                icon="•"
+              />
             </div>
           )}
         </Section>
@@ -143,9 +182,18 @@ const ReportDetails: React.FC<Props> = ({ content }) => {
         <Section title="Modalidad Laboral">
           <Narrative text={c.modalidadLaboral.narrativa} />
           <div className="mt-3 border border-gray-100 rounded-md p-3 space-y-1 bg-gray-50">
-            <BadgeRow label="Estilo de ejecución" value={c.modalidadLaboral.estiloEjecucion} />
-            <BadgeRow label="Organización" value={c.modalidadLaboral.nivelOrganizacion} />
-            <BadgeRow label="Adaptación al cambio" value={c.modalidadLaboral.adaptacionAlCambio} />
+            <BadgeRow
+              label="Estilo de ejecución"
+              value={c.modalidadLaboral.estiloEjecucion}
+            />
+            <BadgeRow
+              label="Organización"
+              value={c.modalidadLaboral.nivelOrganizacion}
+            />
+            <BadgeRow
+              label="Adaptación al cambio"
+              value={c.modalidadLaboral.adaptacionAlCambio}
+            />
             {c.modalidadLaboral.aspiraciones && (
               <div className="pt-1 text-xs text-gray-600">
                 <span className="font-medium">Aspiraciones: </span>
@@ -165,7 +213,9 @@ const ReportDetails: React.FC<Props> = ({ content }) => {
       {c.sintesis && (
         <Section title="Síntesis">
           {c.sintesis.veredicto && (
-            <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold mb-4 ${veredictoStyle(c.sintesis.veredicto)}`}>
+            <div
+              className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold mb-4 ${veredictoStyle(c.sintesis.veredicto)}`}
+            >
               {c.sintesis.veredicto}
             </div>
           )}
@@ -173,26 +223,37 @@ const ReportDetails: React.FC<Props> = ({ content }) => {
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             {c.sintesis.fortalezasClave?.length > 0 && (
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Fortalezas clave</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+                  Fortalezas clave
+                </p>
                 <ListItems items={c.sintesis.fortalezasClave} icon="✅" />
               </div>
             )}
             {c.sintesis.areasDeDesarrollo?.length > 0 && (
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Áreas de desarrollo</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+                  Áreas de desarrollo
+                </p>
                 <ListItems items={c.sintesis.areasDeDesarrollo} icon="🛠️" />
               </div>
             )}
             {c.sintesis.riesgosYAlertas?.length > 0 && (
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Riesgos y alertas</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+                  Riesgos y alertas
+                </p>
                 <ListItems items={c.sintesis.riesgosYAlertas} icon="⚠️" />
               </div>
             )}
             {c.sintesis.recomendacionesParaLaOrganizacion?.length > 0 && (
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Recomendaciones</p>
-                <ListItems items={c.sintesis.recomendacionesParaLaOrganizacion} icon="💡" />
+                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
+                  Recomendaciones
+                </p>
+                <ListItems
+                  items={c.sintesis.recomendacionesParaLaOrganizacion}
+                  icon="💡"
+                />
               </div>
             )}
           </div>

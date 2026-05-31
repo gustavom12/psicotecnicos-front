@@ -1,8 +1,4 @@
-import {
-  Report,
-  ReportStatus,
-  InterviewMeta,
-} from "./reports.types";
+import { Report, ReportStatus, InterviewMeta } from "./reports.types";
 
 /** Color tailwind para el badge de estado del reporte. */
 export const statusColor = (status: ReportStatus): string => {

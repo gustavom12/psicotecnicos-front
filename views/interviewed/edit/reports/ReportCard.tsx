@@ -52,7 +52,10 @@ const ReportCard: React.FC<Props> = ({
 
   const addNote = () => {
     if (!noteInput.trim()) return;
-    setNotes((p) => [...p, { id: crypto.randomUUID(), text: noteInput.trim() }]);
+    setNotes((p) => [
+      ...p,
+      { id: crypto.randomUUID(), text: noteInput.trim() },
+    ]);
     setNoteInput("");
   };
 
@@ -62,10 +65,7 @@ const ReportCard: React.FC<Props> = ({
     const hasAttachments = attachments.some((a) => a.url.trim());
 
     if (!hasFeedback && !hasNotes && !hasAttachments) {
-      Notification(
-        "Agregá al menos una corrección, nota o adjunto",
-        "error",
-      );
+      Notification("Agregá al menos una corrección, nota o adjunto", "error");
       return;
     }
     setSubmitting(true);
@@ -307,8 +307,7 @@ const ReportCard: React.FC<Props> = ({
                 >
                   <div className="flex flex-wrap justify-between gap-2 mb-1">
                     <span className="font-medium">
-                      v{realIndex}{" "}
-                      {realIndex === versionsCount && "(actual)"}
+                      v{realIndex} {realIndex === versionsCount && "(actual)"}
                     </span>
                     <span className="text-xs text-gray-500">
                       {formatDate(v.generatedAt)} · {v.model}

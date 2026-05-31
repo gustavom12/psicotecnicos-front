@@ -1,5 +1,5 @@
-import React from 'react';
-import { ClockIcon } from '@heroicons/react/24/outline';
+import React from "react";
+import { ClockIcon } from "@heroicons/react/24/outline";
 
 interface TimeDisplayProps {
   currentSlideTime: string;
@@ -16,17 +16,18 @@ export default function TimeDisplay({
   totalInterviewTime,
   visitCount,
   slideNumber,
-  totalSlides
+  totalSlides,
 }: TimeDisplayProps) {
   return (
     <div className="fixed top-4 right-4 z-10 group">
       {/* Indicador muy discreto - solo un pequeño punto con tiempo */}
-      <div className="bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-gray-200/30 px-2 py-1
-                      hover:bg-white/90 hover:px-3 hover:py-2 transition-all duration-300 cursor-default">
-
+      <div
+        className="bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-gray-200/30 px-2 py-1
+                      hover:bg-white/90 hover:px-3 hover:py-2 transition-all duration-300 cursor-default"
+      >
         {/* Vista mínima - solo tiempo actual */}
         <div className="flex items-center gap-1.5 text-xs text-gray-400 group-hover:hidden">
-          <div className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-pulse"></div>
+          <div className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-pulse" />
           <span className="font-mono text-[10px]">{currentSlideTime}</span>
         </div>
 
@@ -39,7 +40,9 @@ export default function TimeDisplay({
           {visitCount > 1 && (
             <>
               <span className="text-gray-300">|</span>
-              <span className="font-mono text-orange-500">{totalSlideTime}</span>
+              <span className="font-mono text-orange-500">
+                {totalSlideTime}
+              </span>
             </>
           )}
 

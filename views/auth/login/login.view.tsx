@@ -31,10 +31,16 @@ const LoginView = () => {
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-2 mb-6">
             <Star />
-            <p className="text-[20px] text-[#635BFF] font-semibold">Psicotécnicos</p>
+            <p className="text-[20px] text-[#635BFF] font-semibold">
+              Psicotécnicos
+            </p>
           </div>
-          <h1 className="text-[#3F3F46] text-[28px] font-semibold mb-2">Iniciar sesión</h1>
-          <p className="text-[#A1A1AA] text-[14px] font-light">Ingresa tus datos para acceder</p>
+          <h1 className="text-[#3F3F46] text-[28px] font-semibold mb-2">
+            Iniciar sesión
+          </h1>
+          <p className="text-[#A1A1AA] text-[14px] font-light">
+            Ingresa tus datos para acceder
+          </p>
         </div>
 
         {/* Formulario */}
@@ -51,7 +57,8 @@ const LoginView = () => {
               classNames={{
                 label: "text-[#3F3F46] text-sm font-medium mb-2",
                 input: "text-[#3F3F46]",
-                inputWrapper: "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]"
+                inputWrapper:
+                  "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]",
               }}
               isRequired
             />
@@ -66,7 +73,8 @@ const LoginView = () => {
               classNames={{
                 label: "text-[#3F3F46] text-sm font-medium",
                 input: "text-[#3F3F46]",
-                inputWrapper: "border-gray-200 mt-6 hover:border-[#635BFF] focus-within:border-[#635BFF]"
+                inputWrapper:
+                  "border-gray-200 mt-6 hover:border-[#635BFF] focus-within:border-[#635BFF]",
               }}
               isRequired
             />
@@ -75,7 +83,10 @@ const LoginView = () => {
           {/* Enlace olvidaste contraseña */}
           <div className="flex justify-end">
             <Link href="/auth/reset-password">
-              <button type="button" className="text-[#A1A1AA] text-[14px] font-light hover:text-[#635BFF] transition-colors">
+              <button
+                type="button"
+                className="text-[#A1A1AA] text-[14px] font-light hover:text-[#635BFF] transition-colors"
+              >
                 ¿Olvidaste tu contraseña?
               </button>
             </Link>

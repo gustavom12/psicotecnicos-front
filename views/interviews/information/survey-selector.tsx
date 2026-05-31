@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import apiConnection from "@/pages/api/api";
 import { Select, SelectItem } from "@heroui/react";
-import { PlayCircle } from "lucide-react";
-import { log } from "console";
 
 interface Survey {
   _id: string;
@@ -37,7 +35,10 @@ const SurveySelector: React.FC<Props> = ({ value, onChange }) => {
 
     fetchSurveys();
   }, []);
-console.log("Surveys state:", surveys.map(s => s._id));
+  console.log(
+    "Surveys state:",
+    surveys.map((s) => s._id),
+  );
 
   return (
     <div className="w-full">
@@ -45,7 +46,9 @@ console.log("Surveys state:", surveys.map(s => s._id));
         <h3 className="mb-2 font-semibold">Encuesta</h3>
         <Select
           radius="sm"
-          placeholder={loading ? "Cargando encuestas..." : "Selecciona una encuesta…" }
+          placeholder={
+            loading ? "Cargando encuestas..." : "Selecciona una encuesta…"
+          }
           className="w-full"
           selectedKeys={value ? [value] : []}
           onSelectionChange={(keys) => {
@@ -57,7 +60,7 @@ console.log("Surveys state:", surveys.map(s => s._id));
           isDisabled={loading}
           renderValue={(items) => {
             if (items.length === 0) return null;
-            const selectedSurvey = surveys.find(s => s._id === items[0].key);
+            const selectedSurvey = surveys.find((s) => s._id === items[0].key);
             return selectedSurvey ? selectedSurvey.name : null;
           }}
         >
@@ -77,13 +80,19 @@ console.log("Surveys state:", surveys.map(s => s._id));
         {value && (
           <div className="mt-4 p-3 bg-gray-50 rounded-md">
             {(() => {
-              const selectedSurvey = surveys.find(s => s._id === value);
+              const selectedSurvey = surveys.find((s) => s._id === value);
               if (selectedSurvey) {
                 return (
                   <div>
-                    <h4 className="font-medium text-gray-800">{selectedSurvey.name}</h4>
-                    <p className="text-sm text-gray-600">Puesto: {selectedSurvey.position}</p>
-                    <p className="text-sm text-gray-600">Descripción: {selectedSurvey.description}</p>
+                    <h4 className="font-medium text-gray-800">
+                      {selectedSurvey.name}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      Puesto: {selectedSurvey.position}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Descripción: {selectedSurvey.description}
+                    </p>
                   </div>
                 );
               }

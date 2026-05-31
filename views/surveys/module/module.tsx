@@ -35,33 +35,35 @@ const ModuleEvaluationsView = () => {
             <Button className="rounded-sm bg-[#F4F4F5] text-[#71717A]  h-[28px]">
               Información
             </Button>
-            <Button className="bg-white  h-[28px]">
-              Modulos
-            </Button>
+            <Button className="bg-white  h-[28px]">Modulos</Button>
           </ButtonGroup>
 
           <hr />
 
           <div>
-
             <ButtonAssessment
               title="Cuestionario personal"
               text="Evaluación previa"
             />
 
-            <ButtonAssessment title="Cuestionario Personal" text="Evaluacion Previa" />
+            <ButtonAssessment
+              title="Cuestionario Personal"
+              text="Evaluacion Previa"
+            />
 
             <ButtonAssessment title="Portada" text="Personalizados" />
 
             <ButtonAssessment title="Test de Rorschart" text="1 slide" />
 
             <ButtonAssessment title="Cierre" text="Personalizado" />
-            <Button className="bg-[#635BFF] rounded-md mb-6 w-[40%] text-white">Agregar Modulo</Button>
+            <Button className="bg-[#635BFF] rounded-md mb-6 w-[40%] text-white">
+              Agregar Modulo
+            </Button>
             <PrimaryButton text={"Agregar Modulo"} />
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 export default ModuleEvaluationsView;

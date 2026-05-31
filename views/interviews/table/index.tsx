@@ -5,7 +5,7 @@ import Addition from "@/public/icons/addition";
 import Pencil2 from "@/public/icons/pencil2";
 import Trash from "@/public/icons/trashgrey";
 import Eye from "@/public/icons/eye";
-import { Button, Chip, Input, Select, SelectItem } from "@heroui/react";
+import { Button, Input, Select, SelectItem } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import apiConnection from "@/pages/api/api";
@@ -32,7 +32,6 @@ const TableInterviewsView = () => {
           apiConnection.get("/interviewees/filtered"),
           apiConnection.get("/users/table"),
         ]);
-
 
       // Crear mapas para búsqueda rápida
       const intervieweesMap = new Map();
@@ -422,7 +421,7 @@ const TableInterviewsView = () => {
             <div className="mt-4">
               {loading ? (
                 <div className="flex flex-col justify-center items-center py-16 bg-white rounded-lg border border-gray-200">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#635BFF] mb-4"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#635BFF] mb-4" />
                   <div className="text-gray-600 font-medium">
                     Cargando entrevistas...
                   </div>
@@ -455,9 +454,9 @@ const TableInterviewsView = () => {
                   )}
                 </div>
               ) : (
-                 <TableInterviews
-                   data={filteredData}
-                   columns={[
+                <TableInterviews
+                  data={filteredData}
+                  columns={[
                     {
                       key: "title",
                       label: "Título",
@@ -487,7 +486,8 @@ const TableInterviewsView = () => {
                     {
                       key: "scheduledAtHour",
                       label: "Horario",
-                      render: (value: string, item: any) => formatTime(item.scheduledAt),
+                      render: (value: string, item: any) =>
+                        formatTime(item.scheduledAt),
                     },
                     {
                       key: "status",
@@ -544,7 +544,7 @@ const TableInterviewsView = () => {
                               className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors duration-200"
                               title="Finalizar entrevista"
                             >
-                              <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                              <span className="w-2 h-2 bg-orange-500 rounded-full" />
                               Finalizar
                             </button>
                           )}

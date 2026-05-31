@@ -3,24 +3,44 @@
  * Fuente de verdad: psico-api/src/reports/usecases/report.prompt.ts
  */
 
-export type ReportStatus =
-  | "DRAFT"
-  | "IN_PROGRESS"
-  | "FINISHED"
-  | "ARCHIVED";
+export type ReportStatus = "DRAFT" | "IN_PROGRESS" | "FINISHED" | "ARCHIVED";
 
 export type Veredicto =
   | "RECOMENDABLE"
   | "RECOMENDABLE CON RESERVAS"
   | "NO RECOMENDABLE";
 
-export type DisposicionEntrevista = "muy buena" | "buena" | "regular" | "escasa";
-export type NivelCapacidad = "por debajo del promedio" | "promedio" | "por encima del promedio";
-export type EstiloCognitivo = "analítico" | "sintético" | "analítico-sintético" | "concreto" | "abstracto";
-export type PreferenciaLaboral = "individual" | "grupal" | "ambos según contexto";
-export type GestionConflictos = "evitativa" | "frontal-directa" | "asertiva" | "diplomática" | "mixta";
+export type DisposicionEntrevista =
+  | "muy buena"
+  | "buena"
+  | "regular"
+  | "escasa";
+export type NivelCapacidad =
+  | "por debajo del promedio"
+  | "promedio"
+  | "por encima del promedio";
+export type EstiloCognitivo =
+  | "analítico"
+  | "sintético"
+  | "analítico-sintético"
+  | "concreto"
+  | "abstracto";
+export type PreferenciaLaboral =
+  | "individual"
+  | "grupal"
+  | "ambos según contexto";
+export type GestionConflictos =
+  | "evitativa"
+  | "frontal-directa"
+  | "asertiva"
+  | "diplomática"
+  | "mixta";
 export type RelacionJerarquia = "adecuada" | "con reservas" | "desafiante";
-export type EstiloEjecucion = "ágil-dinámico" | "metódico-prolijo" | "mixto" | "variable";
+export type EstiloEjecucion =
+  | "ágil-dinámico"
+  | "metódico-prolijo"
+  | "mixto"
+  | "variable";
 export type NivelOrganizacion = "bajo" | "medio" | "alto";
 export type AdaptacionAlCambio = "baja" | "media" | "alta";
 

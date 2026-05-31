@@ -8,7 +8,13 @@ import DynamicInput, { DynamicField } from "./DynamicField";
 import { FormValues } from "../../types/form.types";
 import { useEffect, useState } from "react";
 
-export default function FormPanel({ onSubmit, activeIndex, state, setState, isPreviousForm = false }) {
+export default function FormPanel({
+  onSubmit,
+  activeIndex,
+  state,
+  setState,
+  isPreviousForm = false,
+}) {
   const activeSlide = state.slides[activeIndex];
   const [i, setI] = useState(activeIndex);
   const { register, control, handleSubmit, reset } = useForm<FormValues>({
@@ -47,7 +53,7 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState, isPr
       maxFileSize: undefined,
       multipleFiles: false,
       selectedFiles: [],
-      required: false
+      required: false,
     };
 
     if (target === "professional") {
@@ -69,7 +75,10 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState, isPr
     }
   };
 
-  const removeField = (target: "professional" | "interviewer", index: number) => {
+  const removeField = (
+    target: "professional" | "interviewer",
+    index: number,
+  ) => {
     if (target === "professional") {
       removePro(index);
       setState((v) => {
@@ -88,14 +97,18 @@ export default function FormPanel({ onSubmit, activeIndex, state, setState, isPr
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { name: string; value: any } },
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | { target: { name: string; value: any } },
   ) => {
     const { name, value } = e.target;
     const [list, idx, field] = name.split(".");
 
     setState((v) => {
       const newSlides = [...v.slides];
-      const activeSlide = newSlides.find((slide) => slide.index === activeIndex) || newSlides[activeIndex];
+      const activeSlide =
+        newSlides.find((slide) => slide.index === activeIndex) ||
+        newSlides[activeIndex];
 
       if (!activeSlide) return v;
 

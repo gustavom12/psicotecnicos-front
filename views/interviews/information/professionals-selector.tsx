@@ -52,19 +52,19 @@ const ProfessionalsSelector: React.FC<Props> = ({ value = [], onChange }) => {
   };
 
   const getSelectedProfessionals = () => {
-    return professionals.filter(prof => value.includes(prof._id));
+    return professionals.filter((prof) => value.includes(prof._id));
   };
 
   // Helper function para obtener el nombre completo
   const getDisplayName = (professional: Professional) => {
-    let firstName = professional.firstName || '';
-    let lastName = professional.lastName || '';
+    let firstName = professional.firstName || "";
+    let lastName = professional.lastName || "";
 
     // Si no hay firstName/lastName, intentar extraer de fullname
     if (!firstName && !lastName && professional.fullname) {
-      const nameParts = professional.fullname.split(' ');
-      firstName = nameParts[0] || '';
-      lastName = nameParts.slice(1).join(' ') || '';
+      const nameParts = professional.fullname.split(" ");
+      firstName = nameParts[0] || "";
+      lastName = nameParts.slice(1).join(" ") || "";
     }
 
     return firstName && lastName
@@ -92,7 +92,10 @@ const ProfessionalsSelector: React.FC<Props> = ({ value = [], onChange }) => {
           isDisabled={loading || professionals.length === 0}
         >
           {professionals.map((professional) => (
-            <SelectItem key={professional._id} textValue={getDisplayName(professional)}>
+            <SelectItem
+              key={professional._id}
+              textValue={getDisplayName(professional)}
+            >
               <div className="flex flex-col">
                 <span className="font-medium">
                   {getDisplayName(professional)}
@@ -108,13 +111,17 @@ const ProfessionalsSelector: React.FC<Props> = ({ value = [], onChange }) => {
         {/* Mostrar profesionales seleccionados */}
         {value.length > 0 && (
           <div className="mt-4 p-3 bg-gray-50 rounded-md">
-            <h4 className="font-medium text-gray-800 mb-2">Profesionales seleccionados:</h4>
+            <h4 className="font-medium text-gray-800 mb-2">
+              Profesionales seleccionados:
+            </h4>
             <div className="flex flex-wrap gap-2">
               {getSelectedProfessionals().map((professional) => (
                 <Chip
                   key={professional._id}
                   onClose={() => {
-                    const newSelection = value.filter(id => id !== professional._id);
+                    const newSelection = value.filter(
+                      (id) => id !== professional._id,
+                    );
                     onChange(newSelection);
                   }}
                   variant="flat"

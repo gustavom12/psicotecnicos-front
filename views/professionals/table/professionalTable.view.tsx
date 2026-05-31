@@ -1,10 +1,9 @@
 import MenuLeft from "@/layouts/menu/MenuLeft";
 import NavbarApp from "@/common/navbar";
 import ProfessionalTableCommon from "@/views/professionals/profesionaltable";
-import Tables from "@/common/table";
 import Addition from "@/public/icons/addition";
 import { Button } from "@heroui/button";
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import apiConnection from "@/pages/api/api";
 
@@ -45,7 +44,7 @@ const ProfessionalTableView = () => {
                   radius="none"
                   className="flex flex-row bg-[#635BFF1A] text-[#635BFF] rounded-md "
                 >
-                  <Addition fill={'#635BFF'}/>
+                  <Addition fill={"#635BFF"} />
                   <p className="">Nuevo profesional</p>
                 </Button>
               </Link>

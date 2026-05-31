@@ -1,10 +1,10 @@
 export enum FieldType {
-  SHORT_TEXT = 'shortText',
-  PARAGRAPH = 'paragraph',
-  NUMBER = 'number',
-  OPTIONS = 'options',
-  FILE = 'file',
-  SCALE = 'scale',
+  SHORT_TEXT = "shortText",
+  PARAGRAPH = "paragraph",
+  NUMBER = "number",
+  OPTIONS = "options",
+  FILE = "file",
+  SCALE = "scale",
 }
 
 export interface Question {
@@ -51,7 +51,7 @@ export interface Survey {
   previousEvaluations?: boolean;
   forms?: string[] | Form[]; // Mantener por compatibilidad
   duration?: number;
-  status?: 'DRAFT' | 'NOT_STARTED' | 'FINISHED';
+  status?: "DRAFT" | "NOT_STARTED" | "FINISHED";
   createdAt: string;
   updatedAt: string;
 }

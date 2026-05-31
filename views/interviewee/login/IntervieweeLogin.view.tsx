@@ -14,7 +14,11 @@ interface LoginFormData {
 }
 
 const IntervieweeLoginView = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>();
   const { login, authenticated } = useIntervieweeAuthContext();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -55,12 +59,16 @@ const IntervieweeLoginView = () => {
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-2 mb-6">
             <Star />
-            <p className="text-[20px] text-[#635BFF] font-semibold">Psicotécnicos</p>
+            <p className="text-[20px] text-[#635BFF] font-semibold">
+              Psicotécnicos
+            </p>
           </div>
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
             <User className="w-8 h-8 text-blue-600" />
           </div>
-          <h1 className="text-[#3F3F46] text-[28px] font-semibold mb-2">Portal de Entrevistados</h1>
+          <h1 className="text-[#3F3F46] text-[28px] font-semibold mb-2">
+            Portal de Entrevistados
+          </h1>
           <p className="text-[#A1A1AA] text-[14px] font-light text-center">
             Ingresa tus credenciales para acceder a tus entrevistas
           </p>
@@ -80,14 +88,15 @@ const IntervieweeLoginView = () => {
                   required: "El correo electrónico es requerido",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Correo electrónico inválido"
-                  }
+                    message: "Correo electrónico inválido",
+                  },
                 })}
                 className="w-full"
                 classNames={{
                   label: "text-[#3F3F46] text-sm font-medium mb-2",
                   input: "text-[#3F3F46]",
-                  inputWrapper: "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]"
+                  inputWrapper:
+                    "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]",
                 }}
                 startContent={<User className="w-4 h-4 text-gray-400" />}
                 isInvalid={!!errors.email}
@@ -107,14 +116,15 @@ const IntervieweeLoginView = () => {
                   required: "La contraseña es requerida",
                   minLength: {
                     value: 6,
-                    message: "La contraseña debe tener al menos 6 caracteres"
-                  }
+                    message: "La contraseña debe tener al menos 6 caracteres",
+                  },
                 })}
                 className="w-full"
                 classNames={{
                   label: "text-[#3F3F46] text-sm font-medium",
                   input: "text-[#3F3F46]",
-                  inputWrapper: "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]"
+                  inputWrapper:
+                    "border-gray-200 hover:border-[#635BFF] focus-within:border-[#635BFF]",
                 }}
                 startContent={<Lock className="w-4 h-4 text-gray-400" />}
                 endContent={
@@ -146,8 +156,9 @@ const IntervieweeLoginView = () => {
               <div className="text-sm text-blue-700">
                 <p className="font-medium mb-1">¿No tienes credenciales?</p>
                 <p className="text-blue-600">
-                  Si no has recibido tus credenciales de acceso, contacta al administrador
-                  de tu empresa o al profesional que programó tu entrevista.
+                  Si no has recibido tus credenciales de acceso, contacta al
+                  administrador de tu empresa o al profesional que programó tu
+                  entrevista.
                 </p>
               </div>
             </div>
@@ -174,10 +185,7 @@ const IntervieweeLoginView = () => {
               ¿Eres profesional?
             </Link>
             <span>•</span>
-            <Link
-              href="/"
-              className="hover:text-[#635BFF] transition-colors"
-            >
+            <Link href="/" className="hover:text-[#635BFF] transition-colors">
               Volver al inicio
             </Link>
           </div>
@@ -195,4 +203,3 @@ const IntervieweeLoginView = () => {
 };
 
 export default IntervieweeLoginView;
-

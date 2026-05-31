@@ -4,7 +4,6 @@ import { SwitchProps, useSwitch } from "@heroui/switch";
 import { useTheme } from "next-themes";
 import clsx from "clsx";
 
-
 export interface ThemeSwitchProps {
   className?: string;
   classNames?: SwitchProps["classNames"];
@@ -74,13 +73,13 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
           ),
         })}
       >
-        {isSelected ? (
-          //<MoonFilledIcon size={22} />
-          ""
-        ) : (
-          ""
-        //  <SunFilledIcon size={22} />
-        )}
+        {
+          isSelected
+            ? //<MoonFilledIcon size={22} />
+              ""
+            : ""
+          //  <SunFilledIcon size={22} />
+        }
       </div>
     </Component>
   );

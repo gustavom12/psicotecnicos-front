@@ -1,6 +1,5 @@
 import MenuLeft from "@/layouts/menu/MenuLeft";
 import NavbarApp from "@/common/navbar";
-import Tables from "@/common/table";
 import React, { useState } from "react";
 import HomeCard from "./homeCard";
 // import TableHome from "@/views/Home/tableHome";
@@ -23,8 +22,6 @@ const HomeView = () => {
   const [intervieweesMap, setIntervieweesMap] = useState(new Map());
   const [professionalsMap, setProfessionalsMap] = useState(new Map());
   const [filteredData, setFilteredData] = useState([]);
-
-
 
   React.useEffect(() => {
     loadInterviews();
@@ -58,7 +55,6 @@ const HomeView = () => {
         setCountProfesional(0);
       });
 
-
     // Cargar contadores de entrevistados
     apiConnection
       .get("/interviewees/filtered")
@@ -76,7 +72,7 @@ const HomeView = () => {
       .get("/companies/filtered")
       .then((response) => {
         console.log("Companies response for count:", response.data);
-        
+
         // Manejar diferentes formatos de respuesta
         let data = [];
         if (Array.isArray(response.data?.data)) {
@@ -84,7 +80,7 @@ const HomeView = () => {
         } else if (Array.isArray(response.data)) {
           data = response.data;
         }
-        
+
         const count = data.length;
         console.log("Companies count:", count);
         setCountEmpresas(count);
@@ -120,29 +116,29 @@ const HomeView = () => {
       </div>
     );
   };
-  
+
   const formatDate = (dateString: string) => {
     console.log("dateString: ", dateString);
     if (!dateString)
       return (
         <span className="text-gray-400 italic text-sm">No programada</span>
       );
-      const date = new Date(dateString);
-      return (
-        <div className="text-sm">
-          <div className="font-medium text-gray-900">
-            {date.toLocaleDateString("es-ES", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })}
-          </div>
-          <div className="text-xs text-gray-500 capitalize">
-            {date.toLocaleDateString("es-ES", { weekday: "long" })}
-          </div>
+    const date = new Date(dateString);
+    return (
+      <div className="text-sm">
+        <div className="font-medium text-gray-900">
+          {date.toLocaleDateString("es-ES", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}
         </div>
-      );
-    };
+        <div className="text-xs text-gray-500 capitalize">
+          {date.toLocaleDateString("es-ES", { weekday: "long" })}
+        </div>
+      </div>
+    );
+  };
 
   const loadInterviews = async () => {
     try {
@@ -236,85 +232,85 @@ const HomeView = () => {
       console.error("Error starting interview:", error);
       Notification("Error al iniciar la entrevista", "error");
     }
-   };
+  };
 
-   const getIntervieweesDisplay = (interviewees: any[]) => {
-     if (!interviewees || interviewees.length === 0) {
-       return <span className="text-gray-400 italic text-sm">Sin asignar</span>;
-     }
+  const getIntervieweesDisplay = (interviewees: any[]) => {
+    if (!interviewees || interviewees.length === 0) {
+      return <span className="text-gray-400 italic text-sm">Sin asignar</span>;
+    }
 
-     const displayNames = interviewees.map((i) => {
-       if (typeof i === "string") {
-         // Es un ID, buscar en el mapa
-         const interviewee = intervieweesMap.get(i);
-         return interviewee?.displayName || "Entrevistado";
-       }
-       // Es un objeto completo
-       const firstName = i.personalInfo?.firstName || i.firstName || "";
-       const lastName = i.personalInfo?.lastName || i.lastName || "";
-       return firstName && lastName
-         ? `${firstName} ${lastName}`
-         : i.email || "Sin nombre";
-     });
+    const displayNames = interviewees.map((i) => {
+      if (typeof i === "string") {
+        // Es un ID, buscar en el mapa
+        const interviewee = intervieweesMap.get(i);
+        return interviewee?.displayName || "Entrevistado";
+      }
+      // Es un objeto completo
+      const firstName = i.personalInfo?.firstName || i.firstName || "";
+      const lastName = i.personalInfo?.lastName || i.lastName || "";
+      return firstName && lastName
+        ? `${firstName} ${lastName}`
+        : i.email || "Sin nombre";
+    });
 
-     return (
-       <div className="text-sm">
-         {displayNames.slice(0, 2).map((name, index) => (
-           <div key={index} className="flex items-center gap-2 mb-1">
-             <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-               <span className="text-blue-600 text-xs font-medium">
-                 {name.charAt(0).toUpperCase()}
-               </span>
-             </div>
-             <span className="font-medium text-gray-900">{name}</span>
-           </div>
-         ))}
-         {displayNames.length > 2 && (
-           <div className="text-xs text-gray-500 ml-8">
-             +{displayNames.length - 2} más
-           </div>
-         )}
-       </div>
-     );
-   };
+    return (
+      <div className="text-sm">
+        {displayNames.slice(0, 2).map((name, index) => (
+          <div key={index} className="flex items-center gap-2 mb-1">
+            <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+              <span className="text-blue-600 text-xs font-medium">
+                {name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <span className="font-medium text-gray-900">{name}</span>
+          </div>
+        ))}
+        {displayNames.length > 2 && (
+          <div className="text-xs text-gray-500 ml-8">
+            +{displayNames.length - 2} más
+          </div>
+        )}
+      </div>
+    );
+  };
 
-   const getProfessionalsDisplay = (professionals: any[]) => {
-     if (!professionals || professionals.length === 0) {
-       return <span className="text-gray-400 italic text-sm">Sin asignar</span>;
-     }
+  const getProfessionalsDisplay = (professionals: any[]) => {
+    if (!professionals || professionals.length === 0) {
+      return <span className="text-gray-400 italic text-sm">Sin asignar</span>;
+    }
 
-     const displayNames = professionals.map((p) => {
-       if (typeof p === "string") {
-         // Es un ID, buscar en el mapa
-         const professional = professionalsMap.get(p);
-         return professional?.displayName || "Profesional";
-       }
-       // Es un objeto completo
-       return p.fullname || p.firstName || p.email || "Sin nombre";
-     });
+    const displayNames = professionals.map((p) => {
+      if (typeof p === "string") {
+        // Es un ID, buscar en el mapa
+        const professional = professionalsMap.get(p);
+        return professional?.displayName || "Profesional";
+      }
+      // Es un objeto completo
+      return p.fullname || p.firstName || p.email || "Sin nombre";
+    });
 
-     return (
-       <div className="text-sm">
-         {displayNames.slice(0, 2).map((name, index) => (
-           <div key={index} className="flex items-center gap-2 mb-1">
-             <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-               <span className="text-green-600 text-xs font-medium">
-                 {name.charAt(0).toUpperCase()}
-               </span>
-             </div>
-             <span className="font-medium text-gray-900">{name}</span>
-           </div>
-         ))}
-         {displayNames.length > 2 && (
-           <div className="text-xs text-gray-500 ml-8">
-             +{displayNames.length - 2} más
-           </div>
-         )}
-       </div>
-     );
-   };
+    return (
+      <div className="text-sm">
+        {displayNames.slice(0, 2).map((name, index) => (
+          <div key={index} className="flex items-center gap-2 mb-1">
+            <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+              <span className="text-green-600 text-xs font-medium">
+                {name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <span className="font-medium text-gray-900">{name}</span>
+          </div>
+        ))}
+        {displayNames.length > 2 && (
+          <div className="text-xs text-gray-500 ml-8">
+            +{displayNames.length - 2} más
+          </div>
+        )}
+      </div>
+    );
+  };
 
-   const handleCompleteInterview = async (id: string) => {
+  const handleCompleteInterview = async (id: string) => {
     const totalTimeSeconds = Math.floor(
       (new Date().getTime() - new Date().getTime()) / 1000,
     );
@@ -344,9 +340,21 @@ const HomeView = () => {
               number={countEvaluaciones}
               icon={Briefcase}
             />
-            <HomeCard text="Profesionales" number={countProfesional} icon={User} />
-            <HomeCard text="Entrevistados" number={countEntrevistados} icon={Users} />
-            <HomeCard text="Empresas activas" number={countEmpresas} icon={Building2} />
+            <HomeCard
+              text="Profesionales"
+              number={countProfesional}
+              icon={User}
+            />
+            <HomeCard
+              text="Entrevistados"
+              number={countEntrevistados}
+              icon={Users}
+            />
+            <HomeCard
+              text="Empresas activas"
+              number={countEmpresas}
+              icon={Building2}
+            />
           </div>
           <p className="font-semibold text-[18px] mt-10 my-3">
             Próximas entrevistas
@@ -381,17 +389,30 @@ const HomeView = () => {
               {
                 key: "scheduledAtHour",
                 label: "Horario",
-                render: (value: string, item: any) => formatTime(item.scheduledAt),
+                render: (value: string, item: any) =>
+                  formatTime(item.scheduledAt),
               },
               {
                 key: "status",
                 label: "Estado",
                 render: (value: string) => {
                   const statusConfig = {
-                    DRAFT: { label: "Borrador", color: "bg-gray-100 text-gray-700" },
-                    NOT_STARTED: { label: "No iniciada", color: "bg-amber-100 text-amber-700" },
-                    IN_PROGRESS: { label: "En progreso", color: "bg-blue-100 text-blue-700" },
-                    CLOSED: { label: "Finalizada", color: "bg-green-100 text-green-700" },
+                    DRAFT: {
+                      label: "Borrador",
+                      color: "bg-gray-100 text-gray-700",
+                    },
+                    NOT_STARTED: {
+                      label: "No iniciada",
+                      color: "bg-amber-100 text-amber-700",
+                    },
+                    IN_PROGRESS: {
+                      label: "En progreso",
+                      color: "bg-blue-100 text-blue-700",
+                    },
+                    CLOSED: {
+                      label: "Finalizada",
+                      color: "bg-green-100 text-green-700",
+                    },
                   };
 
                   const config = statusConfig[value] || {
@@ -400,7 +421,9 @@ const HomeView = () => {
                   };
 
                   return (
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.color}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${config.color}`}
+                    >
                       {config.label}
                     </span>
                   );
@@ -436,7 +459,7 @@ const HomeView = () => {
                         className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors duration-200"
                         title="Iniciar entrevista"
                       >
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                         Iniciar
                       </button>
                     )}
@@ -447,7 +470,7 @@ const HomeView = () => {
                         className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-700 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors duration-200"
                         title="Finalizar entrevista"
                       >
-                        <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                        <span className="w-2 h-2 bg-orange-500 rounded-full" />
                         Finalizar
                       </button>
                     )}

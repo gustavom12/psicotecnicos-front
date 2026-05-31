@@ -19,7 +19,10 @@ interface ModuleProps {
   isPreviousForm?: boolean;
 }
 
-export default function Module({ id, isPreviousForm = false }: ModuleProps = {}) {
+export default function Module({
+  id,
+  isPreviousForm = false,
+}: ModuleProps = {}) {
   const [state, setState] = useState({
     slides: [{ ...defaultSlide }],
     title: "Módulo",
@@ -64,7 +67,7 @@ export default function Module({ id, isPreviousForm = false }: ModuleProps = {})
     try {
       const formData = {
         ...state,
-        isPreviousForm
+        isPreviousForm,
       };
 
       console.log("formData: ", formData);

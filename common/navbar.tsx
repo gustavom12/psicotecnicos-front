@@ -1,5 +1,3 @@
-import ArrowRight from "@/public/icons/arrowright";
-import Bell from "@/public/icons/Bell";
 import Person from "@/public/icons/Person";
 import {
   Navbar,
@@ -7,7 +5,6 @@ import {
   NavbarContent,
   NavbarItem,
   Link,
-  Button,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,

@@ -8,9 +8,6 @@ import {
   TableCell,
   getKeyValue,
 } from "@heroui/react";
-import Trash from "@/public/icons/trashgrey";
-import Document from "@/public/icons/document";
-import Pencil2 from "@/public/icons/pencil2";
 
 const _rows = [
   {

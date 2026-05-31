@@ -23,14 +23,16 @@ interface InterviewResponse {
   _id: string;
   interviewId?: string;
   surveyId: string;
-  intervieweeId: string | {
-    _id: string;
-    personalInfo?: {
-      firstName: string;
-      lastName: string;
-    };
-    email: string;
-  };
+  intervieweeId:
+    | string
+    | {
+        _id: string;
+        personalInfo?: {
+          firstName: string;
+          lastName: string;
+        };
+        email: string;
+      };
   moduleId?: string;
   responses: QuestionResponse[];
   slideTimeData: SlideTimeData[];
@@ -60,7 +62,9 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
     const fetchResponses = async () => {
       try {
         setLoading(true);
-        const { data } = await apiConnection.get(`/interview-responses/interview/${interviewId}`);
+        const { data } = await apiConnection.get(
+          `/interview-responses/interview/${interviewId}`,
+        );
         console.log("Responses data:", data); // Debug log
         if (Array.isArray(data) && data.length > 0) {
           console.log("First response:", data[0]); // Debug log
@@ -114,7 +118,10 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
 
   const getIntervieweeName = (response: InterviewResponse) => {
     // Primero intentar con el campo interviewee
-    if (response.interviewee?.personalInfo?.firstName && response.interviewee?.personalInfo?.lastName) {
+    if (
+      response.interviewee?.personalInfo?.firstName &&
+      response.interviewee?.personalInfo?.lastName
+    ) {
       return `${response.interviewee.personalInfo.firstName} ${response.interviewee.personalInfo.lastName}`;
     }
     if (response.interviewee?.email) {
@@ -122,14 +129,20 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
     }
 
     // Luego intentar con intervieweeId si está populado
-    if (typeof response.intervieweeId === 'object' && response.intervieweeId !== null) {
+    if (
+      typeof response.intervieweeId === "object" &&
+      response.intervieweeId !== null
+    ) {
       const intervieweeData = response.intervieweeId as {
         _id: string;
         personalInfo?: { firstName: string; lastName: string };
         email: string;
       };
 
-      if (intervieweeData.personalInfo?.firstName && intervieweeData.personalInfo?.lastName) {
+      if (
+        intervieweeData.personalInfo?.firstName &&
+        intervieweeData.personalInfo?.lastName
+      ) {
         return `${intervieweeData.personalInfo.firstName} ${intervieweeData.personalInfo.lastName}`;
       }
       if (intervieweeData.email) {
@@ -167,7 +180,7 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
             Respuestas de Formularios
           </h2>
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
           </div>
         </div>
       </div>
@@ -182,7 +195,7 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
             Respuestas de Formularios
           </h2>
           <span className="text-sm text-gray-500">
-            {responses.length} respuesta{responses.length !== 1 ? 's' : ''}
+            {responses.length} respuesta{responses.length !== 1 ? "s" : ""}
           </span>
         </div>
 
@@ -203,12 +216,17 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
                           {getIntervieweeName(response)}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          {response.responses.length} respuesta{response.responses.length !== 1 ? 's' : ''}
+                          {response.responses.length} respuesta
+                          {response.responses.length !== 1 ? "s" : ""}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Chip color={getStatusColor(response.status)} variant="flat" size="sm">
+                      <Chip
+                        color={getStatusColor(response.status)}
+                        variant="flat"
+                        size="sm"
+                      >
                         {getStatusText(response.status)}
                       </Chip>
                       <span className="text-xs text-gray-500">
@@ -224,16 +242,19 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Iniciado</p>
                       <p className="text-sm font-medium">
-                        {new Date(response.startedAt).toLocaleDateString("es-ES")}
+                        {new Date(response.startedAt).toLocaleDateString(
+                          "es-ES",
+                        )}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Completado</p>
                       <p className="text-sm font-medium">
                         {response.completedAt
-                          ? new Date(response.completedAt).toLocaleDateString("es-ES")
-                          : "No completado"
-                        }
+                          ? new Date(response.completedAt).toLocaleDateString(
+                              "es-ES",
+                            )
+                          : "No completado"}
                       </p>
                     </div>
                     <div>
@@ -285,7 +306,9 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
                   {/* Datos de tiempo por slide */}
                   {response.slideTimeData.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="font-medium text-gray-900">Tiempo por slide:</h4>
+                      <h4 className="font-medium text-gray-900">
+                        Tiempo por slide:
+                      </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {response.slideTimeData.map((slideData, sIndex) => (
                           <div

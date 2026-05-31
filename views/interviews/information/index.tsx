@@ -57,7 +57,8 @@ interface CreatedInterview {
  * por coma).
  */
 const DEFAULT_INVITEE_EMAILS: string[] = (
-  process.env.NEXT_PUBLIC_DEFAULT_INVITEE_EMAILS ?? "gustavo.n.mercado2@gmail.com"
+  process.env.NEXT_PUBLIC_DEFAULT_INVITEE_EMAILS ??
+  "gustavo.n.mercado2@gmail.com"
 )
   .split(",")
   .map((e) => e.trim())
@@ -136,8 +137,7 @@ const InformationView = ({ id }: { id?: string }) => {
 
   /* --- handlers --- */
   const handleChange =
-    (field: keyof InterviewDTO) =>
-    (e: React.ChangeEvent<HTMLInputElement>) =>
+    (field: keyof InterviewDTO) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setData({ ...data, [field]: e.target.value });
 
   /**
@@ -160,7 +160,7 @@ const InformationView = ({ id }: { id?: string }) => {
         : [];
       const interviewees = Array.isArray(intervieweesRes.data)
         ? intervieweesRes.data
-        : intervieweesRes.data?.data ?? [];
+        : (intervieweesRes.data?.data ?? []);
 
       for (const p of professionals) {
         if (professionalIds.includes(p._id) && p.email) emails.push(p.email);
@@ -235,7 +235,10 @@ const InformationView = ({ id }: { id?: string }) => {
             );
             shortId = refetched?.shortId;
           } catch (e) {
-            console.warn("No se pudo releer la entrevista para obtener shortId", e);
+            console.warn(
+              "No se pudo releer la entrevista para obtener shortId",
+              e,
+            );
           }
         }
 
@@ -277,7 +280,12 @@ const InformationView = ({ id }: { id?: string }) => {
 
   /* --- pantalla post-creación con link a Google Meet --- */
   if (created) {
-    return <PostCreate created={created} onBack={() => router.push("/interviews/table")} />;
+    return (
+      <PostCreate
+        created={created}
+        onBack={() => router.push("/interviews/table")}
+      />
+    );
   }
 
   return (
@@ -354,9 +362,7 @@ const InformationView = ({ id }: { id?: string }) => {
           <div className="w-[340px]">
             <ProfessionalsSelector
               value={data.professionals}
-              onChange={(professionals) =>
-                setData({ ...data, professionals })
-              }
+              onChange={(professionals) => setData({ ...data, professionals })}
             />
             {(!data.professionals || data.professionals.length === 0) && (
               <p className="text-sm text-red-500 mt-1">
@@ -368,9 +374,7 @@ const InformationView = ({ id }: { id?: string }) => {
           <div className="w-[340px]">
             <IntervieweesSelector
               value={data.interviewees}
-              onChange={(interviewees) =>
-                setData({ ...data, interviewees })
-              }
+              onChange={(interviewees) => setData({ ...data, interviewees })}
             />
             {(!data.interviewees || data.interviewees.length === 0) && (
               <p className="text-sm text-red-500 mt-1">
@@ -406,7 +410,8 @@ const InformationView = ({ id }: { id?: string }) => {
                 )}
                 {data.surveyId && (
                   <p>
-                    <span className="font-medium">Evaluación:</span> Seleccionada
+                    <span className="font-medium">Evaluación:</span>{" "}
+                    Seleccionada
                   </p>
                 )}
                 {data.professionals?.length ? (
@@ -510,9 +515,9 @@ const PostCreate: React.FC<PostCreateProps> = ({ created, onBack }) => {
             Crear evento de Google Meet
           </h3>
           <p className="text-sm text-gray-600 mt-1">
-            El siguiente enlace abre Google Calendar con el evento
-            pre-rellenado (título, fecha, invitados). Una vez en Calendar,
-            agregá la videollamada de Google Meet con un click en{" "}
+            El siguiente enlace abre Google Calendar con el evento pre-rellenado
+            (título, fecha, invitados). Una vez en Calendar, agregá la
+            videollamada de Google Meet con un click en{" "}
             <em>“Añadir videollamada de Google Meet”</em>.
           </p>
 

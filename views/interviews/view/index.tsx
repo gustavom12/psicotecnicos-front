@@ -62,7 +62,9 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
       try {
         if (!id) return;
         setLoading(true);
-        const { data: interviewData } = await apiConnection.get(`/interviews/${id}`);
+        const { data: interviewData } = await apiConnection.get(
+          `/interviews/${id}`,
+        );
         setData(interviewData);
       } catch (err) {
         console.error("Error loading interview", err);
@@ -107,7 +109,7 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
     return (
       <AuthLayout links={[]}>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
         </div>
       </AuthLayout>
     );
@@ -122,7 +124,8 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
               Entrevista no encontrada
             </h2>
             <p className="text-gray-600 mb-4">
-              La entrevista que buscas no existe o no tienes permisos para verla.
+              La entrevista que buscas no existe o no tienes permisos para
+              verla.
             </p>
             <Link href="/interviews/table">
               <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -149,8 +152,12 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
             </Link>
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{data.title}</h1>
-                <p className="text-gray-600 mt-1">Detalles completos de la entrevista</p>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {data.title}
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  Detalles completos de la entrevista
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <Chip color={getStatusColor(data.status)} variant="flat">
@@ -173,10 +180,11 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
               color="primary"
               variant="underlined"
               classNames={{
-                tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+                tabList:
+                  "gap-6 w-full relative rounded-none p-0 border-b border-divider",
                 cursor: "w-full bg-primary",
                 tab: "max-w-fit px-0 h-12",
-                tabContent: "group-data-[selected=true]:text-primary"
+                tabContent: "group-data-[selected=true]:text-primary",
               }}
             >
               <Tab key="general" title="Información General" />
@@ -202,7 +210,9 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
 
             {selectedTab === "participants" && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <ProfessionalsSection professionals={data.professionals || []} />
+                <ProfessionalsSection
+                  professionals={data.professionals || []}
+                />
                 <IntervieweesSection interviewees={data.interviewees || []} />
               </div>
             )}

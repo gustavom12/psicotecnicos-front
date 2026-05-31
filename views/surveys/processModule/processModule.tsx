@@ -1,11 +1,10 @@
-import ButtonAssessment from '@/common/buttonInterviesAssessment';
-import NavbarApp from '@/common/navbar';
-import MenuLeft from '@/layouts/menu/MenuLeft';
-import ArrowLeft from '@/public/icons/arrowleft';
-import { Button, ButtonGroup } from '@heroui/react';
-import React from 'react'
-import BoxProcess from './boxProcess';
-import PrimaryButton from '@/common/PrimaryButton';
+import NavbarApp from "@/common/navbar";
+import MenuLeft from "@/layouts/menu/MenuLeft";
+import ArrowLeft from "@/public/icons/arrowleft";
+import { Button, ButtonGroup } from "@heroui/react";
+import React from "react";
+import BoxProcess from "./boxProcess";
+import PrimaryButton from "@/common/PrimaryButton";
 
 const ProcessDetailModuleView = () => {
   return (
@@ -36,24 +35,20 @@ const ProcessDetailModuleView = () => {
             <Button className="rounded-sm bg-[#F4F4F5] text-[#71717A]  h-[28px]">
               Información
             </Button>
-            <Button className="bg-white  h-[28px]">
-              Modulos
-            </Button>
+            <Button className="bg-white  h-[28px]">Modulos</Button>
           </ButtonGroup>
 
           <hr />
-          <div className='flex flex-col w-[30%]'>
+          <div className="flex flex-col w-[30%]">
             <BoxProcess text="Evaluación previa" />
-            <hr className='bg-[#D4D4D8] border-[1px]'/>
+            <hr className="bg-[#D4D4D8] border-[1px]" />
             <BoxProcess text="Evaluación previa" />
-            <PrimaryButton text="Agregar módulo"/>
+            <PrimaryButton text="Agregar módulo" />
           </div>
-
-
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProcessDetailModuleView
+export default ProcessDetailModuleView;

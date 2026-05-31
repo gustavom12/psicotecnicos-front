@@ -165,7 +165,10 @@ export const useIntervieweeAuthContext = create<IntervieweeAuthState>(
           });
 
           // Redirect to login if not already there
-          if (typeof window !== "undefined" && Router.pathname !== "/interviewee/login") {
+          if (
+            typeof window !== "undefined" &&
+            Router.pathname !== "/interviewee/login"
+          ) {
             Router.push("/interviewee/login");
           }
         }

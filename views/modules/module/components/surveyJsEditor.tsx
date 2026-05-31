@@ -4,9 +4,6 @@ import React, { useEffect, useState } from "react";
 // import SurveyTheme from "survey-core/themes";
 // import SurveyCreatorTheme from "survey-creator-core/themes";
 // import "survey-creator-core/i18n/spanish";
-import dynamic from "next/dynamic";
-
-
 
 // const SurveyCreatorNoSSR = dynamic(
 //   () => import('survey-creator-react').then(m => m.SurveyCreatorComponent),
@@ -35,7 +32,7 @@ const FormEditor = () => {
   // creator.locale = "es";
   // creator.applyCreatorTheme(SurveyCreatorTheme.DefaultContrast);
 
-  if (!creator) return null;         // espera al cliente
+  if (!creator) return null; // espera al cliente
   return (
     <div className="FormEditor">
       {/* <SurveyCreatorNoSSR creator={creator} /> */}

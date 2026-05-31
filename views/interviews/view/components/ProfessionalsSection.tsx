@@ -25,7 +25,8 @@ const ProfessionalsSection: React.FC<ProfessionalsSectionProps> = ({
             Profesionales Asignados
           </h2>
           <span className="text-sm text-gray-500">
-            {professionals.length} profesional{professionals.length !== 1 ? 'es' : ''}
+            {professionals.length} profesional
+            {professionals.length !== 1 ? "es" : ""}
           </span>
         </div>
 
@@ -37,7 +38,12 @@ const ProfessionalsSection: React.FC<ProfessionalsSectionProps> = ({
                 className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors"
               >
                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-lg font-semibold">
-                  {professional.fullname?.split(' ').map(name => name[0]).join('').slice(0, 2).toUpperCase() || "P"}
+                  {professional.fullname
+                    ?.split(" ")
+                    .map((name) => name[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase() || "P"}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900">
@@ -56,7 +62,7 @@ const ProfessionalsSection: React.FC<ProfessionalsSectionProps> = ({
                   )}
                 </div>
                 <div className="text-right">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full" />
                   <p className="text-xs text-gray-500 mt-1">Activo</p>
                 </div>
               </div>

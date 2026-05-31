@@ -1,7 +1,4 @@
-import Document from "@/public/icons/document";
-import Pencil2 from "@/public/icons/pencil2";
-import Trash from "@/public/icons/trashgrey";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Table,
   TableHeader,
@@ -21,7 +18,7 @@ const _rows = [
     estado: "en curso",
     entrevistado: "Laura González",
     profesional: "Mariano Pérez",
-  }
+  },
 ];
 
 const _columns = [
@@ -57,8 +54,6 @@ const _columns = [
 ];
 
 const TableInterviews = ({ data, columns }: any) => {
-
-
   return (
     <Table
       aria-label="Tabla de entrevistas"

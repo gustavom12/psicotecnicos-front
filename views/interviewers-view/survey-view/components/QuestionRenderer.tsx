@@ -1,6 +1,6 @@
-import React from 'react';
-import { Input, Textarea, Button, Radio, RadioGroup } from '@heroui/react';
-import { Question, FieldType } from '../../../../types/survey.types';
+import React from "react";
+import { Input, Textarea, Radio, RadioGroup } from "@heroui/react";
+import { Question, FieldType } from "../../../../types/survey.types";
 
 interface QuestionRendererProps {
   question: Question;
@@ -13,16 +13,15 @@ export default function QuestionRenderer({
   question,
   value,
   onChange,
-  error
+  error,
 }: QuestionRendererProps) {
-
   const renderInput = () => {
     switch (question.type) {
       case FieldType.SHORT_TEXT:
         return (
           <Input
             placeholder="Tu respuesta..."
-            value={value || ''}
+            value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             isInvalid={!!error}
             errorMessage={error}
@@ -34,7 +33,7 @@ export default function QuestionRenderer({
         return (
           <Textarea
             placeholder="Tu respuesta..."
-            value={value || ''}
+            value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             isInvalid={!!error}
             errorMessage={error}
@@ -48,7 +47,7 @@ export default function QuestionRenderer({
           <Input
             type="number"
             placeholder="Ingresa un número..."
-            value={value || ''}
+            value={value || ""}
             onChange={(e) => onChange(Number(e.target.value))}
             isInvalid={!!error}
             errorMessage={error}
@@ -59,7 +58,7 @@ export default function QuestionRenderer({
       case FieldType.OPTIONS:
         return (
           <RadioGroup
-            value={value || ''}
+            value={value || ""}
             onValueChange={onChange}
             isInvalid={!!error}
             errorMessage={error}
@@ -109,7 +108,7 @@ export default function QuestionRenderer({
         return (
           <Input
             placeholder="Tu respuesta..."
-            value={value || ''}
+            value={value || ""}
             onChange={(e) => onChange(e.target.value)}
             isInvalid={!!error}
             errorMessage={error}

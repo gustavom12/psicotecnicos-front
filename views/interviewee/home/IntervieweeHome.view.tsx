@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Chip,
-  Progress,
-} from "@heroui/react";
+import { Button, Card, CardBody, Chip, Progress } from "@heroui/react";
 import IntervieweeNavbar from "@/common/interviewee-navbar";
 import IntervieweeLayout from "@/layouts/interviewee.layout";
 import { useIntervieweeAuthContext } from "@/contexts/interviewee-auth.context";
@@ -383,7 +376,7 @@ const IntervieweeHome = () => {
         />
         <div className="container mx-auto px-6 py-8">
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
             <span className="ml-4 text-gray-600">Cargando entrevistas...</span>
           </div>
         </div>
@@ -410,7 +403,8 @@ const IntervieweeHome = () => {
             🎯 Mis formularios de Evaluación
           </h1>
           <p className="text-gray-600">
-            Completa los formularios previos a cada entrevista para estar preparado
+            Completa los formularios previos a cada entrevista para estar
+            preparado
           </p>
         </div>
 
@@ -424,8 +418,8 @@ const IntervieweeHome = () => {
                   No tienes entrevistas asignadas
                 </h3>
                 <p className="text-gray-500">
-                  Cuando se te asignen entrevistas con formularios, aparecerán aquí
-                  para que puedas completarlos.
+                  Cuando se te asignen entrevistas con formularios, aparecerán
+                  aquí para que puedas completarlos.
                 </p>
               </div>
             </CardBody>
@@ -484,7 +478,8 @@ const IntervieweeHome = () => {
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <FileText className="w-4 h-4" />
                             <span>
-                              <strong>Descripción:</strong> {interview.description || 'No especificada'}
+                              <strong>Descripción:</strong>{" "}
+                              {interview.description || "No especificada"}
                             </span>
                           </div>
                         </div>
@@ -493,55 +488,63 @@ const IntervieweeHome = () => {
                         <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-4 text-sm text-blue-800">
                           <Calendar className="w-4 h-4 mt-0.5 shrink-0 text-blue-500" />
                           <span>
-                            El link de la entrevista fue enviado a tu casilla de correo y debería aparecer en tu calendario.
+                            El link de la entrevista fue enviado a tu casilla de
+                            correo y debería aparecer en tu calendario.
                           </span>
                         </div>
 
                         {/* Professional Contact Information */}
-                        {interview.professionals && interview.professionals.length > 0 && (
-                          <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
-                            <h4 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                              <Users className="w-4 h-4" />
-                              Información de Contacto - Profesionales
-                            </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {interview.professionals.map((professional, index) => (
-                                <div key={professional._id} className="bg-gray-50 rounded-lg p-3">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <User className="w-4 h-4 text-blue-600" />
-                                    <span className="font-medium text-gray-800">
-                                      {professional.fullname || 'Profesional'}
-                                    </span>
-                                  </div>
-                                  <div className="space-y-1">
-                                    {professional.email && (
-                                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                                        <Mail className="w-3 h-3" />
-                                        <a
-                                          href={`mailto:${professional.email}`}
-                                          className="text-blue-600 hover:text-blue-800 hover:underline"
-                                        >
-                                          {professional.email}
-                                        </a>
+                        {interview.professionals &&
+                          interview.professionals.length > 0 && (
+                            <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
+                              <h4 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                <Users className="w-4 h-4" />
+                                Información de Contacto - Profesionales
+                              </h4>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {interview.professionals.map(
+                                  (professional, index) => (
+                                    <div
+                                      key={professional._id}
+                                      className="bg-gray-50 rounded-lg p-3"
+                                    >
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <User className="w-4 h-4 text-blue-600" />
+                                        <span className="font-medium text-gray-800">
+                                          {professional.fullname ||
+                                            "Profesional"}
+                                        </span>
                                       </div>
-                                    )}
-                                    {professional.phoneNumber && (
-                                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                                        <Phone className="w-3 h-3" />
-                                        <a
-                                          href={`tel:${professional.phoneNumber}`}
-                                          className="text-blue-600 hover:text-blue-800 hover:underline"
-                                        >
-                                          {professional.phoneNumber}
-                                        </a>
+                                      <div className="space-y-1">
+                                        {professional.email && (
+                                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <Mail className="w-3 h-3" />
+                                            <a
+                                              href={`mailto:${professional.email}`}
+                                              className="text-blue-600 hover:text-blue-800 hover:underline"
+                                            >
+                                              {professional.email}
+                                            </a>
+                                          </div>
+                                        )}
+                                        {professional.phoneNumber && (
+                                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <Phone className="w-3 h-3" />
+                                            <a
+                                              href={`tel:${professional.phoneNumber}`}
+                                              className="text-blue-600 hover:text-blue-800 hover:underline"
+                                            >
+                                              {professional.phoneNumber}
+                                            </a>
+                                          </div>
+                                        )}
                                       </div>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
+                                    </div>
+                                  ),
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
                         {/* Progress Overview */}
                         <div className="bg-white rounded-lg p-4 border border-blue-200">
@@ -584,8 +587,12 @@ const IntervieweeHome = () => {
                             .sort((a, b) => a.order - b.order)
                             .map((module: any, index) => {
                               const moduleKey = `${interview._id}_${module.id}`;
-                              const moduleProgressData = moduleProgress[moduleKey] || { completed: false, progress: 0 };
-                              const moduleStatus = getModuleStatusConfig(moduleProgressData.completed);
+                              const moduleProgressData = moduleProgress[
+                                moduleKey
+                              ] || { completed: false, progress: 0 };
+                              const moduleStatus = getModuleStatusConfig(
+                                moduleProgressData.completed,
+                              );
 
                               return (
                                 <div
@@ -617,7 +624,9 @@ const IntervieweeHome = () => {
                                           moduleProgressData.progress > 0 && (
                                             <div className="mt-2">
                                               <Progress
-                                                value={moduleProgressData.progress}
+                                                value={
+                                                  moduleProgressData.progress
+                                                }
                                                 size="sm"
                                                 color="primary"
                                                 className="w-full max-w-xs"
@@ -651,7 +660,8 @@ const IntervieweeHome = () => {
                                             variant="solid"
                                             size="sm"
                                             startContent={
-                                              moduleProgressData.progress > 0 ? (
+                                              moduleProgressData.progress >
+                                              0 ? (
                                                 <Play className="w-4 h-4" />
                                               ) : (
                                                 <ArrowRight className="w-4 h-4" />
@@ -734,7 +744,8 @@ const IntervieweeHome = () => {
                       <div className="text-center py-8">
                         <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                         <p className="text-gray-500">
-                          Esta entrevista no tiene formularios previos configurados.
+                          Esta entrevista no tiene formularios previos
+                          configurados.
                         </p>
                         {/* <Link href={`/survey/${interview.surveyId._id}`}>
                           <Button

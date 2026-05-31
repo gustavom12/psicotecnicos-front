@@ -1,9 +1,7 @@
 // edit-company.tsx
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import router, { useRouter } from "next/router";
-import MenuLeft from "@/layouts/menu/MenuLeft";
-import NavbarApp from "@/common/navbar";
+import router from "next/router";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button, ButtonGroup } from "@heroui/button";
 import { Form } from "@heroui/react";
@@ -47,7 +45,6 @@ const EditCompany = ({ id }: { id?: string }) => {
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [editingData, setEditingData] = useState(null);
   const { user, updateUserProfile } = useAuthContext();
-
 
   /* -------- carga inicial -------- */
   useEffect(() => {
@@ -136,20 +133,20 @@ const EditCompany = ({ id }: { id?: string }) => {
 
       {/* logo */}
       <div className="flex flex-row mt-8 mb-8">
-            <div className="w-[100px] h-[100px] border rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
-              {profileImageUrl ? (
-                <img
-                  src={profileImageUrl}
-                  alt="Profile"
-                  className="w-full h-full rounded-full object-cover"
-                />
-              ) : (
-                <span className="text-gray-400 text-2xl">
-                  {editingData?.fullname?.[0] || user?.fullname?.[0] || "P"}
-                </span>
-              )}
-            </div>
-      
+        <div className="w-[100px] h-[100px] border rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+          {profileImageUrl ? (
+            <img
+              src={profileImageUrl}
+              alt="Profile"
+              className="w-full h-full rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-gray-400 text-2xl">
+              {editingData?.fullname?.[0] || user?.fullname?.[0] || "P"}
+            </span>
+          )}
+        </div>
+
         <div className="flex flex-row space-x-1 ml-4 mt-7">
           <ButtonSubmitPhoto
             onImageUploaded={(imageUrl) => {
@@ -159,90 +156,90 @@ const EditCompany = ({ id }: { id?: string }) => {
           />
           <ButtonDelete
             onDelete={() => {
-              setProfileImageUrl('');
+              setProfileImageUrl("");
             }}
             hasImage={!!profileImageUrl}
           />
         </div>
       </div>
 
-        {/* formulario */}
-        <Form
-          className="flex flex-col gap-5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            save();
-          }}
-        >
-          <InputForms
-            label="Nombre"
-            required
-            placeholder="Toyota"
-            value={data.name}
-            onChange={handle("name")}
-          />
-          <InputForms
-            label="Estado"
-            required
-            placeholder="Activo"
-            value={data.status}
-            onChange={handle("status")}
-          />
-          <InputForms
-            label="Sector"
-            required
-            placeholder="Automovilístico"
-            value={data.industry}
-            onChange={handle("industry")}
-          />
-          <InputForms
-            label="Ubicación"
-            required
-            placeholder="Córdoba, Argentina"
-            value={data.location}
-            onChange={handle("location")}
-          />
-          <InputForms
-            label="Fecha de registro"
-            placeholder="23/07/2023"
-            value={data.registeredAt}
-            onChange={handle("registeredAt")}
-          />
-          <InputForms
-            label="E-mail"
-            placeholder="empresa@mail.com"
-            value={data.email}
-            onChange={handle("email")}
-          />
-          <InputForms
-            label="Teléfono"
-            placeholder="+54 11 8888-5555"
-            value={data.phone}
-            onChange={handle("phone")}
-          />
-          <InputForms
-            label="Observaciones"
-            placeholder="Notas internas"
-            value={data.notes}
-            onChange={handle("notes")}
-          />
+      {/* formulario */}
+      <Form
+        className="flex flex-col gap-5"
+        onSubmit={(e) => {
+          e.preventDefault();
+          save();
+        }}
+      >
+        <InputForms
+          label="Nombre"
+          required
+          placeholder="Toyota"
+          value={data.name}
+          onChange={handle("name")}
+        />
+        <InputForms
+          label="Estado"
+          required
+          placeholder="Activo"
+          value={data.status}
+          onChange={handle("status")}
+        />
+        <InputForms
+          label="Sector"
+          required
+          placeholder="Automovilístico"
+          value={data.industry}
+          onChange={handle("industry")}
+        />
+        <InputForms
+          label="Ubicación"
+          required
+          placeholder="Córdoba, Argentina"
+          value={data.location}
+          onChange={handle("location")}
+        />
+        <InputForms
+          label="Fecha de registro"
+          placeholder="23/07/2023"
+          value={data.registeredAt}
+          onChange={handle("registeredAt")}
+        />
+        <InputForms
+          label="E-mail"
+          placeholder="empresa@mail.com"
+          value={data.email}
+          onChange={handle("email")}
+        />
+        <InputForms
+          label="Teléfono"
+          placeholder="+54 11 8888-5555"
+          value={data.phone}
+          onChange={handle("phone")}
+        />
+        <InputForms
+          label="Observaciones"
+          placeholder="Notas internas"
+          value={data.notes}
+          onChange={handle("notes")}
+        />
 
-          {/* acciones */}
-          <div className="mt-6 flex gap-4">
-            <Button
-              type="submit"
-              disabled={saving}
-              className="bg-[#635BFF] text-white px-6 py-2 rounded-md font-medium hover:bg-[#574ae2] transition"
-            >
-              {saving ? "Guardando…" : "Guardar"}
+        {/* acciones */}
+        <div className="mt-6 flex gap-4">
+          <Button
+            type="submit"
+            disabled={saving}
+            className="bg-[#635BFF] text-white px-6 py-2 rounded-md font-medium hover:bg-[#574ae2] transition"
+          >
+            {saving ? "Guardando…" : "Guardar"}
+          </Button>
+          <Link href="/companies/table">
+            <Button variant="ghost" className="text-gray-600 hover:text-black">
+              Cancelar
             </Button>
-            <Link href="/companies/table">
-              <Button variant="ghost" className="text-gray-600 hover:text-black">
-                Cancelar
-              </Button>
-            </Link>
-          </div>
-        </Form>
+          </Link>
+        </div>
+      </Form>
     </AuthLayout>
   );
 };

@@ -11,7 +11,7 @@ import {
   DropdownItem,
 } from "@heroui/react";
 import { useIntervieweeAuthContext } from "@/contexts/interviewee-auth.context";
-import { User, LogOut, Settings } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 
 export const AcmeLogo = () => {
   return (
@@ -98,7 +98,7 @@ export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
           {/* Company Badge */}
           {interviewee?.companyName && (
             <div className="hidden md:flex items-center gap-2 mr-4 px-3 py-1 bg-blue-50 rounded-full">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full" />
               <span className="text-sm text-blue-700 font-medium">
                 {interviewee.companyName}
               </span>
@@ -112,7 +112,7 @@ export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
                   {getInitials(
                     interviewee?.personalInfo?.firstName,
-                    interviewee?.personalInfo?.lastName
+                    interviewee?.personalInfo?.lastName,
                   )}
                 </div>
                 <div className="hidden md:block text-left">
@@ -126,14 +126,14 @@ export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
               </button>
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2" textValue="Profile info">
+              <DropdownItem
+                key="profile"
+                className="h-14 gap-2"
+                textValue="Profile info"
+              >
                 <div className="flex flex-col">
-                  <p className="font-semibold text-gray-900">
-                    {getFullName()}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {interviewee?.email}
-                  </p>
+                  <p className="font-semibold text-gray-900">{getFullName()}</p>
+                  <p className="text-sm text-gray-500">{interviewee?.email}</p>
                   {interviewee?.companyName && (
                     <p className="text-xs text-blue-600">
                       {interviewee.companyName}
@@ -143,7 +143,7 @@ export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
               </DropdownItem>
 
               <DropdownItem key="divider" className="p-0">
-                <div className="border-t border-gray-200 my-1"></div>
+                <div className="border-t border-gray-200 my-1" />
               </DropdownItem>
 
               <DropdownItem
@@ -170,4 +170,3 @@ export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
     </Navbar>
   );
 }
-

@@ -93,7 +93,7 @@ const TableHome: React.FC<TableHomeProps> = ({ data, onRefresh }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
       </div>
     );
   }
@@ -112,7 +112,9 @@ const TableHome: React.FC<TableHomeProps> = ({ data, onRefresh }) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={surveys.map(survey => ({ ...survey, key: survey._id }))}>
+      <TableBody
+        items={surveys.map((survey) => ({ ...survey, key: survey._id }))}
+      >
         {(item) => (
           <TableRow key={item.key} className="mt-4">
             {(columnKey) => (
@@ -129,7 +131,7 @@ const TableHome: React.FC<TableHomeProps> = ({ data, onRefresh }) => {
                         <Document />
                       </button>
                     </Link>
-                    <button 
+                    <button
                       className="text-red-500 hover:text-red-700"
                       onClick={() => handleDelete(item._id)}
                     >

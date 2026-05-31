@@ -1,6 +1,6 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import SurveyView from '../SurveyView';
+import React from "react";
+import { useRouter } from "next/router";
+import SurveyView from "../SurveyView";
 
 export default function InterviewerSurveyView() {
   const router = useRouter();

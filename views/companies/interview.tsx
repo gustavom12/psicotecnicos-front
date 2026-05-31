@@ -1,9 +1,9 @@
-import MenuLeft from '@/layouts/menu/MenuLeft';
-import NavbarApp from '@/common/navbar';
-import ArrowLeft from '@/public/icons/arrowleft';
-import { Button, ButtonGroup } from '@heroui/button';
-import { Input } from '@heroui/react';
-import React from 'react';
+import MenuLeft from "@/layouts/menu/MenuLeft";
+import NavbarApp from "@/common/navbar";
+import ArrowLeft from "@/public/icons/arrowleft";
+import { Button, ButtonGroup } from "@heroui/button";
+import { Input } from "@heroui/react";
+import React from "react";
 
 const InterviewDetails = () => {
   return (
@@ -22,26 +22,26 @@ const InterviewDetails = () => {
           </div>
 
           <ButtonGroup className="bg-[#F4F4F5] font-inter text-[14px] text-[#71717A] w-[340px] mt-8 mb-6 h-[36px] rounded-xl">
-            <Button className="rounded-sm bg-[#F4F4F5]  text-[#71717A]  h-[28px]">Información</Button>
+            <Button className="rounded-sm bg-[#F4F4F5]  text-[#71717A]  h-[28px]">
+              Información
+            </Button>
             <Button className="bg-white    h-[28px]">Entrevistados</Button>
-            <Button className="bg-[#F4F4F5] text-[#71717A] h-[28px]">Entrevistas</Button>
+            <Button className="bg-[#F4F4F5] text-[#71717A] h-[28px]">
+              Entrevistas
+            </Button>
           </ButtonGroup>
 
           <hr />
 
-          <Input className='mt-6' />
-          <hr className='mt-12' />
-          <hr className='mt-12' />
-          <hr className='mt-12' />
-          <hr className='mt-12' />
-
+          <Input className="mt-6" />
+          <hr className="mt-12" />
+          <hr className="mt-12" />
+          <hr className="mt-12" />
+          <hr className="mt-12" />
         </div>
       </div>
     </div>
-
-  )
-
-}
-
+  );
+};
 
 export default InterviewDetails;

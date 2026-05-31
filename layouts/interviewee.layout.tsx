@@ -11,7 +11,7 @@ interface IntervieweeLayoutProps {
 const IntervieweeLayout: React.FC<IntervieweeLayoutProps> = ({
   children,
   title = "Mis Entrevistas",
-  description = "Portal de entrevistas para candidatos"
+  description = "Portal de entrevistas para candidatos",
 }) => {
   const pageTitle = `${title} | ${siteConfig.name}`;
 
@@ -23,12 +23,9 @@ const IntervieweeLayout: React.FC<IntervieweeLayoutProps> = ({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="min-h-screen bg-gray-50">
-        {children}
-      </div>
+      <div className="min-h-screen bg-gray-50">{children}</div>
     </>
   );
 };
 
 export default IntervieweeLayout;
-

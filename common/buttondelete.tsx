@@ -8,23 +8,23 @@ interface ButtonDeleteProps {
   hasImage?: boolean;
 }
 
-const ButtonDelete: React.FC<ButtonDeleteProps> = ({ 
-  onDelete, 
+const ButtonDelete: React.FC<ButtonDeleteProps> = ({
+  onDelete,
   disabled = false,
-  hasImage = false 
+  hasImage = false,
 }) => {
   const handleClick = () => {
     if (disabled || !hasImage) return;
-    
+
     if (confirm("¿Estás seguro de que deseas eliminar la foto de perfil?")) {
       onDelete?.();
     }
   };
 
   return (
-    <Button 
+    <Button
       className={`flex flex-row align-middle cursor-pointer bg-transparent w-auto ${
-        disabled || !hasImage ? 'opacity-50 cursor-not-allowed' : ''
+        disabled || !hasImage ? "opacity-50 cursor-not-allowed" : ""
       }`}
       onClick={handleClick}
       disabled={disabled || !hasImage}
@@ -36,10 +36,3 @@ const ButtonDelete: React.FC<ButtonDeleteProps> = ({
 };
 
 export default ButtonDelete;
-
-
-
-
-
-
-

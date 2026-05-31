@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiConnection from "@/pages/api/api";
 import { Button, Select, SelectItem } from "@heroui/react";
-import { ArrowDown, ArrowUp, Trash } from "lucide-react";
+import { ArrowDown, ArrowUp } from "lucide-react";
 
 interface Module {
   _id: string;
