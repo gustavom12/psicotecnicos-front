@@ -21,19 +21,18 @@ interface ModuleProps {
 
 export default function Module({
   id,
-  isPreviousForm = false,
+  isPreviousForm: isPreviousFormProp = false,
 }: ModuleProps = {}) {
   const [state, setState] = useState({
     slides: [{ ...defaultSlide }],
     title: "Módulo",
     category: "Categoría",
   });
+  const [isPreviousForm, setIsPreviousForm] = useState(isPreviousFormProp);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const titleRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
-
-  console.log("isPreviousForm:", isPreviousForm);
 
   // Mantén el título sincronizado cuando cambie desde el formulario
   useEffect(() => {
@@ -48,13 +47,18 @@ export default function Module({
       setLoading(true);
       try {
         const data = await getForm(id);
-        console.log("data id: ", data);
 
         setState({
           title: data.title,
-          slides: data.slides,
+          slides: data.slides.map((slide: any, i: number) => ({
+            ...slide,
+            selected: i === 0,
+          })),
           category: data.category,
         });
+        if (data.isPreviousForm !== undefined) {
+          setIsPreviousForm(data.isPreviousForm);
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -80,8 +84,6 @@ export default function Module({
       Notification(`Error al guardar entrevista`, "error");
     }
   };
-
-  console.log("state: ", state);
 
   return (
     <AuthLayout
@@ -128,7 +130,7 @@ export default function Module({
               {!loading && (
                 <FormEditor
                   state={state}
-                  activeIndex={state.slides.find((e) => e.selected).index}
+                  activeIndex={state.slides.find((e) => e.selected)?.index ?? 0}
                   setState={setState}
                   onSubmit={onSubmit}
                   isPreviousForm={isPreviousForm}
