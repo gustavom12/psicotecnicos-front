@@ -117,13 +117,9 @@ const TableInterviewsView = () => {
   };
 
   const handleCompleteInterview = async (id: string) => {
-    const totalTimeSeconds = Math.floor(
-      (new Date().getTime() - new Date().getTime()) / 1000,
-    );
     try {
-      await apiConnection.patch(`/interviews/${id}/complete`, {
-        totalTimeSeconds,
-      });
+      // El backend calcula la duración a partir de startedAt.
+      await apiConnection.patch(`/interviews/${id}/complete`);
       Notification("Entrevista completada exitosamente", "success");
       loadInterviews();
     } catch (error) {

@@ -20,54 +20,57 @@ export const useTimeTracker = ({
   const currentSlideStartTime = useRef<Date>(new Date());
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const totalIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  // El slide que se está cronometrando. Hace falta guardarlo porque el efecto
+  // de cambio de slide corre cuando el índice nuevo ya se aplicó, y el tiempo
+  // transcurrido pertenece al slide anterior.
+  const trackedSlide = useRef<{ slideIndex: number; formId: string } | null>(
+    null,
+  );
 
-  // Función para obtener el identificador único del slide
-  const getSlideKey = useCallback((slideIndex: number, formId: string) => {
-    return `${formId}_${slideIndex}`;
-  }, []);
+  // Función para cerrar el tiempo acumulado de un slide
+  const finishSlide = useCallback(
+    (slide: { slideIndex: number; formId: string } | null) => {
+      if (!slide) return;
 
-  // Función para finalizar el tiempo del slide actual
-  const finishCurrentSlide = useCallback(() => {
-    if (!currentFormId) return;
-
-    const endTime = new Date();
-    const timeSpent = Math.floor(
-      (endTime.getTime() - currentSlideStartTime.current.getTime()) / 1000,
-    );
-    const slideKey = getSlideKey(currentSlideIndex, currentFormId);
-
-    setSlideTimeData((prev) => {
-      const existingSlideIndex = prev.findIndex(
-        (slide) =>
-          slide.slideIndex === currentSlideIndex &&
-          slide.formId === currentFormId,
+      const endTime = new Date();
+      const timeSpent = Math.floor(
+        (endTime.getTime() - currentSlideStartTime.current.getTime()) / 1000,
       );
 
-      if (existingSlideIndex >= 0) {
-        // Actualizar slide existente
-        const updatedSlides = [...prev];
-        updatedSlides[existingSlideIndex] = {
-          ...updatedSlides[existingSlideIndex],
-          endTime,
-          totalTimeSeconds:
-            updatedSlides[existingSlideIndex].totalTimeSeconds + timeSpent,
-          visitCount: updatedSlides[existingSlideIndex].visitCount + 1,
-        };
-        return updatedSlides;
-      } else {
+      setSlideTimeData((prev) => {
+        const existingSlideIndex = prev.findIndex(
+          (entry) =>
+            entry.slideIndex === slide.slideIndex &&
+            entry.formId === slide.formId,
+        );
+
+        if (existingSlideIndex >= 0) {
+          // Actualizar slide existente
+          const updatedSlides = [...prev];
+          updatedSlides[existingSlideIndex] = {
+            ...updatedSlides[existingSlideIndex],
+            endTime,
+            totalTimeSeconds:
+              updatedSlides[existingSlideIndex].totalTimeSeconds + timeSpent,
+            visitCount: updatedSlides[existingSlideIndex].visitCount + 1,
+          };
+          return updatedSlides;
+        }
+
         // Crear nuevo registro de slide
         const newSlideData: SlideTimeData = {
-          slideIndex: currentSlideIndex,
-          formId: currentFormId,
+          slideIndex: slide.slideIndex,
+          formId: slide.formId,
           startTime: currentSlideStartTime.current,
           endTime,
           totalTimeSeconds: timeSpent,
           visitCount: 1,
         };
         return [...prev, newSlideData];
-      }
-    });
-  }, [currentSlideIndex, currentFormId, getSlideKey]);
+      });
+    },
+    [],
+  );
 
   // Función para iniciar el seguimiento de un nuevo slide
   const startNewSlide = useCallback(() => {
@@ -92,12 +95,13 @@ export const useTimeTracker = ({
   // Efecto para manejar cambios de slide
   useEffect(() => {
     if (currentFormId) {
-      // Si no es el primer slide, finalizar el anterior
-      if (slideTimeData.length > 0 || currentSlideIndex > 0) {
-        finishCurrentSlide();
-      }
+      // Cerrar el slide que se venía cronometrando antes de arrancar el nuevo
+      finishSlide(trackedSlide.current);
 
-      // Iniciar el nuevo slide
+      trackedSlide.current = {
+        slideIndex: currentSlideIndex,
+        formId: currentFormId,
+      };
       startNewSlide();
     }
 
@@ -127,7 +131,9 @@ export const useTimeTracker = ({
 
   // Función para finalizar la entrevista completa
   const finishInterview = useCallback(() => {
-    finishCurrentSlide();
+    finishSlide(trackedSlide.current);
+    // Evita sumar el mismo tramo dos veces si el envío falla y se reintenta.
+    trackedSlide.current = null;
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -135,7 +141,7 @@ export const useTimeTracker = ({
     if (totalIntervalRef.current) {
       clearInterval(totalIntervalRef.current);
     }
-  }, [finishCurrentSlide]);
+  }, [finishSlide]);
 
   // Función para formatear tiempo en formato legible
   const formatTime = useCallback((seconds: number): string => {

@@ -3,7 +3,6 @@ import { GetServerSideProps } from "next";
 import SurveyView from "../../views/interviewers-view/survey-view/SurveyView";
 import IntervieweeAuthGuard from "@/components/IntervieweeAuthGuard";
 import { useIntervieweeAuthContext } from "@/contexts/interviewee-auth.context";
-import apiConnection from "@/pages/api/api";
 
 interface SurveyPageProps {
   surveyId: string;
@@ -16,59 +15,32 @@ export default function SurveyPage({
   intervieweeId,
   token,
 }: SurveyPageProps) {
-  const { authenticated } = useIntervieweeAuthContext();
+  const { authenticated, checkAuth } = useIntervieweeAuthContext();
   const [autoLoginAttempted, setAutoLoginAttempted] = useState(false);
   const [autoLoginLoading, setAutoLoginLoading] = useState(false);
 
   useEffect(() => {
+    // El token del mail ya es la sesión del entrevistado: se guarda y se
+    // valida contra /interviewee-auth/check.
     const attemptAutoLogin = async () => {
-      // Only attempt auto-login if there's a token, user is not authenticated, and we haven't tried yet
-      if (token && !authenticated && !autoLoginAttempted) {
-        setAutoLoginAttempted(true);
-        setAutoLoginLoading(true);
+      if (!token || authenticated || autoLoginAttempted) return;
 
-        try {
-          console.log("Attempting auto-login with token...");
+      setAutoLoginAttempted(true);
+      setAutoLoginLoading(true);
 
-          // Call the auto-login endpoint
-          const response = await apiConnection.post(
-            "/interviewee-auth/auto-login",
-            {
-              token: token,
-            },
-          );
+      localStorage.setItem("intervieweeAccessToken", token);
+      await checkAuth();
 
-          if (response.data.success) {
-            // Store the session token
-            if (typeof window !== "undefined") {
-              localStorage.setItem(
-                "intervieweeAccessToken",
-                response.data.token,
-              );
-            }
+      // Saca el token de la URL para que no quede en el historial.
+      const url = new URL(window.location.href);
+      url.searchParams.delete("token");
+      window.history.replaceState({}, "", url.toString());
 
-            // Update API connection headers
-            apiConnection.defaults.headers.common["Authorization"] =
-              `Bearer ${response.data.token}`;
-
-            console.log("Auto-login successful");
-
-            // Update auth context
-            // The IntervieweeAuthGuard will handle the authentication check
-          } else {
-            console.error("Auto-login failed:", response.data);
-          }
-        } catch (error) {
-          console.error("Auto-login error:", error);
-          // If auto-login fails, user will be redirected to login by IntervieweeAuthGuard
-        } finally {
-          setAutoLoginLoading(false);
-        }
-      }
+      setAutoLoginLoading(false);
     };
 
     attemptAutoLogin();
-  }, [token, authenticated, autoLoginAttempted]);
+  }, [token, authenticated, autoLoginAttempted, checkAuth]);
 
   // Show loading while attempting auto-login
   if (token && !authenticated && autoLoginLoading) {

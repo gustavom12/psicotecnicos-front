@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
+import { Notification } from "@/common/notification";
 
 interface LoginFormData {
   email: string;
@@ -19,19 +20,43 @@ const IntervieweeLoginView = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>();
-  const { login, authenticated } = useIntervieweeAuthContext();
+  const { login, authenticated, checkAuth } = useIntervieweeAuthContext();
   const [loading, setLoading] = useState(false);
+  const [magicLinkLoading, setMagicLinkLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   // Magic link: si la URL trae ?token, iniciar sesión automáticamente
   useEffect(() => {
+    if (!router.isReady) return;
+
     const { token } = router.query;
-    if (token && typeof token === "string") {
+    if (!token || typeof token !== "string") return;
+
+    const loginWithMagicLink = async () => {
+      setMagicLinkLoading(true);
       localStorage.setItem("intervieweeAccessToken", token);
-      router.replace("/interviewee");
-    }
-  }, [router.query]);
+
+      // Saca el token de la URL para que no quede en el historial ni se
+      // reprocese al volver atrás.
+      await router.replace("/interviewee/login", undefined, { shallow: true });
+
+      // Valida el token contra el backend antes de navegar: así el guard de
+      // /interviewee encuentra la sesión ya establecida y no rebota al login.
+      await checkAuth();
+
+      if (!useIntervieweeAuthContext.getState().authenticated) {
+        Notification(
+          "El link de acceso es inválido o expiró. Solicitá uno nuevo.",
+          "error",
+        );
+      }
+
+      setMagicLinkLoading(false);
+    };
+
+    loginWithMagicLink();
+  }, [router.isReady, router.query.token]);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -51,6 +76,19 @@ const IntervieweeLoginView = () => {
       setLoading(false);
     }
   };
+
+  if (magicLinkLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+        <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-md border border-gray-100 flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#635BFF]" />
+          <p className="text-[#3F3F46] text-[16px] font-medium">
+            Validando tu link de acceso...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">

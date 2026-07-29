@@ -30,7 +30,11 @@ const SurveysTableView = () => {
     {
       key: "modules",
       label: "Módulos",
-      render: (key, record) => record.modules.map((e) => e.name).join(", "),
+      render: (key, record) =>
+        (record.modules ?? [])
+          .map((e) => e.id?.title)
+          .filter(Boolean)
+          .join(", "),
     },
     {
       key: "description",

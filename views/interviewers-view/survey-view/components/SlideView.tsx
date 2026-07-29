@@ -51,25 +51,6 @@ export default function SlideView({
   const getQuestionId = (questionIndex: number) =>
     `${formId}_${slide.index}_${questionIndex}`;
 
-  const handleNext = () => {
-    // Solo validar si hay preguntas para el entrevistado
-    if (interviewerQuestions.length > 0) {
-      // Validar que todas las preguntas requeridas estén respondidas
-      const hasErrors = interviewerQuestions.some((_, index) => {
-        const questionId = getQuestionId(index);
-        const response = responses[questionId];
-        return !response || response === "";
-      });
-
-      if (hasErrors) {
-        return; // No continuar si hay errores
-      }
-    }
-
-    // Continuar al siguiente slide
-    onNext();
-  };
-
   return (
     <>
       {/* Indicador de tiempo flotante y discreto */}
@@ -123,6 +104,7 @@ export default function SlideView({
                   return (
                     <QuestionRenderer
                       key={questionId}
+                      id={questionId}
                       question={question}
                       value={responses[questionId]}
                       onChange={(value) =>
@@ -154,7 +136,7 @@ export default function SlideView({
 
               <Button
                 color="primary"
-                onPress={handleNext}
+                onPress={onNext}
                 className="min-w-[100px]"
               >
                 {isLast ? "Finalizar" : "Siguiente"}

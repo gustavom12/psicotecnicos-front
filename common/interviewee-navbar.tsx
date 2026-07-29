@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { useIntervieweeAuthContext } from "@/contexts/interviewee-auth.context";
 import { LogOut, Settings } from "lucide-react";
+import IntervieweePasswordModal from "@/components/IntervieweePasswordModal";
 
 export const AcmeLogo = () => {
   return (
@@ -32,6 +33,7 @@ interface IntervieweeNavbarProps {
 
 export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
   const { logout, interviewee } = useIntervieweeAuthContext();
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   if (!links || links.length === 0) {
     links = [{ label: "Mis Entrevistas", href: "/interviewee" }];
@@ -150,8 +152,9 @@ export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
                 key="settings"
                 startContent={<Settings className="w-4 h-4" />}
                 textValue="Settings"
+                onPress={() => setPasswordModalOpen(true)}
               >
-                Configuración
+                Cambiar contraseña
               </DropdownItem>
 
               <DropdownItem
@@ -167,6 +170,11 @@ export default function IntervieweeNavbar({ links }: IntervieweeNavbarProps) {
           </Dropdown>
         </NavbarItem>
       </NavbarContent>
+
+      <IntervieweePasswordModal
+        isOpen={passwordModalOpen}
+        onClose={() => setPasswordModalOpen(false)}
+      />
     </Navbar>
   );
 }

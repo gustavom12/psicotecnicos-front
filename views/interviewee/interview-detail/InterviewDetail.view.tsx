@@ -60,8 +60,9 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({
       setLoading(true);
       setError(null);
 
-      // TODO: Replace with actual endpoint for getting interview details for interviewee
-      const response = await apiConnection.get(`/interviews/${interviewId}`);
+      const response = await apiConnection.get(
+        `/interviews/interviewee/${interviewId}`,
+      );
 
       setInterview(response.data);
     } catch (err: any) {

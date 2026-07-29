@@ -118,7 +118,7 @@ const ReportsView = () => {
         type: reportType,
       };
 
-      await apiConnection.post("/reports", reportData);
+      await apiConnection.post("/reports/generate", reportData);
       Notification("Reporte solicitado exitosamente", "success");
 
       setSelectedInterview("");

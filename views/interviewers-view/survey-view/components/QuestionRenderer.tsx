@@ -7,13 +7,20 @@ interface QuestionRendererProps {
   value: any;
   onChange: (value: any) => void;
   error?: string;
+  id?: string;
 }
+
+const DEFAULT_SCALE_VALUE = 5;
+
+const isAnswered = (value: any) =>
+  value !== undefined && value !== null && value !== "";
 
 export default function QuestionRenderer({
   question,
   value,
   onChange,
   error,
+  id,
 }: QuestionRendererProps) {
   const renderInput = () => {
     switch (question.type) {
@@ -84,25 +91,40 @@ export default function QuestionRenderer({
           </div>
         );
 
-      case FieldType.SCALE:
+      case FieldType.SCALE: {
+        const answered = isAnswered(value);
         return (
           <div className="w-full">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-500">1</span>
-              <span className="text-sm font-medium">Valor: {value || 5}</span>
+              <span
+                className={
+                  answered
+                    ? "text-sm font-medium"
+                    : "text-sm font-medium text-gray-400 italic"
+                }
+              >
+                {answered ? `Valor: ${value}` : "Sin responder"}
+              </span>
               <span className="text-sm text-gray-500">10</span>
             </div>
             <input
               type="range"
               min="1"
               max="10"
-              value={value || 5}
+              value={answered ? value : DEFAULT_SCALE_VALUE}
               onChange={(e) => onChange(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+              // Soltar el slider donde ya estaba no dispara change, así que sin
+              // esto el valor que muestra por defecto nunca se puede elegir.
+              onPointerUp={(e) => onChange(Number(e.currentTarget.value))}
+              className={`w-full h-2 rounded-lg appearance-none cursor-pointer slider ${
+                answered ? "bg-gray-200" : "bg-gray-100"
+              }`}
             />
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
         );
+      }
 
       default:
         return (
@@ -119,7 +141,7 @@ export default function QuestionRenderer({
   };
 
   return (
-    <div className="mb-6">
+    <div id={id} className="mb-6 scroll-mt-24">
       <label className="block text-sm font-medium text-gray-700 mb-2">
         {question.question}
       </label>

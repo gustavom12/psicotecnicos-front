@@ -14,6 +14,7 @@ import SlideView from "./components/SlideView";
 import apiConnection from "../../../pages/api/api";
 import { useTimeTracker } from "./hooks/useTimeTracker";
 import { useIntervieweeAuthContext } from "../../../contexts/interviewee-auth.context";
+import { Notification } from "../../../common/notification";
 
 interface SurveyViewProps {
   surveyId: string;
@@ -27,6 +28,7 @@ export default function SurveyView({
   interviewId,
 }: SurveyViewProps) {
   const router = useRouter();
+  const moduleId = router.query.moduleId as string | undefined;
   const { interviewee } = useIntervieweeAuthContext();
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [forms, setForms] = useState<Form[]>([]);
@@ -85,8 +87,19 @@ export default function SurveyView({
   });
 
   useEffect(() => {
+    // Sin isReady, moduleId todavía no está disponible y se cargaría el survey
+    // completo en lugar del módulo pedido.
+    if (!router.isReady) return;
     fetchSurveyData();
-  }, [surveyId]);
+  }, [surveyId, moduleId, router.isReady]);
+
+  // La sesión del entrevistado puede resolverse después del primer render, y
+  // sin ella la búsqueda de la entrevista queda sin hacer.
+  useEffect(() => {
+    if (!currentInterviewId && interviewee?._id) {
+      resolveInterviewId();
+    }
+  }, [interviewee?._id]);
 
   const fetchSurveyData = async () => {
     try {
@@ -112,6 +125,14 @@ export default function SurveyView({
         formIds = Array.isArray(surveyData.forms)
           ? surveyData.forms
           : [surveyData.forms];
+      }
+
+      // Cada módulo se responde y se guarda como una entrega independiente, así
+      // que cuando la URL apunta a uno solo se recorren sus slides: si no,
+      // se completarían los tres y todo quedaría registrado contra un módulo.
+      if (moduleId) {
+        const requestedModule = formIds.filter((id) => id === moduleId);
+        formIds = requestedModule.length > 0 ? requestedModule : [moduleId];
       }
 
       if (formIds.length > 0) {
@@ -146,7 +167,7 @@ export default function SurveyView({
 
       // Obtener interviewId si no se proporciona
       if (!currentInterviewId && (interviewee?._id || intervieweeId)) {
-        await fetchInterviewId();
+        await resolveInterviewId();
       }
     } catch (error) {
       console.error("Error fetching survey data:", error);
@@ -156,15 +177,21 @@ export default function SurveyView({
     }
   };
 
-  // Función para obtener el interviewId si no se proporciona
-  const fetchInterviewId = async () => {
+  /**
+   * Resuelve la entrevista a la que pertenece este survey. Sin ella la
+   * respuesta se guarda huérfana y el portal del entrevistado nunca la
+   * cuenta como completada, así que se reintenta antes de enviar.
+   */
+  const resolveInterviewId = async (): Promise<string | null> => {
+    if (currentInterviewId) return currentInterviewId;
+
     const actualIntervieweeId = interviewee?._id || intervieweeId;
 
     if (!actualIntervieweeId || actualIntervieweeId === "anonymous") {
       console.log(
         "No intervieweeId provided or anonymous user, skipping interview lookup",
       );
-      return;
+      return null;
     }
 
     try {
@@ -172,26 +199,31 @@ export default function SurveyView({
       const response = await apiConnection.get(
         "/interviews/interviewee/filtered",
       );
-      const interviews = response.data;
+      const interviews = response.data || [];
 
-      // Encontrar la entrevista que corresponde a este survey
-      const matchingInterview = interviews.find(
-        (interview: any) =>
-          interview.surveyId?._id === surveyId &&
-          interview.interviewees.includes(actualIntervieweeId),
-      );
+      // Encontrar la entrevista que corresponde a este survey. Los ids pueden
+      // venir como string o como documento poblado según el endpoint.
+      const matchingInterview = interviews.find((interview: any) => {
+        const interviewSurveyId = String(
+          interview.surveyId?._id ?? interview.surveyId ?? "",
+        );
+        const belongsToInterviewee = (interview.interviewees || []).some(
+          (candidate: any) =>
+            String(candidate?._id ?? candidate) === String(actualIntervieweeId),
+        );
+        return interviewSurveyId === surveyId && belongsToInterviewee;
+      });
 
       if (matchingInterview) {
         setCurrentInterviewId(matchingInterview._id);
-        console.log("Interview ID found:", matchingInterview._id);
-      } else {
-        console.log(
-          "No matching interview found, proceeding without interviewId",
-        );
+        return matchingInterview._id;
       }
+
+      console.log("No matching interview found for survey", surveyId);
+      return null;
     } catch (error) {
       console.error("Error fetching interview ID:", error);
-      console.log("Proceeding without interviewId");
+      return null;
     }
   };
 
@@ -232,13 +264,29 @@ export default function SurveyView({
       const questionId = `${currentSlide.formId}_${currentSlide.index}_${index}`;
       const response = responses[questionId];
 
-      if (!response || response === "") {
+      // Un 0 es una respuesta válida, así que no alcanza con evaluar falsy.
+      if (response === undefined || response === null || response === "") {
         newErrors[questionId] = "Esta pregunta es requerida";
       }
     });
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+
+    const missingIds = Object.keys(newErrors);
+    if (missingIds.length > 0) {
+      Notification(
+        missingIds.length === 1
+          ? "Falta responder 1 pregunta de esta pantalla"
+          : `Faltan responder ${missingIds.length} preguntas de esta pantalla`,
+        "warning",
+      );
+      document
+        .getElementById(missingIds[0])
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return false;
+    }
+
+    return true;
   };
 
   const handleNext = () => {
@@ -260,6 +308,17 @@ export default function SurveyView({
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
+
+      // Sin entrevista asociada la respuesta queda huérfana y el portal la
+      // sigue mostrando como pendiente, así que se corta antes de enviar.
+      const resolvedInterviewId = await resolveInterviewId();
+      if (!resolvedInterviewId) {
+        Notification(
+          "No pudimos identificar la entrevista de esta evaluación. Volvé a entrar desde el listado de formularios e intentá de nuevo.",
+          "error",
+        );
+        return;
+      }
 
       // Preparar respuestas para envío
       const interviewResponses: InterviewResponse[] = Object.entries(
@@ -284,10 +343,10 @@ export default function SurveyView({
       finishInterview();
 
       const submission: InterviewSubmission = {
-        interviewId: currentInterviewId, // Incluir el interviewId
+        interviewId: resolvedInterviewId,
         surveyId,
         intervieweeId: interviewee?._id || intervieweeId || "anonymous",
-        moduleId: router.query.moduleId as string, // Obtener moduleId de la URL
+        moduleId, // Obtener moduleId de la URL
         responses: interviewResponses,
         slideTimeData,
         totalInterviewTimeSeconds: totalInterviewTime,
@@ -298,16 +357,23 @@ export default function SurveyView({
       console.log("Submitting interview response:", submission);
 
       // Enviar a API usando el endpoint de interview-responses
-      const response = await apiConnection.post("/interview-responses", {
+      await apiConnection.post("/interview-responses", {
         ...submission,
+        // El backend y los reportes leen totalTimeSeconds; sin este nombre el
+        // tiempo se descarta y siempre queda en 0.
+        totalTimeSeconds: totalInterviewTime,
         status: "COMPLETED",
       });
 
       // Redirect to success page
       router.push("/interviewed/success");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting interview:", error);
-      // TODO: Show error notification
+      Notification(
+        error?.response?.data?.message ||
+          "No pudimos guardar tus respuestas. Revisá tu conexión e intentá de nuevo.",
+        "error",
+      );
     } finally {
       setSubmitting(false);
     }
