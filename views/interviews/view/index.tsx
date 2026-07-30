@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ArrowLeft from "@/public/icons/arrowleft";
-import { Chip, Tabs, Tab } from "@heroui/react";
+import { Button, Chip, Tabs, Tab } from "@heroui/react";
+import { Link2, Play } from "lucide-react";
 import AuthLayout from "@/layouts/auth.layout";
 import apiConnection from "@/pages/api/api";
 import { useRouter } from "next/router";
+import { Notification } from "@/common/notification";
+import {
+  buildInterviewSessionUrl,
+  buildProfessionalLivePath,
+} from "@/common/interview-access";
 import BasicInfo from "./components/BasicInfo";
 import ProfessionalsSection from "./components/ProfessionalsSection";
 import IntervieweesSection from "./components/IntervieweesSection";
@@ -24,11 +30,14 @@ interface InterviewData {
     title: string;
     description?: string;
   };
-  surveyId?: {
-    _id: string;
-    title: string;
-    description?: string;
-  };
+  // Según el endpoint puede llegar como id plano o como documento poblado.
+  surveyId?:
+    | string
+    | {
+        _id: string;
+        title: string;
+        description?: string;
+      };
   professionals?: Array<{
     _id: string;
     fullname: string;
@@ -54,6 +63,7 @@ interface InterviewData {
 const ViewInterviewPage = ({ id }: { id?: string }) => {
   const [data, setData] = useState<InterviewData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [starting, setStarting] = useState(false);
   const [selectedTab, setSelectedTab] = useState("general");
   const router = useRouter();
 
@@ -138,6 +148,58 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
     );
   }
 
+  const surveyRef = data.surveyId;
+  const surveyId = typeof surveyRef === "string" ? surveyRef : surveyRef?._id;
+  const surveyDetail =
+    typeof surveyRef === "string" ? data.survey : (surveyRef ?? data.survey);
+  const sessionUrl = surveyId
+    ? buildInterviewSessionUrl(surveyId, data._id)
+    : null;
+
+  const handleStartInterview = async () => {
+    if (!surveyId) {
+      Notification(
+        "Esta entrevista no tiene una encuesta asociada, así que no hay módulos para iniciar.",
+        "warning",
+      );
+      return;
+    }
+
+    try {
+      setStarting(true);
+      // Inicia (o reabre) la sesión en vivo y lleva al profesional a conducirla.
+      await apiConnection.post(`/interview-sessions/${data._id}/start`);
+      setData((prev) => (prev ? { ...prev, status: "IN_PROGRESS" } : prev));
+      router.push(buildProfessionalLivePath(data._id));
+    } catch (error: any) {
+      Notification(
+        error?.response?.data?.message ||
+          "No pudimos iniciar la entrevista. Intentá de nuevo.",
+        "error",
+      );
+    } finally {
+      setStarting(false);
+    }
+  };
+
+  // Link que se comparte con el entrevistado para que entre a la sesión.
+  const handleCopyLink = async () => {
+    if (!sessionUrl) {
+      Notification(
+        "Esta entrevista no tiene una encuesta asociada, así que no hay link para compartir.",
+        "warning",
+      );
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(sessionUrl);
+      Notification("Link del entrevistado copiado al portapapeles", "success");
+    } catch {
+      Notification(`Copiá el link manualmente: ${sessionUrl}`, "warning");
+    }
+  };
+
   return (
     <AuthLayout links={[]}>
       <div className="min-h-screen bg-gray-50 py-8">
@@ -163,6 +225,23 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
                 <Chip color={getStatusColor(data.status)} variant="flat">
                   {getStatusText(data.status)}
                 </Chip>
+                {/* Desde el detalle el profesional puede iniciar la entrevista
+                    en cualquier momento, sin importar la fecha agendada. */}
+                <Button
+                  color="success"
+                  startContent={<Play className="w-4 h-4" />}
+                  isLoading={starting}
+                  onPress={handleStartInterview}
+                >
+                  Iniciar entrevista
+                </Button>
+                <Button
+                  variant="bordered"
+                  startContent={<Link2 className="w-4 h-4" />}
+                  onPress={handleCopyLink}
+                >
+                  Copiar link
+                </Button>
                 <Link href={`/interviews/information/${data._id}`}>
                   <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     Editar
@@ -204,7 +283,7 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
                 positionDescription={data.positionDescription}
                 scheduledAt={data.scheduledAt}
                 status={data.status}
-                survey={data.surveyId || data.survey}
+                survey={surveyDetail}
               />
             )}
 

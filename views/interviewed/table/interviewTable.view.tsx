@@ -88,6 +88,14 @@ const InterviewTableView = () => {
   };
 
   const handleResendCredentials = async (intervieweeId: string) => {
+    if (
+      !confirm(
+        "Se generará una contraseña nueva y la anterior dejará de funcionar. ¿Querés restablecer y reenviar las credenciales?",
+      )
+    ) {
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await apiConnection.post(
@@ -97,7 +105,8 @@ const InterviewTableView = () => {
       // Show success notification with email info
       const email = response.data?.email || "";
       const message =
-        response.data?.message || "Credenciales reenviadas exitosamente";
+        response.data?.message ||
+        "Credenciales restablecidas y reenviadas exitosamente";
 
       Notification(
         email
@@ -110,7 +119,8 @@ const InterviewTableView = () => {
     } catch (error: any) {
       console.error("Error resending credentials:", error);
       Notification(
-        error?.response?.data?.message || "Error al reenviar credenciales",
+        error?.response?.data?.message ||
+          "Error al restablecer y reenviar credenciales",
         "error",
       );
     } finally {

@@ -8,8 +8,13 @@ import Eye from "@/public/icons/eye";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import apiConnection from "@/pages/api/api";
 import { Notification } from "@/common/notification";
+import {
+  buildProfessionalLivePath,
+  isInterviewStageOpen,
+} from "@/common/interview-access";
 
 const TableInterviewsView = () => {
   const [data, setData] = useState([]);
@@ -19,6 +24,7 @@ const TableInterviewsView = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [intervieweesMap, setIntervieweesMap] = useState(new Map());
   const [professionalsMap, setProfessionalsMap] = useState(new Map());
+  const router = useRouter();
 
   const loadInterviews = async () => {
     console.log("loadInterviews");
@@ -107,12 +113,15 @@ const TableInterviewsView = () => {
 
   const handleStartInterview = async (id: string) => {
     try {
-      await apiConnection.patch(`/interviews/${id}/start`);
-      Notification("Entrevista iniciada exitosamente", "success");
-      loadInterviews();
-    } catch (error) {
+      // Inicia (o reabre) la sesión en vivo y lleva al profesional a conducirla.
+      await apiConnection.post(`/interview-sessions/${id}/start`);
+      router.push(buildProfessionalLivePath(id));
+    } catch (error: any) {
       console.error("Error starting interview:", error);
-      Notification("Error al iniciar la entrevista", "error");
+      Notification(
+        error?.response?.data?.message || "Error al iniciar la entrevista",
+        "error",
+      );
     }
   };
 
@@ -523,16 +532,17 @@ const TableInterviewsView = () => {
                             </button>
                           </Link>
 
-                          {/* {item.status === "NOT_STARTED" && (
-                            <button
-                              onClick={() => handleStartInterview(item._id)}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors duration-200"
-                              title="Iniciar entrevista"
-                            >
-                              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                              Iniciar
-                            </button>
-                          )} */}
+                          {item.status !== "CLOSED" &&
+                            isInterviewStageOpen(item.scheduledAt) && (
+                              <button
+                                onClick={() => handleStartInterview(item._id)}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors duration-200"
+                                title="Iniciar entrevista"
+                              >
+                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                Iniciar entrevista
+                              </button>
+                            )}
 
                           {item.status === "IN_PROGRESS" && (
                             <button

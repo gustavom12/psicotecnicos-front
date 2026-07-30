@@ -14,7 +14,13 @@ import {
   ArrowLeft,
   User,
   Building,
+  Lock,
 } from "lucide-react";
+import {
+  buildInterviewSessionPath,
+  formatScheduledAt,
+  isInterviewStageOpen,
+} from "@/common/interview-access";
 
 interface InterviewDetailProps {
   interviewId: string;
@@ -271,8 +277,23 @@ const IntervieweeInterviewDetail: React.FC<InterviewDetailProps> = ({
           <CardBody className="pt-0">
             {/* Action Buttons */}
             <div className="flex gap-3">
-              {canStartInterview(interview) ? (
-                <Link href={`/survey/${interview.surveyId._id}`}>
+              {canStartInterview(interview) &&
+              !isInterviewStageOpen(interview.scheduledAt) ? (
+                <Button
+                  size="lg"
+                  variant="flat"
+                  isDisabled
+                  startContent={<Lock className="w-5 h-5" />}
+                >
+                  Disponible el {formatScheduledAt(interview.scheduledAt)}
+                </Button>
+              ) : canStartInterview(interview) ? (
+                <Link
+                  href={buildInterviewSessionPath(
+                    interview.surveyId._id,
+                    interview._id,
+                  )}
+                >
                   <Button
                     color="primary"
                     size="lg"

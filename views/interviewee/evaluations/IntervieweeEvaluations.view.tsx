@@ -13,7 +13,13 @@ import {
   Play,
   CheckCircle,
   BookOpen,
+  Lock,
 } from "lucide-react";
+import {
+  buildInterviewSessionPath,
+  formatScheduledAt,
+  isInterviewStageOpen,
+} from "@/common/interview-access";
 
 // Interface for Interview data with surveys
 interface Interview {
@@ -414,8 +420,13 @@ const IntervieweeEvaluations = () => {
                         >
                           Evaluación Completada
                         </Button>
-                      ) : (
-                        <Link href={`/survey/${interview.surveyId._id}`}>
+                      ) : isInterviewStageOpen(interview.scheduledAt) ? (
+                        <Link
+                          href={buildInterviewSessionPath(
+                            interview.surveyId._id,
+                            interview._id,
+                          )}
+                        >
                           <Button
                             color="primary"
                             variant="solid"
@@ -424,10 +435,19 @@ const IntervieweeEvaluations = () => {
                           >
                             {evaluationStatus?.progress &&
                             evaluationStatus.progress > 0
-                              ? "Continuar Evaluación"
-                              : "Iniciar Evaluación"}
+                              ? "Continuar entrevista"
+                              : "Iniciar entrevista"}
                           </Button>
                         </Link>
+                      ) : (
+                        <Button
+                          variant="flat"
+                          isDisabled
+                          startContent={<Lock className="w-4 h-4" />}
+                        >
+                          Disponible el{" "}
+                          {formatScheduledAt(interview.scheduledAt)}
+                        </Button>
                       )}
 
                       <Link href={`/interviewee/interview/${interview._id}`}>

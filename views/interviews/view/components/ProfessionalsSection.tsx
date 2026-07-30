@@ -2,8 +2,9 @@ import React from "react";
 
 interface Professional {
   _id: string;
-  fullname: string;
-  email: string;
+  fullname?: string;
+  firstName?: string;
+  email?: string;
   phoneNumber?: string;
   speciality?: string;
   roles?: string[];
@@ -11,8 +12,36 @@ interface Professional {
 }
 
 interface ProfessionalsSectionProps {
-  professionals: Professional[];
+  // Puede llegar como documento o, en respuestas viejas, como id plano.
+  professionals: Array<Professional | string>;
 }
+
+const getProfessionalId = (professional: Professional | string) =>
+  typeof professional === "string" ? professional : professional._id;
+
+const getProfessionalName = (professional: Professional | string) => {
+  if (typeof professional === "string") return "Sin nombre";
+  return (
+    professional.fullname ||
+    professional.firstName ||
+    professional.email ||
+    "Sin nombre"
+  );
+};
+
+const getProfessionalEmail = (professional: Professional | string) =>
+  typeof professional === "string" ? "" : professional.email || "";
+
+const getProfessionalInitials = (professional: Professional | string) => {
+  const name = getProfessionalName(professional);
+  if (!name || name === "Sin nombre") return "P";
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+};
 
 const ProfessionalsSection: React.FC<ProfessionalsSectionProps> = ({
   professionals,
@@ -32,32 +61,40 @@ const ProfessionalsSection: React.FC<ProfessionalsSectionProps> = ({
 
         <div className="space-y-3">
           {professionals && professionals.length > 0 ? (
-            professionals.map((professional) => (
+            professionals.map((professional) => {
+              const id = getProfessionalId(professional);
+              const name = getProfessionalName(professional);
+              const email = getProfessionalEmail(professional);
+              const phone =
+                typeof professional === "string"
+                  ? undefined
+                  : professional.phoneNumber;
+              const speciality =
+                typeof professional === "string"
+                  ? undefined
+                  : professional.speciality;
+
+              return (
               <div
-                key={professional._id}
+                key={id}
                 className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors"
               >
                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-lg font-semibold">
-                  {professional.fullname
-                    ?.split(" ")
-                    .map((name) => name[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase() || "P"}
+                  {getProfessionalInitials(professional)}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">
-                    {professional.fullname}
-                  </h3>
-                  <p className="text-sm text-gray-600">{professional.email}</p>
-                  {professional.phoneNumber && (
+                  <h3 className="font-semibold text-gray-900">{name}</h3>
+                  {email && (
+                    <p className="text-sm text-gray-600">{email}</p>
+                  )}
+                  {phone && (
                     <p className="text-xs text-gray-500 mt-1">
-                      📞 {professional.phoneNumber}
+                      📞 {phone}
                     </p>
                   )}
-                  {professional.speciality && (
+                  {speciality && (
                     <p className="text-xs text-blue-600 font-medium mt-1">
-                      🎯 {professional.speciality}
+                      🎯 {speciality}
                     </p>
                   )}
                 </div>
@@ -66,7 +103,8 @@ const ProfessionalsSection: React.FC<ProfessionalsSectionProps> = ({
                   <p className="text-xs text-gray-500 mt-1">Activo</p>
                 </div>
               </div>
-            ))
+              );
+            })
           ) : (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

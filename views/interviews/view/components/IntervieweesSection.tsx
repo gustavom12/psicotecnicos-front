@@ -4,29 +4,38 @@ import { Chip } from "@heroui/react";
 interface Interviewee {
   _id: string;
   personalInfo?: {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
   };
-  email: string;
+  // Campo legacy de algunos documentos.
+  name?: string;
+  email?: string;
+  mail?: string;
   status?: string;
   completedAt?: string;
   startedAt?: string;
 }
 
 interface IntervieweesSectionProps {
-  interviewees: Interviewee[];
+  // Puede llegar como documento o, en respuestas viejas, como id plano.
+  interviewees: Array<Interviewee | string>;
 }
 
 const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
   interviewees,
 }) => {
+  const normalizeStatus = (status?: string) =>
+    (status || "").toUpperCase().replace(/-/g, "_");
+
   const getStatusColor = (status?: string) => {
-    switch (status) {
-      case "completed":
+    switch (normalizeStatus(status)) {
+      case "COMPLETED":
         return "success";
-      case "in_progress":
+      case "IN_PROGRESS":
         return "warning";
-      case "not_started":
+      case "NOT_STARTED":
+      case "PENDING":
+      case "INVITED":
         return "default";
       default:
         return "default";
@@ -34,36 +43,57 @@ const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
   };
 
   const getStatusText = (status?: string) => {
-    switch (status) {
-      case "completed":
+    switch (normalizeStatus(status)) {
+      case "COMPLETED":
         return "Completado";
-      case "in_progress":
+      case "IN_PROGRESS":
         return "En progreso";
-      case "not_started":
+      case "NOT_STARTED":
         return "No iniciado";
-      default:
+      case "INVITED":
+        return "Invitado";
+      case "PENDING":
         return "Pendiente";
+      default:
+        return status || "Pendiente";
     }
   };
 
-  const getIntervieweeName = (interviewee: Interviewee) => {
-    if (
-      interviewee.personalInfo?.firstName &&
-      interviewee.personalInfo?.lastName
-    ) {
-      return `${interviewee.personalInfo.firstName} ${interviewee.personalInfo.lastName}`;
-    }
-    return interviewee.email || "Sin nombre";
+  const getIntervieweeId = (interviewee: Interviewee | string) =>
+    typeof interviewee === "string" ? interviewee : interviewee._id;
+
+  const getIntervieweeName = (interviewee: Interviewee | string) => {
+    if (typeof interviewee === "string") return "Sin nombre";
+    const first = interviewee.personalInfo?.firstName?.trim();
+    const last = interviewee.personalInfo?.lastName?.trim();
+    if (first || last) return [first, last].filter(Boolean).join(" ");
+    return (
+      interviewee.name ||
+      interviewee.email ||
+      interviewee.mail ||
+      "Sin nombre"
+    );
   };
 
-  const getInitials = (interviewee: Interviewee) => {
-    if (
-      interviewee.personalInfo?.firstName &&
-      interviewee.personalInfo?.lastName
-    ) {
-      return `${interviewee.personalInfo.firstName[0]}${interviewee.personalInfo.lastName[0]}`.toUpperCase();
+  const getIntervieweeEmail = (interviewee: Interviewee | string) => {
+    if (typeof interviewee === "string") return "";
+    return interviewee.email || interviewee.mail || "";
+  };
+
+  const getInitials = (interviewee: Interviewee | string) => {
+    if (typeof interviewee === "string") return "E";
+    const first = interviewee.personalInfo?.firstName?.[0];
+    const last = interviewee.personalInfo?.lastName?.[0];
+    if (first || last) {
+      return `${first || ""}${last || ""}`.toUpperCase();
     }
-    return interviewee.email?.[0]?.toUpperCase() || "E";
+    const name = getIntervieweeName(interviewee);
+    if (name && name !== "Sin nombre") return name[0].toUpperCase();
+    return (
+      interviewee.email?.[0]?.toUpperCase() ||
+      interviewee.mail?.[0]?.toUpperCase() ||
+      "E"
+    );
   };
 
   return (
@@ -79,9 +109,25 @@ const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
 
         <div className="space-y-3">
           {interviewees && interviewees.length > 0 ? (
-            interviewees.map((interviewee) => (
+            interviewees.map((interviewee) => {
+              const id = getIntervieweeId(interviewee);
+              const email = getIntervieweeEmail(interviewee);
+              const status =
+                typeof interviewee === "string"
+                  ? undefined
+                  : interviewee.status;
+              const completedAt =
+                typeof interviewee === "string"
+                  ? undefined
+                  : interviewee.completedAt;
+              const startedAt =
+                typeof interviewee === "string"
+                  ? undefined
+                  : interviewee.startedAt;
+
+              return (
               <div
-                key={interviewee._id}
+                key={id}
                 className="flex items-center gap-4 p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors"
               >
                 <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white text-lg font-semibold">
@@ -91,35 +137,34 @@ const IntervieweesSection: React.FC<IntervieweesSectionProps> = ({
                   <h3 className="font-semibold text-gray-900">
                     {getIntervieweeName(interviewee)}
                   </h3>
-                  <p className="text-sm text-gray-600">{interviewee.email}</p>
-                  {interviewee.completedAt && (
+                  {email && (
+                    <p className="text-sm text-gray-600">{email}</p>
+                  )}
+                  {completedAt && (
                     <p className="text-xs text-green-600 mt-1">
                       Completado:{" "}
-                      {new Date(interviewee.completedAt).toLocaleDateString(
-                        "es-ES",
-                      )}
+                      {new Date(completedAt).toLocaleDateString("es-ES")}
                     </p>
                   )}
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <Chip
-                    color={getStatusColor(interviewee.status)}
+                    color={getStatusColor(status)}
                     variant="flat"
                     size="sm"
                   >
-                    {getStatusText(interviewee.status)}
+                    {getStatusText(status)}
                   </Chip>
-                  {interviewee.startedAt && (
+                  {startedAt && (
                     <p className="text-xs text-gray-500">
                       Iniciado:{" "}
-                      {new Date(interviewee.startedAt).toLocaleDateString(
-                        "es-ES",
-                      )}
+                      {new Date(startedAt).toLocaleDateString("es-ES")}
                     </p>
                   )}
                 </div>
               </div>
-            ))
+              );
+            })
           ) : (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

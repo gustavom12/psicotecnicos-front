@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Chip, Accordion, AccordionItem } from "@heroui/react";
 import apiConnection from "@/pages/api/api";
+import {
+  extractFileUrl,
+  isImageUrl,
+  formatTextAnswer,
+} from "@/common/answer-format";
 
 interface QuestionResponse {
   questionId: string;
@@ -34,6 +39,7 @@ interface InterviewResponse {
         email: string;
       };
   moduleId?: string;
+  respondentRole?: "INTERVIEWEE" | "PROFESSIONAL";
   responses: QuestionResponse[];
   slideTimeData: SlideTimeData[];
   totalTimeSeconds: number;
@@ -52,6 +58,42 @@ interface InterviewResponse {
 
 interface ResponsesSectionProps {
   interviewId: string;
+}
+
+/** Renderiza la respuesta: imagen, link a archivo o texto. */
+function AnswerValue({ value }: { value: any }) {
+  const fileUrl = extractFileUrl(value);
+
+  if (fileUrl && isImageUrl(fileUrl)) {
+    return (
+      <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+        <img
+          src={fileUrl}
+          alt="Respuesta"
+          className="max-h-64 rounded-md border bg-white object-contain"
+        />
+      </a>
+    );
+  }
+
+  if (fileUrl) {
+    return (
+      <a
+        href={fileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-sm text-blue-600 underline break-all"
+      >
+        Ver archivo
+      </a>
+    );
+  }
+
+  return (
+    <p className="text-sm text-gray-900">
+      {value ? formatTextAnswer(value) : "Sin respuesta"}
+    </p>
+  );
 }
 
 const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
@@ -117,6 +159,10 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
   };
 
   const getIntervieweeName = (response: InterviewResponse) => {
+    // Las respuestas cargadas por el profesional no tienen entrevistado.
+    if (response.respondentRole === "PROFESSIONAL") {
+      return "Profesional";
+    }
     // Primero intentar con el campo interviewee
     if (
       response.interviewee?.personalInfo?.firstName &&
@@ -223,6 +269,19 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Chip
+                        color={
+                          response.respondentRole === "PROFESSIONAL"
+                            ? "secondary"
+                            : "primary"
+                        }
+                        variant="flat"
+                        size="sm"
+                      >
+                        {response.respondentRole === "PROFESSIONAL"
+                          ? "Profesional"
+                          : "Entrevistado"}
+                      </Chip>
+                      <Chip
                         color={getStatusColor(response.status)}
                         variant="flat"
                         size="sm"
@@ -293,9 +352,7 @@ const ResponsesSection: React.FC<ResponsesSectionProps> = ({ interviewId }) => {
                               </Chip>
                             </div>
                             <div className="bg-blue-50 p-3 rounded-lg">
-                              <p className="text-sm text-gray-900">
-                                {questionResponse.answer || "Sin respuesta"}
-                              </p>
+                              <AnswerValue value={questionResponse.answer} />
                             </div>
                           </div>
                         </div>

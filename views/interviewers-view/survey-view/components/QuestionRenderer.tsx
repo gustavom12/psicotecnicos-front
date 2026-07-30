@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input, Textarea, Radio, RadioGroup } from "@heroui/react";
 import { Question, FieldType } from "../../../../types/survey.types";
+import apiConnection from "@/pages/api/api";
+import { Notification } from "@/common/notification";
+import { isImageUrl } from "@/common/answer-format";
 
 interface QuestionRendererProps {
   question: Question;
@@ -14,6 +17,89 @@ const DEFAULT_SCALE_VALUE = 5;
 
 const isAnswered = (value: any) =>
   value !== undefined && value !== null && value !== "";
+
+/**
+ * Campo de archivo: sube el archivo a POST /files apenas se elige y guarda como
+ * respuesta la URL persistida (string), no el File crudo. Así la respuesta se
+ * puede sincronizar/guardar y luego mostrarse (imagen o link).
+ */
+function FileQuestionInput({
+  value,
+  onChange,
+  error,
+}: {
+  value: any;
+  onChange: (value: any) => void;
+  error?: string;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const url = typeof value === "string" ? value : value?.url;
+
+  const handleFile = async (file: File | null) => {
+    if (!file) return;
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("title", `${Date.now()}-${file.name}`);
+      const res = await apiConnection.post("/files", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const data = res.data?.data ?? res.data;
+      const uploadedUrl = data?.url || data?.fileUrl || data?.link;
+      if (!uploadedUrl) {
+        throw new Error("La respuesta del servidor no contiene una URL");
+      }
+      onChange(uploadedUrl);
+    } catch (e: any) {
+      Notification(
+        e?.response?.data?.message ||
+          e?.message ||
+          "No pudimos subir el archivo. Intentá de nuevo.",
+        "error",
+      );
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="w-full">
+      <input
+        type="file"
+        disabled={uploading}
+        onChange={(e) => handleFile(e.target.files?.[0] || null)}
+        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+      />
+      {uploading && (
+        <p className="text-sm text-gray-500 mt-2">Subiendo archivo…</p>
+      )}
+      {!uploading && url && (
+        <div className="mt-3">
+          {isImageUrl(url) ? (
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              <img
+                src={url}
+                alt="Archivo subido"
+                className="max-h-48 rounded-lg border border-gray-200 object-contain"
+              />
+            </a>
+          ) : (
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-600 underline break-all"
+            >
+              Ver archivo subido
+            </a>
+          )}
+        </div>
+      )}
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+    </div>
+  );
+}
 
 export default function QuestionRenderer({
   question,
@@ -81,14 +167,7 @@ export default function QuestionRenderer({
 
       case FieldType.FILE:
         return (
-          <div className="w-full">
-            <input
-              type="file"
-              onChange={(e) => onChange(e.target.files?.[0] || null)}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-          </div>
+          <FileQuestionInput value={value} onChange={onChange} error={error} />
         );
 
       case FieldType.SCALE: {

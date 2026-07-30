@@ -228,9 +228,12 @@ const HomeView = () => {
       await apiConnection.patch(`/interviews/${id}/start`);
       Notification("Entrevista iniciada exitosamente", "success");
       loadInterviews();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error starting interview:", error);
-      Notification("Error al iniciar la entrevista", "error");
+      Notification(
+        error?.response?.data?.message || "Error al iniciar la entrevista",
+        "error",
+      );
     }
   };
 

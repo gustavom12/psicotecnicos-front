@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import { Card, CardBody, Spinner, Button } from "@heroui/react";
 import {
   Survey,
   Form,
-  Slide,
   InterviewResponse,
   InterviewSubmission,
   FieldType,
   Module,
 } from "../../../types/survey.types";
 import SlideView from "./components/SlideView";
+import LiveSlideView from "./components/LiveSlideView";
 import apiConnection from "../../../pages/api/api";
 import { useTimeTracker } from "./hooks/useTimeTracker";
 import { useIntervieweeAuthContext } from "../../../contexts/interviewee-auth.context";
 import { Notification } from "../../../common/notification";
+import {
+  INTERVIEW_STAGE,
+  formatScheduledAt,
+} from "../../../common/interview-access";
+import {
+  buildSlideSequence,
+  answersToResponses,
+  responsesToAnswers,
+  SequencedSlide,
+} from "../../../common/interview-slides";
+import { useLiveSession, LiveSessionState } from "../../../hooks/useLiveSession";
 
 interface SurveyViewProps {
   surveyId: string;
@@ -29,6 +40,9 @@ export default function SurveyView({
 }: SurveyViewProps) {
   const router = useRouter();
   const moduleId = router.query.moduleId as string | undefined;
+  // Los módulos de la entrevista se recorren juntos en una sola sesión, a
+  // diferencia de los formularios previos que se responden de a uno.
+  const isInterviewStage = router.query.stage === INTERVIEW_STAGE;
   const { interviewee } = useIntervieweeAuthContext();
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [forms, setForms] = useState<Form[]>([]);
@@ -40,37 +54,75 @@ export default function SurveyView({
   const [currentInterviewId, setCurrentInterviewId] = useState<string | null>(
     interviewId || null,
   );
+  const [liveAccess, setLiveAccess] = useState<{
+    checked: boolean;
+    open: boolean;
+    dateOpen: boolean;
+    scheduledAt: string | null;
+  }>({ checked: false, open: true, dateOpen: true, scheduledAt: null });
+  // En la sesión en vivo el slide lo dicta el profesional desde el backend.
+  const [liveSlideIndex, setLiveSlideIndex] = useState(0);
+  const [sessionStatus, setSessionStatus] = useState<
+    "LIVE" | "FINISHED" | null
+  >(null);
 
   // Obtener todos los slides ordenados por módulo y luego por slide index
-  const allSlides: (Slide & { formId: string; moduleOrder: number })[] =
-    (() => {
-      if (!survey?.modules) return [];
+  const allSlides: SequencedSlide[] = buildSlideSequence(survey, forms);
 
-      // Crear un mapa de formId a moduleOrder para mantener el orden
-      const moduleOrderMap = new Map<string, number>();
-      survey.modules.forEach((module) => {
-        moduleOrderMap.set(module.id, module.order);
-      });
+  // En modo entrevista el índice viene de la sesión; en previos, es local.
+  const effectiveSlideIndex = isInterviewStage
+    ? liveSlideIndex
+    : currentSlideIndex;
+  const currentSlide = allSlides[effectiveSlideIndex];
 
-      // Obtener slides con información de módulo y ordenar correctamente
-      return forms
-        .map((form) => ({
-          form,
-          moduleOrder: moduleOrderMap.get(form?._id) || 0,
-        }))
-        .sort((a, b) => a.moduleOrder - b.moduleOrder) // Primero ordenar por módulo
-        .flatMap(({ form, moduleOrder }) =>
-          form.slides
-            .sort((a, b) => a.index - b.index) // Luego ordenar slides dentro del módulo
-            .map((slide) => ({
-              ...slide,
-              formId: form._id,
-              moduleOrder,
-            })),
-        );
-    })();
+  // Refs para que el hook de sincronización lea siempre lo último sin recrearse.
+  const responsesRef = useRef(responses);
+  responsesRef.current = responses;
+  const slidesRef = useRef(allSlides);
+  slidesRef.current = allSlides;
 
-  const currentSlide = allSlides[currentSlideIndex];
+  // No se empuja nada hasta hidratar, para no pisar respuestas previas al
+  // reingresar a la sesión con el estado local vacío.
+  const hydratedRef = useRef(false);
+
+  const getLivePayload = useCallback(() => {
+    if (!hydratedRef.current) return null;
+    return {
+      responses: answersToResponses(
+        responsesRef.current,
+        slidesRef.current,
+        "interviewer",
+      ),
+    };
+  }, []);
+
+  const handleLiveRemote = useCallback((remote: LiveSessionState) => {
+    if (typeof remote?.currentSlideIndex === "number") {
+      setLiveSlideIndex(remote.currentSlideIndex);
+    }
+    setSessionStatus(remote?.status ?? null);
+
+    // Hidratar una sola vez con las respuestas propias que ya estaban guardadas.
+    if (!hydratedRef.current) {
+      hydratedRef.current = true;
+      const mine = remote?.myResponses ?? [];
+      if (mine.length > 0) {
+        setResponses((prev) => ({ ...responsesToAnswers(mine), ...prev }));
+      }
+    }
+  }, []);
+
+  useLiveSession({
+    interviewId: currentInterviewId,
+    role: "interviewee",
+    enabled:
+      isInterviewStage &&
+      liveAccess.open &&
+      !!currentInterviewId &&
+      allSlides.length > 0,
+    getLocalPayload: getLivePayload,
+    onRemote: handleLiveRemote,
+  });
 
   // Hook para seguimiento de tiempo
   const {
@@ -81,7 +133,7 @@ export default function SurveyView({
     formatTime,
     getCurrentSlideStats,
   } = useTimeTracker({
-    currentSlideIndex,
+    currentSlideIndex: effectiveSlideIndex,
     currentFormId: currentSlide?.formId || "",
     totalSlides: allSlides.length,
   });
@@ -91,7 +143,7 @@ export default function SurveyView({
     // completo en lugar del módulo pedido.
     if (!router.isReady) return;
     fetchSurveyData();
-  }, [surveyId, moduleId, router.isReady]);
+  }, [surveyId, moduleId, isInterviewStage, router.isReady]);
 
   // La sesión del entrevistado puede resolverse después del primer render, y
   // sin ella la búsqueda de la entrevista queda sin hacer.
@@ -100,6 +152,50 @@ export default function SurveyView({
       resolveInterviewId();
     }
   }, [interviewee?._id]);
+
+  // La habilitación la decide el backend: acá solo se refleja para no dejar
+  // avanzar por un link compartido antes de la fecha de la entrevista.
+  useEffect(() => {
+    if (!isInterviewStage) return;
+
+    if (!currentInterviewId) {
+      setLiveAccess({
+        checked: true,
+        open: true,
+        dateOpen: true,
+        scheduledAt: null,
+      });
+      return;
+    }
+
+    const checkLiveAccess = async () => {
+      try {
+        const { data } = await apiConnection.get(
+          `/interviews/interviewee/${currentInterviewId}/live-access`,
+        );
+        setLiveAccess({
+          checked: true,
+          open: data?.open !== false,
+          dateOpen: data?.dateOpen !== false,
+          scheduledAt: data?.scheduledAt ?? null,
+        });
+      } catch (error) {
+        console.error("Error checking interview availability:", error);
+        setLiveAccess({
+          checked: true,
+          open: true,
+          dateOpen: true,
+          scheduledAt: null,
+        });
+      }
+    };
+
+    // Reconsultar por si el profesional inicia la sesión mientras el
+    // entrevistado espera en esta pantalla.
+    checkLiveAccess();
+    const interval = setInterval(checkLiveAccess, 5000);
+    return () => clearInterval(interval);
+  }, [isInterviewStage, currentInterviewId]);
 
   const fetchSurveyData = async () => {
     try {
@@ -154,9 +250,15 @@ export default function SurveyView({
         );
 
         const formsData = await Promise.all(formsPromises);
-        const validForms = formsData
+        let validForms = formsData
           .filter((form) => form !== null)
           .sort((a, b) => a._originalOrder - b._originalOrder); // Mantener orden original
+
+        // En la sesión de entrevista se dejan afuera los formularios previos:
+        // esos ya los completó el candidato por su cuenta.
+        if (isInterviewStage) {
+          validForms = validForms.filter((form) => !form.isPreviousForm);
+        }
 
         console.log("Valid forms loaded in order:", validForms);
         console.log("Form IDs in order:", formIds);
@@ -342,11 +444,13 @@ export default function SurveyView({
       // Finalizar el seguimiento de tiempo
       finishInterview();
 
+      // Este flujo solo aplica a los formularios previos (uno por vez); la
+      // sesión de entrevista en vivo la vuelca el profesional al finalizar.
       const submission: InterviewSubmission = {
         interviewId: resolvedInterviewId,
         surveyId,
         intervieweeId: interviewee?._id || intervieweeId || "anonymous",
-        moduleId, // Obtener moduleId de la URL
+        moduleId,
         responses: interviewResponses,
         slideTimeData,
         totalInterviewTimeSeconds: totalInterviewTime,
@@ -379,10 +483,56 @@ export default function SurveyView({
     }
   };
 
-  if (loading) {
+  if (loading || (isInterviewStage && !liveAccess.checked)) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (isInterviewStage && !liveAccess.open) {
+    // Antes de la fecha se invita a los formularios previos; en la fecha pero
+    // sin sesión iniciada, se espera a que el profesional arranque.
+    const beforeDate = !liveAccess.dateOpen;
+    return (
+      <div className="flex justify-center items-center min-h-screen px-6">
+        <Card className="max-w-md">
+          <CardBody className="text-center">
+            {!beforeDate && <Spinner size="lg" className="mb-4" />}
+            <h2 className="text-xl font-semibold mb-2">
+              {beforeDate
+                ? "La entrevista todavía no está disponible"
+                : "Esperando a que el profesional inicie la entrevista"}
+            </h2>
+            <p className="text-gray-600 mb-4">
+              {beforeDate
+                ? `Vas a poder ingresar a partir del ${formatScheduledAt(liveAccess.scheduledAt)}. Mientras tanto podés completar los formularios previos.`
+                : "En cuanto el profesional inicie la sesión, esta pantalla te llevará a la entrevista automáticamente."}
+            </p>
+            <Button color="primary" onPress={() => router.push("/interviewee")}>
+              Volver a mis entrevistas
+            </Button>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isInterviewStage && sessionStatus === "FINISHED") {
+    return (
+      <div className="flex justify-center items-center min-h-screen px-6">
+        <Card className="max-w-md">
+          <CardBody className="text-center">
+            <h2 className="text-xl font-semibold mb-2">Entrevista finalizada</h2>
+            <p className="text-gray-600 mb-4">
+              El profesional cerró la entrevista. ¡Gracias por participar!
+            </p>
+            <Button color="primary" onPress={() => router.push("/interviewee")}>
+              Volver a mis entrevistas
+            </Button>
+          </CardBody>
+        </Card>
       </div>
     );
   }
@@ -441,7 +591,18 @@ export default function SurveyView({
       </div>
 
       {/* Slide actual */}
-      {currentSlide && (
+      {currentSlide && isInterviewStage && (
+        <LiveSlideView
+          slide={currentSlide}
+          mode="interviewee"
+          answers={responses}
+          onAnswerChange={handleResponseChange}
+          slideNumber={effectiveSlideIndex + 1}
+          totalSlides={allSlides.length}
+        />
+      )}
+
+      {currentSlide && !isInterviewStage && (
         <SlideView
           slide={currentSlide}
           formId={currentSlide.formId}

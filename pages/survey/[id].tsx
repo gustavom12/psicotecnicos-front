@@ -7,12 +7,14 @@ import { useIntervieweeAuthContext } from "@/contexts/interviewee-auth.context";
 interface SurveyPageProps {
   surveyId: string;
   intervieweeId?: string;
+  interviewId?: string;
   token?: string;
 }
 
 export default function SurveyPage({
   surveyId,
   intervieweeId,
+  interviewId,
   token,
 }: SurveyPageProps) {
   const { authenticated, checkAuth } = useIntervieweeAuthContext();
@@ -56,13 +58,17 @@ export default function SurveyPage({
 
   return (
     <IntervieweeAuthGuard>
-      <SurveyView surveyId={surveyId} intervieweeId={intervieweeId} />
+      <SurveyView
+        surveyId={surveyId}
+        intervieweeId={intervieweeId}
+        interviewId={interviewId}
+      />
     </IntervieweeAuthGuard>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id, intervieweeId, token } = context.query;
+  const { id, intervieweeId, interviewId, token } = context.query;
 
   if (!id || typeof id !== "string") {
     return {
@@ -74,6 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       surveyId: id,
       intervieweeId: intervieweeId || null,
+      interviewId: interviewId || null,
       token: token || null,
     },
   };

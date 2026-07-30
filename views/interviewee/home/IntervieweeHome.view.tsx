@@ -19,7 +19,13 @@ import {
   Mail,
   Phone,
   User,
+  Lock,
 } from "lucide-react";
+import {
+  buildInterviewSessionPath,
+  formatScheduledAt,
+  isInterviewStageOpen,
+} from "@/common/interview-access";
 
 // Interface for Module data
 interface Module {
@@ -442,6 +448,9 @@ const IntervieweeHome = () => {
               const statusConfig = getStatusConfig(interview.status);
               const previousModules = getPreviousModules(interview);
               const interviewModules = getInterviewModules(interview);
+              const interviewStageOpen = isInterviewStageOpen(
+                interview.scheduledAt,
+              );
 
               return (
                 <div
@@ -778,9 +787,38 @@ const IntervieweeHome = () => {
                           Módulos de la entrevista ({interviewModules.length})
                         </h3>
                         <p className="text-sm text-gray-500">
-                          Estos módulos los administra el profesional durante la
-                          entrevista, no necesitás completarlos ahora.
+                          {interviewStageOpen
+                            ? "Ya podés ingresar a la entrevista para completar estos módulos junto al profesional."
+                            : `Estos módulos se completan durante la entrevista: vas a poder ingresar a partir del ${formatScheduledAt(interview.scheduledAt)}.`}
                         </p>
+
+                        <div>
+                          {interviewStageOpen ? (
+                            <Link
+                              href={buildInterviewSessionPath(
+                                interview.surveyId._id,
+                                interview._id,
+                              )}
+                            >
+                              <Button
+                                color="primary"
+                                variant="solid"
+                                startContent={<Play className="w-4 h-4" />}
+                              >
+                                Iniciar entrevista
+                              </Button>
+                            </Link>
+                          ) : (
+                            <Button
+                              variant="flat"
+                              isDisabled
+                              startContent={<Lock className="w-4 h-4" />}
+                            >
+                              Disponible el{" "}
+                              {formatScheduledAt(interview.scheduledAt)}
+                            </Button>
+                          )}
+                        </div>
 
                         <div className="grid gap-3">
                           {interviewModules
@@ -806,12 +844,22 @@ const IntervieweeHome = () => {
                                 </div>
 
                                 <Chip
-                                  color="default"
+                                  color={
+                                    interviewStageOpen ? "primary" : "default"
+                                  }
                                   variant="flat"
                                   size="sm"
-                                  startContent={<Users className="w-4 h-4" />}
+                                  startContent={
+                                    interviewStageOpen ? (
+                                      <Users className="w-4 h-4" />
+                                    ) : (
+                                      <Lock className="w-4 h-4" />
+                                    )
+                                  }
                                 >
-                                  Con el profesional
+                                  {interviewStageOpen
+                                    ? "Con el profesional"
+                                    : "Se habilita en la fecha"}
                                 </Chip>
                               </div>
                             ))}
