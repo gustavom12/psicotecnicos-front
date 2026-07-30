@@ -16,6 +16,9 @@ import ProfessionalsSection from "./components/ProfessionalsSection";
 import IntervieweesSection from "./components/IntervieweesSection";
 import ResponsesSection from "./components/ResponsesSection";
 import ReportsSection from "./components/ReportsSection";
+import AnnotationsSection, {
+  Annotations,
+} from "./components/AnnotationsSection";
 
 interface InterviewData {
   _id: string;
@@ -58,6 +61,7 @@ interface InterviewData {
     completedAt?: string;
     startedAt?: string;
   }>;
+  annotations?: Annotations;
 }
 
 const ViewInterviewPage = ({ id }: { id?: string }) => {
@@ -269,6 +273,7 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
               <Tab key="general" title="Información General" />
               <Tab key="participants" title="Participantes" />
               <Tab key="responses" title="Respuestas" />
+              <Tab key="annotations" title="Anotaciones" />
               <Tab key="reports" title="Informes" />
             </Tabs>
           </div>
@@ -298,6 +303,16 @@ const ViewInterviewPage = ({ id }: { id?: string }) => {
 
             {selectedTab === "responses" && (
               <ResponsesSection interviewId={data._id} />
+            )}
+
+            {selectedTab === "annotations" && (
+              <AnnotationsSection
+                interviewId={data._id}
+                annotations={data.annotations}
+                onSaved={(annotations) =>
+                  setData((prev) => (prev ? { ...prev, annotations } : prev))
+                }
+              />
             )}
 
             {selectedTab === "reports" && (
