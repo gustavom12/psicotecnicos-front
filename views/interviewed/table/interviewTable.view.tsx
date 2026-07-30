@@ -175,7 +175,7 @@ const InterviewTableView = () => {
             Editar
           </Button>
         </Link>
-        {(item.status === "PENDING" || item.status === "INVITED") && (
+        {item.status !== "CANCELLED" && (
           <Button
             size="sm"
             variant="light"
