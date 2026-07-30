@@ -9,6 +9,7 @@ import {
   TableCell,
   getKeyValue,
   Button,
+  Chip,
 } from "@heroui/react";
 import Trash from "@/public/icons/trashgrey";
 import Pencil2 from "@/public/icons/pencil2";
@@ -20,6 +21,7 @@ const columns = [
   { key: "title", label: "Nombre" },
   { key: "category", label: "Categoría" },
   { key: "slides", label: "Cantidad de slides" },
+  { key: "isPreviousForm", label: "Tipo" },
   { key: "actions", label: "Acciones" },
 ];
 
@@ -94,6 +96,18 @@ const ModulesList = () => {
                   }
                   if (columnKey === "slides") {
                     value = item.slides ? item.slides.length : 0;
+                  }
+                  if (columnKey === "isPreviousForm") {
+                    value = (
+                      <Chip
+                        color={item.isPreviousForm ? "secondary" : "primary"}
+                        variant="flat"
+                      >
+                        {item.isPreviousForm
+                          ? "Entrevista previa"
+                          : "Módulo"}
+                      </Chip>
+                    );
                   }
                   return <TableCell>{value}</TableCell>;
                 }}

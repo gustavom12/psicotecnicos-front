@@ -2,20 +2,18 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ArrowLeft from "@/public/icons/arrowleft";
 import { Button } from "@heroui/button";
-import { Form, Checkbox, Tooltip } from "@heroui/react";
+import { Form } from "@heroui/react";
 import InputForms from "@/common/inputForms";
 import AuthLayout from "@/layouts/auth.layout";
 import apiConnection from "@/pages/api/api";
 import ModulesSelector from "./modules";
 import { Notification } from "@/common/notification";
 import { useRouter } from "next/router";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 interface SurveyDTO {
   title: string;
   description: string;
   modules?: Array<{ order: number; id: string }>;
-  previousEvaluations?: boolean;
 }
 
 const EMPTY: SurveyDTO = { title: "", description: "" };
@@ -35,7 +33,6 @@ const InformationView = ({ id }: { id?: string }) => {
           ...data,
           title: data.name,
           description: data.description ?? "",
-          previousEvaluations: data.previousEvaluations ?? false,
         });
       } catch (err) {
         console.error("Error loading survey", err);
@@ -61,14 +58,12 @@ const InformationView = ({ id }: { id?: string }) => {
           name: data.title,
           description: data.description,
           modules: data.modules,
-          previousEvaluations: data.previousEvaluations,
         });
       } else {
         await apiConnection.post("/surveys", {
           name: data.title,
           description: data.description,
           modules: data.modules,
-          previousEvaluations: data.previousEvaluations,
         });
       }
       router.push("/surveys/table");
@@ -118,22 +113,6 @@ const InformationView = ({ id }: { id?: string }) => {
             value={data.description}
             onChange={handleChange("description")}
           />
-          <div className="flex items-center gap-2">
-            <Checkbox
-              isSelected={data.previousEvaluations}
-              onValueChange={(value) =>
-                setData({ ...data, previousEvaluations: value })
-              }
-            >
-              ¿Es una evaluación previa?
-            </Checkbox>
-            <Tooltip
-              content="Formulario que se envía al candidato antes de la entrevista para que pueda completarlo previamente y agilizar el proceso."
-              placement="right"
-            >
-              <InformationCircleIcon className="w-5 h-5 text-gray-400 cursor-help" />
-            </Tooltip>
-          </div>
           <ModulesSelector
             value={data.modules}
             onChange={(modules) => setData({ ...data, modules })}

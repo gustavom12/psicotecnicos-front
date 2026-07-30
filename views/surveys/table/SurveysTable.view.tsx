@@ -41,11 +41,6 @@ const SurveysTableView = () => {
       label: "Descripción",
     },
     {
-      key: "previousEvaluations",
-      label: "Es una evaluación previa",
-      render: (key, record) => (record.previousEvaluations ? "Sí" : "No"),
-    },
-    {
       key: "actions",
       label: "Acciones",
       render: (key, record) => (

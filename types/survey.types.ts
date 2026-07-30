@@ -29,6 +29,7 @@ export interface Form {
   teamId: string;
   title: string;
   category?: string;
+  isPreviousForm?: boolean;
   slides: Slide[];
 }
 
@@ -38,6 +39,7 @@ export interface Module {
   name?: string;
   category?: string;
   description?: string;
+  isPreviousForm?: boolean;
 }
 
 export interface Survey {
@@ -48,7 +50,6 @@ export interface Survey {
   position: string;
   description: string;
   modules: Module[];
-  previousEvaluations?: boolean;
   forms?: string[] | Form[]; // Mantener por compatibilidad
   duration?: number;
   status?: "DRAFT" | "NOT_STARTED" | "FINISHED";

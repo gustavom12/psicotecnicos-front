@@ -29,7 +29,6 @@ interface Interview {
     title?: string;
     description?: string;
     duration?: number;
-    previousEvaluations?: boolean;
     modules?: Array<{
       _id: string;
       name: string;

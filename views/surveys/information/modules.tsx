@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import apiConnection from "@/pages/api/api";
-import { Button, Select, SelectItem } from "@heroui/react";
+import { Button, Chip, Select, SelectItem } from "@heroui/react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 
 interface Module {
   _id: string;
   title: string;
+  isPreviousForm?: boolean;
 }
 
 interface Props {
@@ -91,9 +92,18 @@ const ModulesSelector: React.FC<Props> = ({ value, onChange }) => {
                 key={idx}
                 className="mt-4 flex items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 shadow-sm"
               >
-                <span className="text-sm font-medium text-gray-800">
-                  {id.title}
-                </span>
+                <div className="flex flex-col items-start gap-1">
+                  <span className="text-sm font-medium text-gray-800">
+                    {id.title}
+                  </span>
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    color={id.isPreviousForm ? "secondary" : "primary"}
+                  >
+                    {id.isPreviousForm ? "Evaluación previa" : "En entrevista"}
+                  </Chip>
+                </div>
 
                 <div className="flex gap-1">
                   <Button

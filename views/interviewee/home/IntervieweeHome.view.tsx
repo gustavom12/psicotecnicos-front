@@ -29,6 +29,7 @@ interface Module {
   name?: string;
   category?: string;
   description?: string;
+  isPreviousForm?: boolean;
   progress?: number;
   status?: "DRAFT" | "NOT_STARTED" | "IN_PROGRESS" | "FINISHED";
 }
@@ -56,7 +57,6 @@ interface Interview {
     title?: string;
     description?: string;
     duration?: number;
-    previousEvaluations?: boolean;
     modules?: Module[];
   };
   totalInterviewTimeSeconds?: number;
@@ -322,20 +322,31 @@ const IntervieweeHome = () => {
     );
   };
 
+  // El candidato solo completa los módulos marcados como evaluación previa; el
+  // resto los administra el profesional durante la entrevista.
+  const getPreviousModules = (interview: Interview) =>
+    (interview.surveyId?.modules ?? []).filter(
+      (module) => module.isPreviousForm,
+    );
+
+  const getInterviewModules = (interview: Interview) =>
+    (interview.surveyId?.modules ?? []).filter(
+      (module) => !module.isPreviousForm,
+    );
+
   const getInterviewProgress = (interview: Interview) => {
-    if (
-      !interview.surveyId?.modules ||
-      interview.surveyId.modules.length === 0
-    ) {
+    const previousModules = getPreviousModules(interview);
+
+    if (previousModules.length === 0) {
       return { completed: 0, total: 0, percentage: 0 };
     }
 
-    const completed = interview.surveyId.modules.filter((module: any) => {
+    const completed = previousModules.filter((module: any) => {
       const key = `${interview._id}_${module.id}`;
       return moduleProgress[key]?.completed === true;
     }).length;
 
-    const total = interview.surveyId.modules.length;
+    const total = previousModules.length;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
     return { completed, total, percentage };
@@ -429,6 +440,8 @@ const IntervieweeHome = () => {
             {interviews.map((interview) => {
               const progress = getInterviewProgress(interview);
               const statusConfig = getStatusConfig(interview.status);
+              const previousModules = getPreviousModules(interview);
+              const interviewModules = getInterviewModules(interview);
 
               return (
                 <div
@@ -572,18 +585,16 @@ const IntervieweeHome = () => {
                   </div>
 
                   {/* Modules List */}
-                  <div className="p-6">
-                    {interview.surveyId?.modules &&
-                    interview.surveyId.modules.length > 0 ? (
+                  <div className="p-6 space-y-8">
+                    {previousModules.length > 0 ? (
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                           <BookOpen className="w-5 h-5" />
-                          formularios de Evaluación (
-                          {interview.surveyId.modules.length})
+                          formularios de Evaluación ({previousModules.length})
                         </h3>
 
                         <div className="grid gap-4">
-                          {interview.surveyId.modules
+                          {previousModules
                             .sort((a, b) => a.order - b.order)
                             .map((module: any, index) => {
                               const moduleKey = `${interview._id}_${module.id}`;
@@ -757,6 +768,54 @@ const IntervieweeHome = () => {
                             Ir Directamente a la Entrevista
                           </Button>
                         </Link> */}
+                      </div>
+                    )}
+
+                    {interviewModules.length > 0 && (
+                      <div className="space-y-3">
+                        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                          <Users className="w-5 h-5" />
+                          Módulos de la entrevista ({interviewModules.length})
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Estos módulos los administra el profesional durante la
+                          entrevista, no necesitás completarlos ahora.
+                        </p>
+
+                        <div className="grid gap-3">
+                          {interviewModules
+                            .sort((a, b) => a.order - b.order)
+                            .map((module: any, index) => (
+                              <div
+                                key={module.id}
+                                className="p-4 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-between"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white border-2 border-gray-300 font-semibold text-sm">
+                                    {module.order || index + 1}
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-gray-900">
+                                      {module.name ||
+                                        `Módulo ${module.order || index + 1}`}
+                                    </h4>
+                                    <p className="text-sm text-gray-600">
+                                      {module.category || "Evaluación técnica"}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <Chip
+                                  color="default"
+                                  variant="flat"
+                                  size="sm"
+                                  startContent={<Users className="w-4 h-4" />}
+                                >
+                                  Con el profesional
+                                </Chip>
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     )}
                   </div>

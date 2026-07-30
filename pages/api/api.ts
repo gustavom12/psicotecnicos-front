@@ -21,9 +21,12 @@ const resolveToken = (url?: string): string | null => {
     url?.startsWith("/interviewee-auth") ||
     INTERVIEWEE_PATHS.test(window.location.pathname);
 
+  // El profesional también abre las pantallas del entrevistado (preview de
+  // encuestas), de ahí el fallback. Al revés no aplica: los endpoints del
+  // profesional rechazan el token de entrevistado.
   return isIntervieweeRequest
     ? intervieweeToken || professionalToken
-    : professionalToken || intervieweeToken;
+    : professionalToken;
 };
 
 apiConnection.interceptors.request.use((req) => {

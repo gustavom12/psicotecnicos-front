@@ -52,6 +52,17 @@ interface Professional {
   speciality?: string;
 }
 
+// El listado de surveys pobla cada módulo con su formulario, así que el tipo
+// de cada uno se lee de "modules[].id.isPreviousForm".
+const countPreviousModules = (evaluation: any) =>
+  (evaluation.modules ?? []).filter((module: any) => module?.id?.isPreviousForm)
+    .length;
+
+const countInterviewModules = (evaluation: any) =>
+  (evaluation.modules ?? []).filter(
+    (module: any) => !module?.id?.isPreviousForm,
+  ).length;
+
 const DetailInterviewed = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -822,9 +833,7 @@ const DetailInterviewed = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-2xl">
-                              {evaluation.previousEvaluations ? "📋" : "📊"}
-                            </span>
+                            <span className="text-2xl">📚</span>
                             <h4 className="font-semibold text-gray-900">
                               {evaluation.name ||
                                 evaluation.title ||
@@ -868,17 +877,17 @@ const DetailInterviewed = () => {
                         </div>
 
                         <div className="ml-4 flex flex-col items-end gap-2">
-                          <div
-                            className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              evaluation.previousEvaluations
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-purple-100 text-purple-800"
-                            }`}
-                          >
-                            {evaluation.previousEvaluations
-                              ? "📋 Ev. Previa"
-                              : "📊 Evaluación"}
-                          </div>
+                          {countPreviousModules(evaluation) > 0 && (
+                            <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              📋 {countPreviousModules(evaluation)} previa(s)
+                            </div>
+                          )}
+                          {countInterviewModules(evaluation) > 0 && (
+                            <div className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                              📊 {countInterviewModules(evaluation)} en
+                              entrevista
+                            </div>
+                          )}
 
                           <button
                             className="text-blue-600 hover:text-blue-800 text-sm font-medium"

@@ -15,21 +15,44 @@ interface AuthState {
   user;
 }
 
+// Pantallas que no son del portal del profesional. Este store se evalúa al
+// importarse (Next ejecuta el módulo de una página incluso al prefetchearla),
+// así que sin este filtro el bootstrap se lleva puesta, por ejemplo, la sesión
+// del entrevistado que está entrando con su magic link.
+const NON_PROFESSIONAL_PATHS = /^\/(interviewee|survey|auth|invitation)(\/|$)/;
+
+const bootstrapSession = (set: (state: Partial<AuthState>) => void) => {
+  const redirectToLogin = () => {
+    if (NON_PROFESSIONAL_PATHS.test(window.location.pathname)) return;
+    // Este módulo puede evaluarse antes de que Next cree el router, así que la
+    // navegación se posterga al próximo tick.
+    setTimeout(() => Router.push("/auth/login"), 0);
+  };
+
+  if (!localStorage.getItem("accessToken")) {
+    redirectToLogin();
+    return;
+  }
+
+  apiConnection
+    .get("users/self")
+    .then(({ data }) => {
+      set({
+        authorized: true,
+        roles: data.roles,
+        user: data,
+      });
+    })
+    .catch((error) => {
+      localStorage.removeItem("accessToken");
+      console.log("Error: ", error);
+      redirectToLogin();
+    });
+};
+
 export const useAuthContext = create<AuthState>((set) => {
   if (typeof window !== "undefined") {
-    apiConnection
-      .get("users/self")
-      .then(({ data }) => {
-        set({
-          authorized: true,
-          roles: data.roles,
-          user: data,
-        });
-      })
-      .catch((error) => {
-        Router.push("/auth/login");
-        console.log("Error: ", error);
-      });
+    bootstrapSession(set);
   }
   return {
     authorized: false,

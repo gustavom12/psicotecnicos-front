@@ -42,24 +42,19 @@ export const useIntervieweeAuthContext = create<IntervieweeAuthState>(
   (set, get) => {
     // Check authentication on initialization (only on client-side)
     const checkInitialAuth = async () => {
-      console.log("checkInitialAuth");
-
       // Only run on client-side
       if (typeof window === "undefined") return;
 
       const token = localStorage.getItem("intervieweeAccessToken");
-      console.log("token: ", token);
       if (token) {
         try {
           const { data } = await apiConnection.get("/interviewee-auth/check");
-          console.log("checkInitialAuth success");
           set({
             authenticated: true,
             interviewee: data.interviewee,
           });
         } catch (error) {
           // Token is invalid, remove it
-          console.log("checkInitialAuth error: ", { error });
           localStorage.removeItem("intervieweeAccessToken");
           set({
             authenticated: false,
