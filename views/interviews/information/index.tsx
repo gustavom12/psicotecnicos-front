@@ -117,8 +117,16 @@ const InformationView = ({ id }: { id?: string }) => {
           description: data.description ?? "",
           position: data.position ?? "",
           positionDescription: data.positionDescription ?? "",
-          surveyId: data.surveyId ?? "",
-          companyId: data.companyId ?? "",
+          // El detalle llega con surveyId/companyId populados (objeto), pero
+          // el selector y el guardado trabajan con el id plano.
+          surveyId:
+            (typeof data.surveyId === "string"
+              ? data.surveyId
+              : data.surveyId?._id) ?? "",
+          companyId:
+            (typeof data.companyId === "string"
+              ? data.companyId
+              : data.companyId?._id) ?? "",
           scheduledAt: data.scheduledAt
             ? parseDateTime(
                 new Date(data.scheduledAt).toISOString().slice(0, 19),
