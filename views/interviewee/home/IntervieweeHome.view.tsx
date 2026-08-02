@@ -29,9 +29,11 @@ import {
 
 // Interface for Module data
 interface Module {
-  _id: string;
+  _id?: string;
   order: number;
   id: string;
+  /** Título del formulario, adjuntado por el backend. */
+  title?: string;
   name?: string;
   category?: string;
   description?: string;
@@ -95,6 +97,18 @@ const IntervieweeHome = () => {
           ) {
             const modulesWithDetails = await Promise.all(
               interview.surveyId.modules.map(async (module) => {
+                // El backend ya adjunta title/category/isPreviousForm de cada
+                // formulario; solo se pide el form cuando falta (respuestas
+                // viejas o cacheadas), nunca para decidir isPreviousForm, que
+                // es lo que separa evaluaciones previas de módulos en vivo.
+                if (module.isPreviousForm !== undefined) {
+                  return {
+                    ...module,
+                    name: module.title || `Módulo ${module.order}`,
+                    category: module.category || "Evaluación",
+                  };
+                }
+
                 try {
                   const formResponse = await apiConnection.get(
                     `/forms/${module.id}`,
@@ -103,10 +117,9 @@ const IntervieweeHome = () => {
 
                   return {
                     ...module,
-                    ...formData,
                     name: formData.title || `Módulo ${module.order}`,
                     category: formData.category || "Evaluación",
-                    description: formData.category || "Evaluación técnica",
+                    isPreviousForm: formData.isPreviousForm === true,
                   };
                 } catch (error) {
                   console.error(
@@ -117,7 +130,6 @@ const IntervieweeHome = () => {
                     ...module,
                     name: `Módulo ${module.order}`,
                     category: "Evaluación",
-                    description: "Evaluación técnica",
                   };
                 }
               }),
@@ -238,13 +250,16 @@ const IntervieweeHome = () => {
         "/interviews/interviewee/filtered",
       );
 
-      // Filter interviews to only show those assigned to current interviewee
+      // Filter interviews to only show those assigned to current interviewee.
+      // El endpoint ya filtra por entrevistado, pero además devuelve los
+      // participantes populados: hay que contemplar id plano y documento.
       const allInterviews = response.data || [];
 
-      const myInterviews = allInterviews.filter(
-        (interview: any) =>
-          interview.interviewees &&
-          interview.interviewees.includes(interviewee._id),
+      const myInterviews = allInterviews.filter((interview: any) =>
+        (interview.interviewees ?? []).some(
+          (candidate: any) =>
+            String(candidate?._id ?? candidate) === String(interviewee._id),
+        ),
       );
 
       const interviewsWithDetails = await loadModuleDetails(myInterviews);
@@ -603,7 +618,7 @@ const IntervieweeHome = () => {
                         </h3>
 
                         <div className="grid gap-4">
-                          {previousModules
+                          {[...previousModules]
                             .sort((a, b) => a.order - b.order)
                             .map((module: any, index) => {
                               const moduleKey = `${interview._id}_${module.id}`;
@@ -821,7 +836,7 @@ const IntervieweeHome = () => {
                         </div>
 
                         <div className="grid gap-3">
-                          {interviewModules
+                          {[...interviewModules]
                             .sort((a, b) => a.order - b.order)
                             .map((module: any, index) => (
                               <div

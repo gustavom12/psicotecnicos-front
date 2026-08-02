@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { Switch } from "@heroui/react";
 import AuthLayout from "@/layouts/auth.layout";
 import EditorWrapper, {
   defaultSlide,
@@ -40,6 +41,15 @@ export default function Module({
       titleRef.current.innerText = state.title;
     }
   }, [state.title]);
+
+  // Al crear, el modo lo define la query (?previousForm=true), que puede
+  // resolverse después del primer render: sin esto el estado se queda con el
+  // valor inicial y el formulario se guarda con el flag equivocado. En edición
+  // manda lo que devuelve el form guardado, así que no se pisa.
+  useEffect(() => {
+    if (id) return;
+    setIsPreviousForm(isPreviousFormProp);
+  }, [id, isPreviousFormProp]);
 
   useEffect(() => {
     if (!id) return;
@@ -119,6 +129,30 @@ export default function Module({
           >
             {state.category}
           </div>
+
+          {/* Define quién responde el formulario: el candidato antes de la
+              entrevista, o el profesional durante la sesión. Al crear viene de
+              la query (?previousForm=true) y acá se puede corregir. */}
+          {!loading && (
+            <div className="mt-3 mb-5 flex items-center gap-3">
+              <Switch
+                size="sm"
+                color="secondary"
+                isSelected={isPreviousForm}
+                onValueChange={setIsPreviousForm}
+              >
+                <span className="text-sm font-medium text-gray-700">
+                  Entrevista previa
+                </span>
+              </Switch>
+              <span className="text-sm text-gray-500">
+                {isPreviousForm
+                  ? "Lo completa el candidato por su cuenta antes de la entrevista."
+                  : "Se completa durante la entrevista, junto al profesional."}
+              </span>
+            </div>
+          )}
+
           <div className="grid grid-cols-12 gap-6">
             <EditorWrapper state={state} setState={setState} />
             {/* Separator for small screens */}

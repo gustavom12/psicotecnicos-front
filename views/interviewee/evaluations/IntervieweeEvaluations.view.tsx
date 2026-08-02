@@ -141,12 +141,15 @@ const IntervieweeEvaluations = () => {
       );
       console.log("interviews response: ", response);
 
-      // Filter interviews to only show those assigned to current interviewee
+      // Filter interviews to only show those assigned to current interviewee.
+      // Los participantes vienen populados desde el backend, así que hay que
+      // contemplar tanto el id plano como el documento completo.
       const allInterviews = response.data || [];
-      const myInterviews = allInterviews.filter(
-        (interview: any) =>
-          interview.interviewees &&
-          interview.interviewees.includes(interviewee._id),
+      const myInterviews = allInterviews.filter((interview: any) =>
+        (interview.interviewees ?? []).some(
+          (candidate: any) =>
+            String(candidate?._id ?? candidate) === String(interviewee._id),
+        ),
       );
 
       setInterviews(myInterviews);
